@@ -1,7 +1,7 @@
-import 'package:app_salon/helpers/control.dart';
-import 'package:app_salon/theme.dart';
-import 'package:app_salon/widgets/spacing.dart';
-import 'package:app_salon/widgets/text.dart';
+import 'package:kedul_app_main/helpers/control.dart';
+import 'package:kedul_app_main/theme.dart';
+import 'package:kedul_app_main/widgets/spacing.dart';
+import 'package:kedul_app_main/widgets/text.dart';
 import 'package:flutter/material.dart';
 
 class Field extends StatelessWidget {

@@ -1,5 +1,5 @@
-import 'package:app_salon/widgets/field.dart';
-import 'package:app_salon/widgets/text_input.dart';
+import 'package:kedul_app_main/widgets/field.dart';
+import 'package:kedul_app_main/widgets/text_input.dart';
 import 'package:flutter/material.dart';
 
 class TextInputField extends StatelessWidget {

@@ -1,4 +1,4 @@
-# app_salon
+# kedul_app_main
 
 A new Flutter project.
 

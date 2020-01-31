@@ -1,4 +1,4 @@
-import 'package:app_salon/theme.dart';
+import 'package:kedul_app_main/theme.dart';
 import 'package:flutter/material.dart';
 
 enum TextSize { sm, md, lg, xl }

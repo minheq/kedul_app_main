@@ -1,4 +1,4 @@
-package com.example.app_salon
+package com.kedul.kedul_app_main
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

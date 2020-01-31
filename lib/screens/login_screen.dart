@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:app_salon/theme.dart';
-import 'package:app_salon/widgets/button.dart';
-import 'package:app_salon/widgets/heading.dart';
-import 'package:app_salon/widgets/phone_number_field.dart';
-import 'package:app_salon/widgets/spacing.dart';
-import 'package:app_salon/widgets/text.dart';
+import 'package:kedul_app_main/theme.dart';
+import 'package:kedul_app_main/widgets/button.dart';
+import 'package:kedul_app_main/widgets/heading.dart';
+import 'package:kedul_app_main/widgets/phone_number_field.dart';
+import 'package:kedul_app_main/widgets/spacing.dart';
+import 'package:kedul_app_main/widgets/text.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
+  LoginScreen({Key key})
+      : super(key: key);
+
   @override
   _LoginScreenState createState() {
     return _LoginScreenState();
@@ -28,7 +31,10 @@ class LoginStartResponse {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  _LoginScreenState();
+
   final _formKey = GlobalKey<FormState>();
+
 
   Future<String> handleLoginStart() async {
     Map input = {'phoneNumber': '999123321', 'countryCode': 'VN'};
@@ -38,10 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final response = await http.post("http://localhost:4000/loginStart",
           headers: {"Content-Type": "application/json"}, body: body);
-
-      // if (response.statusCode != 200) {
-      //   return "";
-      // }
 
       final responseJson = json.decode(response.body);
 

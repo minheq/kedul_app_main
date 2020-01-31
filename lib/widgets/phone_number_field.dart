@@ -1,7 +1,7 @@
-import 'package:app_salon/theme.dart';
-import 'package:app_salon/widgets/field.dart';
-import 'package:app_salon/widgets/text.dart';
-import 'package:app_salon/widgets/text_input.dart';
+import 'package:kedul_app_main/theme.dart';
+import 'package:kedul_app_main/widgets/field.dart';
+import 'package:kedul_app_main/widgets/text.dart';
+import 'package:kedul_app_main/widgets/text_input.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 
