@@ -1,20 +1,24 @@
 import 'dart:convert';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 import 'package:kedul_app_main/theme.dart';
 import 'package:kedul_app_main/widgets/button.dart';
 import 'package:kedul_app_main/widgets/heading.dart';
 import 'package:kedul_app_main/widgets/phone_number_field.dart';
 import 'package:kedul_app_main/widgets/spacing.dart';
 import 'package:kedul_app_main/widgets/text.dart';
-import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key key})
+  LoginScreen({Key key, this.analytics, this.observer})
       : super(key: key);
 
+  final FirebaseAnalytics analytics;
+  final FirebaseAnalyticsObserver observer;
   @override
   _LoginScreenState createState() {
-    return _LoginScreenState();
+    return _LoginScreenState(analytics, observer);
   }
 }
 
@@ -31,17 +35,21 @@ class LoginStartResponse {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  _LoginScreenState();
-
+  _LoginScreenState(this.analytics, this.observer);
+  final FirebaseAnalyticsObserver observer;
+  final FirebaseAnalytics analytics;
   final _formKey = GlobalKey<FormState>();
 
 
-  Future<String> handleLoginStart() async {
+  Future<String> handleLoginVerify() async {
     Map input = {'phoneNumber': '999123321', 'countryCode': 'VN'};
 
     var body = json.encode(input);
 
     try {
+      await analytics.logEvent(
+        name: 'press_login_verify',
+      );
       final response = await http.post("http://localhost:4000/loginStart",
           headers: {"Content-Type": "application/json"}, body: body);
 
@@ -94,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Button(
                           onPressed: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            handleLoginStart();
+                            handleLoginVerify();
                           },
                           title: "Next",
                         )
