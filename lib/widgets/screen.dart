@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class TideScreen extends StatelessWidget {
+class ScreenContainer extends StatelessWidget {
   /// Creates a screen widget. It will add
 
-  TideScreen({@required this.body});
+  ScreenContainer({@required this.body});
 
   final Widget body;
 

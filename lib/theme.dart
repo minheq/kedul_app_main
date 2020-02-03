@@ -13,6 +13,8 @@ class CustomColors {
   static const Color textDark = Color(0xff303030);
   static const Color textMuted = Color(0xff757575);
   static const Color textPrimary = Palette.green900;
+
+  static const Color shadow = Color(0xff757575);
 }
 
 class Palette {

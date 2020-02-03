@@ -1,4 +1,4 @@
-import 'package:kedul_app_main/screens/login_screen.dart';
+import 'package:kedul_app_main/screens/login_verify_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -8,7 +8,7 @@ void main() {
 }
 
 class App extends StatelessWidget {
-    static FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalytics analytics = FirebaseAnalytics();
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
 
@@ -16,7 +16,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: <NavigatorObserver>[observer],
-      home: LoginScreen(),
+      home: LoginVerifyScreen(),
     );
   }
 }

@@ -1,27 +1,38 @@
-import 'package:kedul_app_main/widgets/field.dart';
-import 'package:kedul_app_main/widgets/text_input.dart';
+import 'package:flutter/services.dart';
+import 'package:kedul_app_main/theme.dart';
 import 'package:flutter/material.dart';
 
-class TextInputField extends StatelessWidget {
-  TextInputField(
-      {this.key,
-      this.errorText,
-      this.labelText,
-      this.onChanged,
-      this.keyboardType});
+Color customTextFieldCursorColor = CustomColors.textDark;
+InputDecoration customTextFieldInputDecoration = InputDecoration(
+  border: InputBorder.none,
+);
 
+class CustomTextField extends StatelessWidget {
+  CustomTextField(
+      {this.key,
+      this.onChanged,
+      this.keyboardType,
+      this.inputFormatters,
+      this.controller});
+
+  final List<TextInputFormatter> inputFormatters;
   final Key key;
-  final String errorText;
-  final String labelText;
+
+  /// Type of the keyboard.
   final TextInputType keyboardType;
   final void Function(String) onChanged;
 
+  /// TextEditingController to pass to the TextField
+  final TextEditingController controller;
+
   @override
   Widget build(BuildContext context) {
-    return Field(
-      labelText: labelText,
-      errorText: errorText,
-      child: TextInput(),
+    return TextField(
+      onChanged: onChanged,
+      controller: controller,
+      cursorColor: customTextFieldCursorColor,
+      keyboardType: keyboardType,
+      decoration: customTextFieldInputDecoration,
     );
   }
 }

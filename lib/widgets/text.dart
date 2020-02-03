@@ -1,5 +1,5 @@
 import 'package:kedul_app_main/theme.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 enum TextSize { sm, md, lg, xl }
 enum TextColor { dark, muted, link, white }
