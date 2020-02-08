@@ -3,20 +3,19 @@ import 'package:kedul_app_main/widgets/text.dart';
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
-  Button(
-      {Key key,
-      @required this.onPressed,
-      this.title,
-      this.size = ControlSize.md});
+  Button({
+    Key key,
+    @required this.onPressed,
+    this.title,
+  });
 
-  final ControlSize size;
   final VoidCallback onPressed;
   final String title;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Control.toDouble(size),
+      height: ControlHeight.md,
       decoration: BoxDecoration(
         color: CustomColors.buttonPrimary,
         borderRadius: BorderRadius.all(

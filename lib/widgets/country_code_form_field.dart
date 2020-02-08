@@ -31,7 +31,7 @@ class CountryCodeFormField extends FormField<String> {
                 showCountryOnly: false,
                 alignLeft: true,
                 textStyle: TextStyle(
-                    fontSize: CustomText.getFontSize(TextSize.md),
+                    fontSize: getFontSize(TextSize.md),
                     color: CustomColors.textDark),
               ));
             });

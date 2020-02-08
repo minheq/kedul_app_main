@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
 
 class ApiClient {
-  final client = http.Client();
-  final baseURL;
+  final http.Client client = http.Client();
+  final String baseURL;
 
   ApiClient({this.baseURL = "http://localhost:4000"});
 

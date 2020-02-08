@@ -32,13 +32,13 @@ class LoginVerifyRequest {
 }
 
 class LoginVerifyResponse {
-  final String clientState;
+  final String verificationID;
 
-  LoginVerifyResponse({this.clientState});
+  LoginVerifyResponse({this.verificationID});
 
   factory LoginVerifyResponse.fromJson(Map<String, dynamic> json) {
     return LoginVerifyResponse(
-      clientState: json['clientState'],
+      verificationID: json['verificationID'],
     );
   }
 }
@@ -53,22 +53,22 @@ class AuthProvider extends ChangeNotifier {
     return currentUser != null;
   }
 
-  // Returns clientState string use for further confirmation
+  // Returns verificationID string use for further confirmation
   Future<String> loginVerify(PhoneNumber phoneNumber) async {
     String body = LoginVerifyRequest(phoneNumber: phoneNumber).toJson();
 
     final response = await apiClient.post('/login_verify', body);
 
     if (isErrorResponse(response)) {
-      throw Exception(getErrorMessage(response));
+      throw getErrorMessage(response);
     }
 
     final data = LoginVerifyResponse.fromJson(json.decode(response.body));
 
-    return data.clientState;
+    return data.verificationID;
   }
 
-  Future<String> loginVerifyCheck() async {
+  Future<String> loginVerifyCheck(String verificationID, String otpCode) async {
     return '';
   }
 

@@ -3,7 +3,7 @@ import 'package:kedul_app_main/data/auth_provider.dart';
 import 'package:kedul_app_main/data/phone_number.dart';
 import 'package:kedul_app_main/widgets/button.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
-import 'package:kedul_app_main/widgets/screen.dart';
+import 'package:kedul_app_main/widgets/screen_container.dart';
 import 'package:kedul_app_main/widgets/text.dart';
 import 'package:provider/provider.dart';
 
@@ -11,13 +11,13 @@ class LoginVerifyScreen extends StatefulWidget {
   LoginVerifyScreen({Key key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() {
-    return _LoginScreenState();
+  _LoginScreenVerifyState createState() {
+    return _LoginScreenVerifyState();
   }
 }
 
-class _LoginScreenState extends State<LoginVerifyScreen> {
-  _LoginScreenState();
+class _LoginScreenVerifyState extends State<LoginVerifyScreen> {
+  _LoginScreenVerifyState();
 
   final formKey = GlobalKey<FormState>();
 
@@ -36,8 +36,8 @@ class _LoginScreenState extends State<LoginVerifyScreen> {
     formKey.currentState.save();
 
     try {
-      String clientState = await authProvider.loginVerify(phoneNumber);
-      print(clientState);
+      String verificationID = await authProvider.loginVerify(phoneNumber);
+      print(verificationID);
     } catch (e) {
       print(e);
     }

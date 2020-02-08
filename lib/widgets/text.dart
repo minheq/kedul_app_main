@@ -24,34 +24,34 @@ class CustomText extends StatelessWidget {
             color: getColor(color),
             fontWeight: fontWeight));
   }
+}
 
-  static double getFontSize(TextSize size) {
-    switch (size) {
-      case TextSize.sm:
-        return 12.8;
-      case TextSize.md:
-        return 16.0;
-      case TextSize.lg:
-        return 20.0;
-      case TextSize.xl:
-        return 25.0;
-      default:
-        return 16.0;
-    }
+double getFontSize(TextSize size) {
+  switch (size) {
+    case TextSize.sm:
+      return 12.8;
+    case TextSize.md:
+      return 16.0;
+    case TextSize.lg:
+      return 20.0;
+    case TextSize.xl:
+      return 25.0;
+    default:
+      return 16.0;
   }
+}
 
-  static Color getColor(TextColor color) {
-    switch (color) {
-      case TextColor.dark:
-        return CustomColors.textDark;
-      case TextColor.muted:
-        return CustomColors.textMuted;
-      case TextColor.link:
-        return CustomColors.textPrimary;
-      case TextColor.white:
-        return CustomColors.white;
-      default:
-        return CustomColors.textDark;
-    }
+Color getColor(TextColor color) {
+  switch (color) {
+    case TextColor.dark:
+      return CustomColors.textDark;
+    case TextColor.muted:
+      return CustomColors.textMuted;
+    case TextColor.link:
+      return CustomColors.textPrimary;
+    case TextColor.white:
+      return CustomColors.white;
+    default:
+      return CustomColors.textDark;
   }
 }
