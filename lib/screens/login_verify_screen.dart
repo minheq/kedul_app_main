@@ -1,77 +1,45 @@
-import 'dart:convert';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/data/auth_provider.dart';
+import 'package:kedul_app_main/data/phone_number.dart';
 import 'package:kedul_app_main/widgets/button.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/screen.dart';
 import 'package:kedul_app_main/widgets/text.dart';
+import 'package:provider/provider.dart';
 
 class LoginVerifyScreen extends StatefulWidget {
-  LoginVerifyScreen({Key key, this.analytics}) : super(key: key);
+  LoginVerifyScreen({Key key}) : super(key: key);
 
-  final FirebaseAnalytics analytics;
   @override
   _LoginScreenState createState() {
-    return _LoginScreenState(analytics);
-  }
-}
-
-class LoginVerifyRequest {
-  LoginVerifyRequest();
-
-  String phoneNumber;
-  String countryCode;
-
-  String toJson() {
-    var mapData = new Map();
-
-    mapData['phoneNumber'] = phoneNumber;
-    mapData['countryCode'] = countryCode;
-
-    String data = json.encode(mapData);
-    return data;
-  }
-}
-
-class LoginVerifyResponse {
-  final String clientState;
-
-  LoginVerifyResponse({this.clientState});
-
-  factory LoginVerifyResponse.fromJson(Map<String, dynamic> json) {
-    return LoginVerifyResponse(
-      clientState: json['clientState'],
-    );
+    return _LoginScreenState();
   }
 }
 
 class _LoginScreenState extends State<LoginVerifyScreen> {
-  _LoginScreenState(this.analytics);
-  final FirebaseAnalytics analytics;
+  _LoginScreenState();
+
   final formKey = GlobalKey<FormState>();
 
-  LoginVerifyRequest loginVerifyRequest = LoginVerifyRequest();
+  PhoneNumber phoneNumber = PhoneNumber(
+    phoneNumber: '',
+    countryCode: 'VN',
+  );
 
-  Future<String> handleLoginVerify() async {
+  Future<void> handleLoginVerify() async {
+    AuthProvider authProvider = Provider.of(context, listen: false);
+
     if (!formKey.currentState.validate()) {
-      return '';
+      return;
     }
 
     formKey.currentState.save();
 
     try {
-      String body = loginVerifyRequest.toJson();
-
-      final response = await http.post('http://localhost:4000/login_verify',
-          headers: {'Content-Type': 'application/json'}, body: body);
-
-      final data = LoginVerifyResponse.fromJson(json.decode(response.body));
-
-      return data.clientState;
+      String clientState = await authProvider.loginVerify(phoneNumber);
+      print(clientState);
     } catch (e) {
       print(e);
-      return '';
     }
   }
 
@@ -94,13 +62,12 @@ class _LoginScreenState extends State<LoginVerifyScreen> {
                     ),
                     SizedBox(height: 56),
                     PhoneNumberFormField(
-                      initialValue: PhoneNumber(
-                        phoneNumber: '',
-                        countryCode: 'VN',
-                      ),
+                      initialValue: phoneNumber,
                       onSaved: (value) {
-                        loginVerifyRequest.phoneNumber = value.phoneNumber;
-                        loginVerifyRequest.countryCode = value.countryCode;
+                        phoneNumber = PhoneNumber(
+                          phoneNumber: value.phoneNumber,
+                          countryCode: value.countryCode,
+                        );
                       },
                     ),
                     SizedBox(height: 16),

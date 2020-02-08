@@ -1,17 +1,8 @@
 import 'package:flutter/services.dart';
+import 'package:kedul_app_main/data/phone_number.dart';
 import 'package:kedul_app_main/widgets/country_code_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/widgets/text_form_field.dart';
-
-class PhoneNumber {
-  ///
-  /// PhoneNumber consists of the local phone number and its country code
-  ///
-  PhoneNumber({this.phoneNumber, this.countryCode});
-
-  final String phoneNumber;
-  final String countryCode;
-}
 
 class PhoneNumberFormField extends FormField<PhoneNumber> {
   PhoneNumberFormField(

@@ -13,6 +13,7 @@ dependencies:
   country_code_picker: ^1.2.2
   firebase_core: ^0.4.0+9
   firebase_analytics: ^5.0.2
+  provider: ^4.0.3
 
 dev_dependencies:
   flutter_test:
