@@ -1,10 +1,10 @@
 import 'package:http/http.dart' as http;
 
-class ApiClient {
+class APIClient {
   final http.Client client = http.Client();
   final String baseURL;
 
-  ApiClient({this.baseURL = "http://localhost:4000"});
+  APIClient({this.baseURL = "http://localhost:4000"});
 
   Future<http.Response> get(String url) {
     return client.get(url);

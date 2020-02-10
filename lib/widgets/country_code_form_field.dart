@@ -32,7 +32,7 @@ class CountryCodeFormField extends FormField<String> {
                 alignLeft: true,
                 textStyle: TextStyle(
                     fontSize: getFontSize(TextSize.md),
-                    color: CustomColors.textDark),
+                    color: NamedColors.textDark),
               ));
             });
 }

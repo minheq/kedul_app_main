@@ -14,13 +14,13 @@ class TouchableContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: CustomColors.white,
+        color: NamedColors.white,
         borderRadius: BorderRadius.all(
           Radius.circular(16.0),
         ),
         boxShadow: <BoxShadow>[
           BoxShadow(
-              color: CustomColors.shadow.withOpacity(0.2),
+              color: NamedColors.shadow.withOpacity(0.2),
               offset: Offset(0, 2),
               blurRadius: 8.0),
         ],

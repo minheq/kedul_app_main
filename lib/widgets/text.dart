@@ -44,14 +44,14 @@ double getFontSize(TextSize size) {
 Color getColor(TextColor color) {
   switch (color) {
     case TextColor.dark:
-      return CustomColors.textDark;
+      return NamedColors.textDark;
     case TextColor.muted:
-      return CustomColors.textMuted;
+      return NamedColors.textMuted;
     case TextColor.link:
-      return CustomColors.textPrimary;
+      return NamedColors.textPrimary;
     case TextColor.white:
-      return CustomColors.white;
+      return NamedColors.white;
     default:
-      return CustomColors.textDark;
+      return NamedColors.textDark;
   }
 }

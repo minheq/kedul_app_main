@@ -2,8 +2,8 @@ import 'package:kedul_app_main/theme.dart';
 import 'package:kedul_app_main/widgets/text.dart';
 import 'package:flutter/material.dart';
 
-class Button extends StatelessWidget {
-  Button({
+class PrimaryButton extends StatelessWidget {
+  PrimaryButton({
     Key key,
     @required this.onPressed,
     this.title,
@@ -17,19 +17,19 @@ class Button extends StatelessWidget {
     return Container(
       height: ControlHeight.md,
       decoration: BoxDecoration(
-        color: CustomColors.buttonPrimary,
+        color: NamedColors.buttonPrimary,
         borderRadius: BorderRadius.all(
           Radius.circular(16.0),
         ),
         boxShadow: <BoxShadow>[
           BoxShadow(
-              color: CustomColors.shadow.withOpacity(0.4),
+              color: NamedColors.shadow.withOpacity(0.4),
               offset: Offset(0, 2),
               blurRadius: 8.0),
         ],
       ),
       child: Material(
-        color: CustomColors.transparent,
+        color: NamedColors.transparent,
         borderRadius: BorderRadius.all(
           Radius.circular(16.0),
         ),

@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/theme.dart';
-import 'package:kedul_app_main/widgets/primary_button.dart';
-import 'package:kedul_app_main/widgets/screen_container.dart';
-import 'package:kedul_app_main/widgets/text.dart';
-import 'package:kedul_app_main/widgets/text_form_field.dart';
-import 'package:kedul_app_main/widgets/top_bar.dart';
 import 'package:provider/provider.dart';
 
 class ScreenArguments {
@@ -52,25 +46,17 @@ class _LoginScreenVerifyCheckState extends State<LoginVerifyCheckScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenContainer(
-        topBar: TopBar(title: "LoginVerifyCheck"),
+    return Scaffold(
         body: Form(
             key: formKey,
             child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Login verify check"),
-                    SizedBox(height: 16),
-                    CustomTextFormField(),
+                  children: <Widget>[
+                    SizedBox(height: 96),
+                    Text("Calendar Main Screen")
                   ],
-                ))),
-        persistentFooterButtons: [
-          PrimaryButton(
-            onPressed: handleLoginVerifyCheck,
-            title: 'Next',
-          )
-        ]);
+                ))));
   }
 }

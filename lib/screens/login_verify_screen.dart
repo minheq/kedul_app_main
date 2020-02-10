@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:kedul_app_main/data/auth_provider.dart';
+import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/data/phone_number.dart';
-import 'package:kedul_app_main/widgets/button.dart';
+import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
+import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/screen_container.dart';
 import 'package:kedul_app_main/widgets/text.dart';
+import 'package:kedul_app_main/widgets/top_bar.dart';
 import 'package:provider/provider.dart';
 
 class LoginVerifyScreen extends StatefulWidget {
-  LoginVerifyScreen({Key key}) : super(key: key);
+  static const String routeName = '/login_verify';
 
   @override
   _LoginScreenVerifyState createState() {
@@ -27,7 +29,7 @@ class _LoginScreenVerifyState extends State<LoginVerifyScreen> {
   );
 
   Future<void> handleLoginVerify() async {
-    AuthProvider authProvider = Provider.of(context, listen: false);
+    AuthModel authModel = Provider.of(context, listen: false);
 
     if (!formKey.currentState.validate()) {
       return;
@@ -36,8 +38,15 @@ class _LoginScreenVerifyState extends State<LoginVerifyScreen> {
     formKey.currentState.save();
 
     try {
-      String verificationID = await authProvider.loginVerify(phoneNumber);
-      print(verificationID);
+      String verificationID = await authModel.loginVerify(phoneNumber);
+
+      Navigator.pushNamed(
+        context,
+        LoginVerifyCheckScreen.routeName,
+        arguments: ScreenArguments(
+          verificationID,
+        ),
+      );
     } catch (e) {
       print(e);
     }
@@ -69,6 +78,9 @@ class _LoginScreenVerifyState extends State<LoginVerifyScreen> {
                           countryCode: value.countryCode,
                         );
                       },
+                      onFieldSubmitted: (String value) {
+                        handleLoginVerify();
+                      },
                     ),
                     SizedBox(height: 16),
                     CustomText(
@@ -76,17 +88,13 @@ class _LoginScreenVerifyState extends State<LoginVerifyScreen> {
                       color: TextColor.muted,
                       size: TextSize.sm,
                     ),
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Button(
-                          onPressed: handleLoginVerify,
-                          title: 'Next',
-                        )
-                      ],
-                    )
                   ],
-                ))));
+                ))),
+        persistentFooterButtons: [
+          PrimaryButton(
+            onPressed: handleLoginVerify,
+            title: 'Next',
+          )
+        ]);
   }
 }

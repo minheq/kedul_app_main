@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:kedul_app_main/theme.dart';
 import 'package:flutter/material.dart';
 
-Color customTextFieldCursorColor = CustomColors.textDark;
+Color customTextFieldCursorColor = NamedColors.textDark;
 InputDecoration customTextFieldInputDecoration = InputDecoration(
   border: InputBorder.none,
 );

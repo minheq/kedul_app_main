@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomColors {
-  CustomColors._();
+class NamedColors {
+  NamedColors._();
 
   /// Completely invisible.
   static const Color transparent = Color(0x00000000);

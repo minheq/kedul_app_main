@@ -9,6 +9,7 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
       {FormFieldSetter<PhoneNumber> onSaved,
       FormFieldValidator<PhoneNumber> validator,
       PhoneNumber initialValue,
+      void Function(String) onFieldSubmitted,
       bool autovalidate = false})
       : super(
             onSaved: onSaved,
@@ -19,7 +20,7 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
+                children: [
                   Flexible(
                     child: CountryCodeFormField(
                       initialValue: initialValue.countryCode,
@@ -40,6 +41,7 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                               phoneNumber: phoneNumber,
                               countryCode: state.value.countryCode));
                         },
+                        onFieldSubmitted: onFieldSubmitted,
                         keyboardType: TextInputType.phone,
                         inputFormatters: <TextInputFormatter>[
                           WhitelistingTextInputFormatter.digitsOnly
