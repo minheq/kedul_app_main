@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/theme.dart';
+import 'package:kedul_app_main/widgets/form_field_container.dart';
+import 'package:kedul_app_main/widgets/otp_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
-import 'package:kedul_app_main/widgets/screen_container.dart';
-import 'package:kedul_app_main/widgets/text.dart';
-import 'package:kedul_app_main/widgets/text_form_field.dart';
-import 'package:kedul_app_main/widgets/top_bar.dart';
 import 'package:provider/provider.dart';
 
 class ScreenArguments {
@@ -18,13 +15,13 @@ class LoginVerifyCheckScreen extends StatefulWidget {
   static const String routeName = '/login_verify_check';
 
   @override
-  _LoginScreenVerifyCheckState createState() {
-    return _LoginScreenVerifyCheckState();
+  _LoginVerifyCheckScreenState createState() {
+    return _LoginVerifyCheckScreenState();
   }
 }
 
-class _LoginScreenVerifyCheckState extends State<LoginVerifyCheckScreen> {
-  _LoginScreenVerifyCheckState();
+class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
+  _LoginVerifyCheckScreenState();
 
   final formKey = GlobalKey<FormState>();
 
@@ -52,25 +49,29 @@ class _LoginScreenVerifyCheckState extends State<LoginVerifyCheckScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenContainer(
-        topBar: TopBar(title: "LoginVerifyCheck"),
+    return Scaffold(
+        appBar: AppBar(),
         body: Form(
             key: formKey,
             child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Login verify check"),
+                    Text(
+                      "Verify your phone number",
+                      style: Theme.of(context).textTheme.headline1,
+                    ),
+                    Text("We have sent verification code to phone number"),
                     SizedBox(height: 16),
-                    CustomTextFormField(),
+                    FormFieldContainer(
+                      labelText: "Verification code",
+                      child: OTPFormField(),
+                    )
                   ],
                 ))),
         persistentFooterButtons: [
-          PrimaryButton(
-            onPressed: handleLoginVerifyCheck,
-            title: 'Next',
-          )
+          PrimaryButton(onPressed: handleLoginVerifyCheck, title: "Next"),
         ]);
   }
 }

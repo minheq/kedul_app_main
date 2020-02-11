@@ -1,52 +1,56 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
-import 'package:kedul_app_main/data/phone_number.dart';
-import 'package:kedul_app_main/widgets/country_code_form_field.dart';
 import 'package:flutter/material.dart';
-import 'package:kedul_app_main/widgets/text_form_field.dart';
+import 'package:kedul_app_main/data/phone_number.dart';
 
 class PhoneNumberFormField extends FormField<PhoneNumber> {
-  PhoneNumberFormField(
-      {FormFieldSetter<PhoneNumber> onSaved,
-      FormFieldValidator<PhoneNumber> validator,
-      PhoneNumber initialValue,
-      void Function(String) onFieldSubmitted,
-      bool autovalidate = false})
-      : super(
+  PhoneNumberFormField({
+    FormFieldSetter<PhoneNumber> onSaved,
+    FormFieldValidator<PhoneNumber> validator,
+    PhoneNumber initialValue,
+    void Function(String) onFieldSubmitted,
+  }) : super(
             onSaved: onSaved,
             validator: validator,
             initialValue: initialValue,
-            autovalidate: autovalidate,
             builder: (FormFieldState<PhoneNumber> state) {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
-                    child: CountryCodeFormField(
-                      initialValue: initialValue.countryCode,
-                      onChanged: (countryCode) {
-                        state.didChange(PhoneNumber(
-                            phoneNumber: state.value.phoneNumber,
-                            countryCode: countryCode));
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    flex: 2,
-                    child: CustomTextFormField(
-                        initialValue: initialValue.phoneNumber,
-                        onChanged: (phoneNumber) {
+                    child: CountryCodePicker(
+                        onChanged: (countryCode) {
                           state.didChange(PhoneNumber(
-                              phoneNumber: phoneNumber,
-                              countryCode: state.value.countryCode));
+                              phoneNumber: state.value.phoneNumber,
+                              countryCode: countryCode.code));
                         },
-                        onFieldSubmitted: onFieldSubmitted,
-                        keyboardType: TextInputType.phone,
-                        inputFormatters: <TextInputFormatter>[
-                          WhitelistingTextInputFormatter.digitsOnly
-                        ]),
+                        padding: EdgeInsets.only(left: 8.0),
+                        initialSelection: 'VN',
+                        favorite: ['VN'],
+                        showCountryOnly: false,
+                        alignLeft: true),
                   ),
+                  SizedBox(
+                      height: 32,
+                      child: VerticalDivider(
+                        color: Colors.black45,
+                        width: 1,
+                      )),
+                  Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                          initialValue: initialValue.phoneNumber,
+                          onChanged: (phoneNumber) {
+                            state.didChange(PhoneNumber(
+                                phoneNumber: phoneNumber,
+                                countryCode: state.value.countryCode));
+                          },
+                          onFieldSubmitted: onFieldSubmitted,
+                          keyboardType: TextInputType.phone,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ])),
                 ],
               );
             });

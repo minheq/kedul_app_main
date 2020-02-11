@@ -25,10 +25,7 @@ class TouchableContainer extends StatelessWidget {
               blurRadius: 8.0),
         ],
       ),
-      child: Padding(
-        padding: EdgeInsets.only(left: 16, right: 16),
-        child: child,
-      ),
+      child: child,
     );
   }
 }

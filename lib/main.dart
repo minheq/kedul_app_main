@@ -41,7 +41,40 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        theme: ThemeData(),
+        theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              elevation: 0.0,
+            ),
+            primaryColor: Colors.white,
+            buttonTheme: ButtonThemeData(
+              buttonColor: Colors.teal[700],
+              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
+              height: 48.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+            ),
+            textSelectionColor: Colors.red,
+            textSelectionHandleColor: Colors.red,
+            cursorColor: Colors.red,
+            textTheme: TextTheme(
+              headline1: TextStyle(fontSize: 16.0),
+              headline2: TextStyle(fontSize: 16.0),
+              headline3: TextStyle(fontSize: 16.0),
+              headline4: TextStyle(fontSize: 16.0),
+              headline5: TextStyle(fontSize: 16.0),
+              headline6: TextStyle(fontSize: 16.0),
+              subtitle1: TextStyle(fontSize: 16.0),
+              subtitle2: TextStyle(fontSize: 16.0),
+              bodyText1: TextStyle(fontSize: 13.0),
+              bodyText2: TextStyle(fontSize: 16.0), // Default
+              caption: TextStyle(fontSize: 16.0),
+              button: TextStyle(fontSize: 16.0),
+              overline: TextStyle(fontSize: 16.0),
+            ),
+            scaffoldBackgroundColor: Colors.white,
+            inputDecorationTheme: InputDecorationTheme(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 16.0))),
         navigatorObservers: <NavigatorObserver>[observer],
         initialRoute: LoginVerifyScreen.routeName,
         routes: {
