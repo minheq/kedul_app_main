@@ -18,7 +18,10 @@ class PrimaryButton extends StatelessWidget {
         child: TouchableContainer(
             child: RaisedButton(
           onPressed: onPressed,
-          child: Text(title),
+          child: Text(
+            title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           padding: Theme.of(context).buttonTheme.padding,
         )));
   }

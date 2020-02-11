@@ -20,15 +20,26 @@ class FormFieldContainer extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        if (labelText != null) Text(labelText),
-        if (labelText != null) SizedBox(height: 4),
-        if (hintText != null) Text(hintText),
-        if (hintText != null) SizedBox(height: 4),
+        if (labelText != null)
+          Text(
+            labelText,
+            style: TextStyle(color: NamedColors.textMuted),
+          ),
+        if (labelText != null) SizedBox(height: 4.0),
         TouchableContainer(
           child: SizedBox(height: ControlHeight.md, child: child),
         ),
+        if (hintText != null) SizedBox(height: 16.0),
+        if (hintText != null)
+          Text(
+            hintText,
+            style: Theme.of(context)
+                .textTheme
+                .caption
+                .copyWith(color: NamedColors.textMuted),
+          ),
+        if (errorText != null) SizedBox(height: 16.0),
         if (errorText != null) Text(errorText),
-        if (errorText != null) SizedBox(height: 4),
       ],
     );
   }

@@ -17,6 +17,7 @@ class OTPFormField extends FormField<String> {
                     state.didChange(otp);
                   },
                   keyboardType: TextInputType.number,
+                  // cursorColor: Theme.of(state.context).cursorColor,
                   inputFormatters: <TextInputFormatter>[
                     WhitelistingTextInputFormatter.digitsOnly
                   ]);

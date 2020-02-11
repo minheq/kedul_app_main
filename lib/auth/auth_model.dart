@@ -3,20 +3,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/auth/user_model.dart';
-import 'package:kedul_app_main/data/phone_number.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/api/http_response_utils.dart';
 
 class LoginVerifyBody {
-  LoginVerifyBody({this.phoneNumber});
+  LoginVerifyBody({this.phoneNumber, this.countryCode});
 
-  PhoneNumber phoneNumber;
+  String phoneNumber;
+  String countryCode;
 
   String toJson() {
     var mapData = new Map();
 
-    mapData['phoneNumber'] = phoneNumber.phoneNumber;
-    mapData['countryCode'] = phoneNumber.countryCode;
+    mapData['phoneNumber'] = phoneNumber;
+    mapData['countryCode'] = countryCode;
 
     String body = json.encode(mapData);
 
@@ -55,8 +55,10 @@ class AuthModel extends ChangeNotifier {
   }
 
   // Returns verificationID string use for further confirmation
-  Future<String> loginVerify(PhoneNumber phoneNumber) async {
-    String body = LoginVerifyBody(phoneNumber: phoneNumber).toJson();
+  Future<String> loginVerify(String phoneNumber, String countryCode) async {
+    String body =
+        LoginVerifyBody(phoneNumber: phoneNumber, countryCode: countryCode)
+            .toJson();
 
     final response = await apiClient.post('/login_verify', body);
 

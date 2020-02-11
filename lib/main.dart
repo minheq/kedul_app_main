@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/auth/user_model.dart';
@@ -7,6 +8,7 @@ import 'package:kedul_app_main/screens/login_verify_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:kedul_app_main/theme.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -53,24 +55,25 @@ class MyApp extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
             ),
-            textSelectionColor: Colors.red,
-            textSelectionHandleColor: Colors.red,
-            cursorColor: Colors.red,
             textTheme: TextTheme(
-              headline1: TextStyle(fontSize: 16.0),
-              headline2: TextStyle(fontSize: 16.0),
-              headline3: TextStyle(fontSize: 16.0),
-              headline4: TextStyle(fontSize: 16.0),
-              headline5: TextStyle(fontSize: 16.0),
-              headline6: TextStyle(fontSize: 16.0),
-              subtitle1: TextStyle(fontSize: 16.0),
-              subtitle2: TextStyle(fontSize: 16.0),
-              bodyText1: TextStyle(fontSize: 13.0),
-              bodyText2: TextStyle(fontSize: 16.0), // Default
-              caption: TextStyle(fontSize: 16.0),
-              button: TextStyle(fontSize: 16.0),
-              overline: TextStyle(fontSize: 16.0),
+              headline1:
+                  TextStyle(fontSize: 31.25, fontWeight: FontWeight.bold),
+              headline2: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+              headline3: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              bodyText2: TextStyle(fontSize: 16.0),
+              caption: TextStyle(fontSize: 12.8),
+              button: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+              overline: TextStyle(),
+            ).apply(
+                bodyColor: NamedColors.textDark,
+                displayColor: NamedColors.textDark),
+            // Cursor color for iOS
+            cupertinoOverrideTheme: CupertinoThemeData(
+              primaryColor: NamedColors.textDark,
             ),
+            // Cursor color for Android, Fuschia
+            cursorColor: NamedColors.textDark,
+            fontFamily: 'Roboto',
             scaffoldBackgroundColor: Colors.white,
             inputDecorationTheme: InputDecorationTheme(
                 border: InputBorder.none,

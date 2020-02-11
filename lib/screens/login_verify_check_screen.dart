@@ -7,8 +7,10 @@ import 'package:provider/provider.dart';
 
 class ScreenArguments {
   final String verificationID;
+  final String phoneNumber;
+  final String countryCode;
 
-  ScreenArguments(this.verificationID);
+  ScreenArguments(this.verificationID, this.phoneNumber, this.countryCode);
 }
 
 class LoginVerifyCheckScreen extends StatefulWidget {
@@ -49,6 +51,8 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
         appBar: AppBar(),
         body: Form(
@@ -59,11 +63,13 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Verify your phone number",
+                      'Enter verification code.',
                       style: Theme.of(context).textTheme.headline1,
                     ),
-                    Text("We have sent verification code to phone number"),
                     SizedBox(height: 16),
+                    Text(
+                        "We have sent verification code to ${args.phoneNumber}"),
+                    SizedBox(height: 56),
                     FormFieldContainer(
                       labelText: "Verification code",
                       child: OTPFormField(),
@@ -72,6 +78,7 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
                 ))),
         persistentFooterButtons: [
           PrimaryButton(onPressed: handleLoginVerifyCheck, title: "Next"),
+          SizedBox()
         ]);
   }
 }

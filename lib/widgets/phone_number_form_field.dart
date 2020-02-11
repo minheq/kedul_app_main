@@ -1,7 +1,13 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:kedul_app_main/data/phone_number.dart';
+
+class PhoneNumber {
+  PhoneNumber({@required this.phoneNumber, @required this.countryCode});
+
+  String phoneNumber;
+  String countryCode;
+}
 
 class PhoneNumberFormField extends FormField<PhoneNumber> {
   PhoneNumberFormField({
@@ -19,6 +25,7 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
+                    flex: 5,
                     child: CountryCodePicker(
                         onChanged: (countryCode) {
                           state.didChange(PhoneNumber(
@@ -38,7 +45,7 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                         width: 1,
                       )),
                   Expanded(
-                      flex: 2,
+                      flex: 13,
                       child: TextFormField(
                           initialValue: initialValue.phoneNumber,
                           onChanged: (phoneNumber) {
@@ -46,6 +53,7 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                                 phoneNumber: phoneNumber,
                                 countryCode: state.value.countryCode));
                           },
+                          cursorColor: Theme.of(state.context).cursorColor,
                           onFieldSubmitted: onFieldSubmitted,
                           keyboardType: TextInputType.phone,
                           inputFormatters: [
