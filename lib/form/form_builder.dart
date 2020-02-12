@@ -4,14 +4,21 @@ class FormBuilderHelpers<T> {
   FormBuilderHelpers({this.setSubmitting, this.setFormError});
 
   final Function(bool isSubmitting) setSubmitting;
-  final Function(String error) setFormError;
+  final Function(String status) setFormError;
 }
 
 class FormBuilder<T extends Object> extends StatefulWidget {
+  /// InitialValues are initial values for the form values
   final T initialValues;
+
+  /// OnSubmit is a call back for handleSubmit
   final void Function(T values, FormBuilderHelpers<T> state) onSubmit;
+
+  /// Builder to build widgets using the form state
   final Widget Function(BuildContext context, FormBuilderState<T> state)
       builder;
+
+  /// Validate is called when submitting the form. Sets errors if it fails some validation
   final Map<String, String> Function(T values) validate;
 
   FormBuilder(
@@ -40,11 +47,17 @@ class FormBuilderState<T> {
 
   /// handleReset resets form values to initial values
   void Function() handleReset;
+
+  /// isSubmitting indicates that the form is submitted and awaits some response
   bool isSubmitting;
+
+  /// values is the stored form values
   T values;
 
-  /// Top-level error that can be whatever string you want. For example, backend errors after submitting the form.
-  String error;
+  /// status of the form can be anything. For example, backend errors after submitting the form.
+  String status;
+
+  /// errors is a map of fields to error strings
   Map<String, String> errors;
 }
 
@@ -59,9 +72,9 @@ class _FormBuilderState<T> extends State<FormBuilder<T>> {
     });
   }
 
-  void handleSetFormError(String error) {
+  void handleSetStatus(String status) {
     setState(() {
-      _state.error = error;
+      _state.status = status;
     });
   }
 
@@ -86,8 +99,7 @@ class _FormBuilderState<T> extends State<FormBuilder<T>> {
     widget.onSubmit(
         _state.values,
         FormBuilderHelpers(
-            setFormError: handleSetFormError,
-            setSubmitting: handleSetSubmitting));
+            setFormError: handleSetStatus, setSubmitting: handleSetSubmitting));
 
     setState(() {
       _state.errors = Map();

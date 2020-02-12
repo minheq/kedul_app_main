@@ -93,9 +93,9 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
                         ),
                       ),
                       SizedBox(height: 4),
-                      if (form.error != null)
+                      if (form.status != null)
                         Text(
-                          form.error,
+                          form.status,
                           style: TextStyle(color: Colors.redAccent),
                         ),
                     ],
