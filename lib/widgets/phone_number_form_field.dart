@@ -14,7 +14,8 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
     FormFieldSetter<PhoneNumber> onSaved,
     FormFieldValidator<PhoneNumber> validator,
     PhoneNumber initialValue,
-    void Function(String) onFieldSubmitted,
+    ValueChanged<PhoneNumber> onChanged,
+    void Function(PhoneNumber) onFieldSubmitted,
   }) : super(
             onSaved: onSaved,
             validator: validator,
@@ -28,6 +29,12 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                     flex: 5,
                     child: CountryCodePicker(
                         onChanged: (countryCode) {
+                          if (onChanged != null) {
+                            onChanged(PhoneNumber(
+                                phoneNumber: state.value.phoneNumber,
+                                countryCode: countryCode.code));
+                          }
+
                           state.didChange(PhoneNumber(
                               phoneNumber: state.value.phoneNumber,
                               countryCode: countryCode.code));
@@ -49,12 +56,21 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                       child: TextFormField(
                           initialValue: initialValue.phoneNumber,
                           onChanged: (phoneNumber) {
+                            if (onChanged != null) {
+                              onChanged(PhoneNumber(
+                                  phoneNumber: phoneNumber,
+                                  countryCode: state.value.countryCode));
+                            }
                             state.didChange(PhoneNumber(
                                 phoneNumber: phoneNumber,
                                 countryCode: state.value.countryCode));
                           },
                           cursorColor: Theme.of(state.context).cursorColor,
-                          onFieldSubmitted: onFieldSubmitted,
+                          onFieldSubmitted: (phoneNumber) {
+                            onFieldSubmitted(PhoneNumber(
+                                phoneNumber: state.value.phoneNumber,
+                                countryCode: state.value.countryCode));
+                          },
                           keyboardType: TextInputType.phone,
                           inputFormatters: [
                             WhitelistingTextInputFormatter.digitsOnly

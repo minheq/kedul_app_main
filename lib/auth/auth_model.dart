@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/auth/user_model.dart';
 import 'package:kedul_app_main/api/api_client.dart';
@@ -36,6 +37,36 @@ class LoginVerifyData {
   }
 }
 
+class LoginVerifyCheckBody {
+  LoginVerifyCheckBody({this.verificationID, this.code});
+
+  String verificationID;
+  String code;
+
+  String toJson() {
+    var mapData = new Map();
+
+    mapData['verificationID'] = verificationID;
+    mapData['code'] = code;
+
+    String body = json.encode(mapData);
+
+    return body;
+  }
+}
+
+class LoginVerifyCheckData {
+  final String accessToken;
+
+  LoginVerifyCheckData({this.accessToken});
+
+  factory LoginVerifyCheckData.fromJson(Map<String, dynamic> json) {
+    return LoginVerifyCheckData(
+      accessToken: json['accessToken'],
+    );
+  }
+}
+
 class AuthModel extends ChangeNotifier {
   UserModel userModel;
   APIClient apiClient;
@@ -63,7 +94,9 @@ class AuthModel extends ChangeNotifier {
     final response = await apiClient.post('/login_verify', body);
 
     if (isErrorResponse(response)) {
-      throw getErrorMessage(response);
+      final data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
     }
 
     final data = LoginVerifyData.fromJson(json.decode(response.body));
@@ -71,8 +104,22 @@ class AuthModel extends ChangeNotifier {
     return data.verificationID;
   }
 
-  Future<String> loginVerifyCheck(String verificationID, String otpCode) async {
-    return '';
+  Future<String> loginVerifyCheck(String verificationID, String code) async {
+    String body =
+        LoginVerifyCheckBody(verificationID: verificationID, code: code)
+            .toJson();
+
+    final response = await apiClient.post('/login_verify_check', body);
+
+    if (isErrorResponse(response)) {
+      final data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    final data = LoginVerifyCheckData.fromJson(json.decode(response.body));
+
+    return data.accessToken;
   }
 
   void logOut() {}

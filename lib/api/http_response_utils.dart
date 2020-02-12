@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 bool isBadRequest(http.Response response) {
@@ -42,18 +41,16 @@ bool isErrorResponse(http.Response response) {
 
 class ErrorResponse {
   final String message;
+  final String code;
+  final String docURL;
 
-  ErrorResponse({this.message});
+  ErrorResponse({this.message, this.code, this.docURL});
 
   factory ErrorResponse.fromJson(Map<String, dynamic> json) {
     return ErrorResponse(
       message: json['message'],
+      code: json['code'],
+      docURL: json['doc_url'],
     );
   }
-}
-
-String getErrorMessage(http.Response response) {
-  final data = ErrorResponse.fromJson(json.decode(response.body));
-
-  return data.message;
 }

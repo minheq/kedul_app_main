@@ -39,7 +39,11 @@ class FormFieldContainer extends StatelessWidget {
                 .copyWith(color: NamedColors.textMuted),
           ),
         if (errorText != null) SizedBox(height: 16.0),
-        if (errorText != null) Text(errorText),
+        if (errorText != null)
+          Text(
+            errorText,
+            style: TextStyle(color: Colors.redAccent),
+          ),
       ],
     );
   }

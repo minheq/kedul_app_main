@@ -7,6 +7,7 @@ class OTPFormField extends FormField<String> {
     FormFieldValidator<String> validator,
     String initialValue,
     ValueChanged<String> onChanged,
+    void Function(String) onFieldSubmitted,
   }) : super(
             onSaved: onSaved,
             validator: validator,
@@ -16,8 +17,8 @@ class OTPFormField extends FormField<String> {
                   onChanged: (otp) {
                     state.didChange(otp);
                   },
+                  onFieldSubmitted: onFieldSubmitted,
                   keyboardType: TextInputType.number,
-                  // cursorColor: Theme.of(state.context).cursorColor,
                   inputFormatters: <TextInputFormatter>[
                     WhitelistingTextInputFormatter.digitsOnly
                   ]);

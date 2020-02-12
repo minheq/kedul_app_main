@@ -3,12 +3,13 @@ import 'package:kedul_app_main/widgets/touchable_container.dart';
 
 class PrimaryButton extends StatelessWidget {
   PrimaryButton({
-    Key key,
     this.onPressed,
     this.title,
+    this.isSubmitting = false,
   });
 
   final VoidCallback onPressed;
+  final bool isSubmitting;
   final String title;
 
   @override
@@ -17,9 +18,9 @@ class PrimaryButton extends StatelessWidget {
         height: Theme.of(context).buttonTheme.height,
         child: TouchableContainer(
             child: RaisedButton(
-          onPressed: onPressed,
+          onPressed: isSubmitting ? null : onPressed,
           child: Text(
-            title,
+            isSubmitting ? "Submitting" : title,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           padding: Theme.of(context).buttonTheme.padding,

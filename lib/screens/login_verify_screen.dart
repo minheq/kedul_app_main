@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
+import 'package:kedul_app_main/form/form_builder.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
+
+class LoginVerifyFormValue {
+  LoginVerifyFormValue({this.phoneNumber, this.countryCode});
+
+  String phoneNumber;
+  String countryCode;
+}
 
 class LoginVerifyScreen extends StatefulWidget {
   static const String routeName = '/login_verify';
@@ -18,76 +27,86 @@ class LoginVerifyScreen extends StatefulWidget {
 class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
   _LoginVerifyScreenState();
 
-  final formKey = GlobalKey<FormState>();
-
-  String phoneNumber = '';
-  String countryCode = 'VN';
-
-  Future<void> handleLoginVerify() async {
-    AuthModel authModel = Provider.of(context, listen: false);
-
-    if (!formKey.currentState.validate()) {
-      return;
-    }
-
-    formKey.currentState.save();
-
-    try {
-      String verificationID =
-          await authModel.loginVerify(phoneNumber, countryCode);
-
-      Navigator.pushNamed(
-        context,
-        LoginVerifyCheckScreen.routeName,
-        arguments: ScreenArguments(verificationID, phoneNumber, countryCode),
-      );
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Form(
-            key: formKey,
-            child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(height: 56),
-                    Image(
-                      image: AssetImage('assets/logo.png'),
-                      width: 104,
-                    ),
-                    SizedBox(height: 80),
-                    Text(
-                      'Verify your phone number to continue.',
-                      style: Theme.of(context).textTheme.headline1,
-                    ),
-                    SizedBox(height: 56),
-                    FormFieldContainer(
-                      labelText: "Phone number",
-                      hintText:
-                          "By verifying phone number, you agree to our Terms of Service and Privacy Policy",
-                      child: PhoneNumberFormField(
-                        initialValue: PhoneNumber(
-                            phoneNumber: phoneNumber, countryCode: countryCode),
-                        onSaved: (value) {
-                          phoneNumber = value.phoneNumber;
-                          countryCode = value.countryCode;
-                        },
-                        onFieldSubmitted: (String value) {
-                          handleLoginVerify();
-                        },
+    return FormBuilder<LoginVerifyFormValue>(
+        onSubmit: (value, helpers) async {
+          AuthModel authModel = Provider.of(context, listen: false);
+
+          try {
+            String verificationID = await authModel.loginVerify(
+                value.phoneNumber, value.countryCode);
+
+            Navigator.pushNamed(
+              context,
+              LoginVerifyCheckScreen.routeName,
+              arguments: ScreenArguments(
+                  verificationID, value.phoneNumber, value.countryCode),
+            );
+          } on APIErrorException catch (e) {
+            setState(() {
+              helpers.setFormError(e.message);
+            });
+          } catch (e) {
+            // TODO: add error reporting
+            print(e);
+          } finally {
+            helpers.setSubmitting(false);
+          }
+        },
+        initialValues: LoginVerifyFormValue(phoneNumber: '', countryCode: 'VN'),
+        builder: (context, form) {
+          return Scaffold(
+              body: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(height: 56),
+                      Image(
+                        image: AssetImage('assets/logo.png'),
+                        width: 104,
                       ),
-                    ),
-                  ],
-                ))),
-        persistentFooterButtons: [
-          PrimaryButton(onPressed: handleLoginVerify, title: "Next"),
-          SizedBox()
-        ]);
+                      SizedBox(height: 80),
+                      Text(
+                        'Verify your phone number to continue.',
+                        style: Theme.of(context).textTheme.headline1,
+                      ),
+                      SizedBox(height: 56),
+                      FormFieldContainer(
+                        labelText: "Phone number",
+                        hintText:
+                            "By verifying phone number, you agree to our Terms of Service and Privacy Policy",
+                        errorText: form.errors['phoneNumber'],
+                        child: PhoneNumberFormField(
+                          initialValue: PhoneNumber(
+                              phoneNumber: form.values.phoneNumber,
+                              countryCode: form.values.countryCode),
+                          onChanged: (value) {
+                            form.values.phoneNumber = value.phoneNumber;
+                            form.values.countryCode = value.countryCode;
+                          },
+                          onFieldSubmitted: (PhoneNumber value) {
+                            form.handleSubmit();
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      if (form.error != null)
+                        Text(
+                          form.error,
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                    ],
+                  )),
+              persistentFooterButtons: [
+                PrimaryButton(
+                    onPressed: form.handleSubmit,
+                    title: "Next",
+                    isSubmitting: form.isSubmitting),
+                SizedBox()
+              ]);
+        });
   }
 }

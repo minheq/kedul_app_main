@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/otp_form_field.dart';
@@ -26,6 +27,7 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
   _LoginVerifyCheckScreenState();
 
   final formKey = GlobalKey<FormState>();
+  String code = '';
 
   Future<void> handleLoginVerifyCheck() async {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
@@ -43,8 +45,8 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
 
     try {
       String accessToken =
-          await authModel.loginVerifyCheck(args.verificationID, '');
-    } catch (e) {
+          await authModel.loginVerifyCheck(args.verificationID, code);
+    } on APIErrorException catch (e) {} catch (e) {
       print(e);
     }
   }
@@ -72,7 +74,15 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
                     SizedBox(height: 56),
                     FormFieldContainer(
                       labelText: "Verification code",
-                      child: OTPFormField(),
+                      child: OTPFormField(
+                        initialValue: code,
+                        onSaved: (newValue) {
+                          code = newValue;
+                        },
+                        onFieldSubmitted: (String value) {
+                          handleLoginVerifyCheck();
+                        },
+                      ),
                     )
                   ],
                 ))),
