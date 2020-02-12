@@ -57,7 +57,7 @@ class FormBuilderState<T> {
   /// status of the form can be anything. For example, backend errors after submitting the form.
   String status;
 
-  /// errors is a map of fields to error strings
+  /// Errors is a map of fields to error strings
   Map<String, String> errors;
 }
 
