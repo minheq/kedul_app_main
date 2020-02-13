@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
+import 'package:kedul_app_main/theme.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/otp_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
@@ -31,7 +32,7 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
 
   Future<void> handleLoginVerifyCheck() async {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
-    AuthModel authModel = Provider.of(context, listen: false);
+    AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
 
     if (args.verificationID == null) {
       return;
@@ -54,6 +55,7 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
   @override
   Widget build(BuildContext context) {
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+    ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
         appBar: AppBar(),
@@ -66,7 +68,7 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
                   children: [
                     Text(
                       'Enter verification code.',
-                      style: Theme.of(context).textTheme.headline1,
+                      style: theme.textStyles.headline1,
                     ),
                     SizedBox(height: 16),
                     Text(

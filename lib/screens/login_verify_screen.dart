@@ -4,6 +4,7 @@ import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/form/form_builder.dart';
 import 'package:kedul_app_main/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
+import 'package:kedul_app_main/theme.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
@@ -34,11 +35,11 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
 
     return FormBuilder<LoginVerifyFormValue>(
         onSubmit: (value, helpers) async {
-          AuthModel authModel = Provider.of(context, listen: false);
+          AuthModel auth = Provider.of<AuthModel>(context, listen: false);
 
           try {
-            String verificationID = await authModel.loginVerify(
-                value.phoneNumber, value.countryCode);
+            String verificationID =
+                await auth.loginVerify(value.phoneNumber, value.countryCode);
 
             Navigator.pushNamed(
               context,
@@ -59,6 +60,8 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
         },
         initialValues: LoginVerifyFormValue(phoneNumber: '', countryCode: 'VN'),
         builder: (context, form) {
+          ThemeModel theme = Provider.of<ThemeModel>(context);
+
           return Scaffold(
               body: Padding(
                   padding:
@@ -74,7 +77,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
                       SizedBox(height: 80),
                       Text(
                         l10n.loginVerifyScreenTitle,
-                        style: Theme.of(context).textTheme.headline1,
+                        style: theme.textStyles.headline1,
                       ),
                       SizedBox(height: 56),
                       FormFieldContainer(
@@ -97,7 +100,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
                       if (form.status != null)
                         Text(
                           form.status,
-                          style: TextStyle(color: Colors.redAccent),
+                          style: TextStyle(color: theme.colors.textError),
                         ),
                     ],
                   )),

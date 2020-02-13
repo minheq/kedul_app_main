@@ -1,24 +1,53 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class NamedColors {
-  NamedColors._();
-
-  /// Completely invisible.
-  static const Color transparent = Color(0x00000000);
-  static const Color white = Color(0xffffffff);
-
-  static const Color buttonPrimary = Color(0xff14866E);
-  static const Color buttonPrimaryText = Color(0xffffffff);
-
-  static const Color textDark = Color(0xff303030);
-  static const Color textMuted = Color(0xff757575);
-  static const Color textPrimary = Palette.green900;
-
-  static const Color shadow = Color(0xff757575);
+class ThemeModel extends ChangeNotifier {
+  final ThemeColors colors = ThemeColors();
+  final ThemeUtilityStyles utilityStyles = ThemeUtilityStyles();
+  final ThemeTextStyles textStyles = ThemeTextStyles();
 }
 
-class Palette {
-  Palette._();
+class ThemeColors {
+  final Color buttonPrimary = MyAppPalette.green700;
+
+  final Color textDefault = MyAppPalette.grey900;
+  final Color textMuted = MyAppPalette.grey700;
+  final Color textPrimary = MyAppPalette.grey900;
+  final Color textError = MyAppPalette.red700;
+
+  final Color border = MyAppPalette.grey700;
+  final Color content = MyAppPalette.white;
+  final Color background = MyAppPalette.white;
+
+  final BoxShadow shadow = BoxShadow(
+      color: MyAppPalette.grey700.withOpacity(0.2),
+      offset: Offset(0, 2),
+      blurRadius: 8.0);
+}
+
+class ThemeUtilityStyles {
+  final double controlHeight = 56.0;
+
+  final double borderRadius = 16.0;
+}
+
+class ThemeTextStyles {
+  final String fontFamily = 'Roboto';
+
+  final TextStyle headline1 =
+      TextStyle(fontSize: 31.25, fontWeight: FontWeight.bold);
+  final TextStyle headline2 =
+      TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold);
+  final TextStyle headline3 =
+      TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold);
+  final TextStyle bodyText2 = TextStyle(fontSize: 16.0);
+  final TextStyle caption = TextStyle(fontSize: 12.8);
+  final TextStyle button =
+      TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal);
+}
+
+class MyAppPalette {
+  MyAppPalette._();
 
   static const Color green50 = Color(0xffEFFCF6);
   static const Color green100 = Color(0xffC6F7E2);
@@ -31,16 +60,16 @@ class Palette {
   static const Color green800 = Color(0xff0C6B58);
   static const Color green900 = Color(0xff014D40);
 
-  static const Color neutral50 = Color(0xffF0F4F8);
-  static const Color neutral100 = Color(0xffD9E2EC);
-  static const Color neutral200 = Color(0xffBCCCDC);
-  static const Color neutral300 = Color(0xff9FB3C8);
-  static const Color neutral400 = Color(0xff829AB1);
-  static const Color neutral500 = Color(0xff5D7999);
-  static const Color neutral600 = Color(0xff486581);
-  static const Color neutral700 = Color(0xff334E68);
-  static const Color neutral800 = Color(0xff243B53);
-  static const Color neutral900 = Color(0xff102A43);
+  static const Color grey50 = Color(0xffFAFAFA);
+  static const Color grey100 = Color(0xffF5F5F5);
+  static const Color grey200 = Color(0xffEEEEEE);
+  static const Color grey300 = Color(0xffE0E0E0);
+  static const Color grey400 = Color(0xffBDBDBD);
+  static const Color grey500 = Color(0xff9E9E9E);
+  static const Color grey600 = Color(0xff757575);
+  static const Color grey700 = Color(0xff616161);
+  static const Color grey800 = Color(0xff424242);
+  static const Color grey900 = Color(0xff212121);
 
   static const Color blue50 = Color(0xffDCEEFB);
   static const Color blue100 = Color(0xffB6E0FE);
@@ -85,14 +114,9 @@ class Palette {
   static const Color yellow700 = Color(0xffA27C1A);
   static const Color yellow800 = Color(0xff7C5E10);
   static const Color yellow900 = Color(0xff513C06);
-}
 
-/// Control widgets are ones that the user interact with like pickers, inputs, buttons, checkboxes, sliders.
-/// ControlHeight helps maintaining height consistency between those widgets.
-class ControlHeight {
-  ControlHeight._();
+  static const Color black = Color(0xff000000);
+  static const Color white = Color(0xffffffff);
 
-  static const double sm = 40.0;
-  static const double md = 48.0;
-  static const double xl = 56.0;
+  static const Color transparent = Color(0x00000000);
 }

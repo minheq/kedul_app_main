@@ -5,7 +5,7 @@
     "type": "text",
     "placeholders": {}
   },
-  "loginVerifyScreenAcceptTerms": "Khi xác nhận số điện thoại, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của chúng tôi.",
+  "loginVerifyScreenAcceptTerms": "Khi xác nhận số điện thoại, bạn đồng ý với điều khoản dịch vụ và chính sách bảo mật của chúng tôi.",
   "@loginVerifyScreenAcceptTerms": {
     "type": "text",
     "placeholders": {}
