@@ -1,0 +1,23 @@
+{
+  "@@last_modified": "2020-02-13T16:17:44.878547",
+  "loginVerifyScreenTitle": "Xác nhận số điện thoại của bạn để tiếp tục.",
+  "@loginVerifyScreenTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "loginVerifyScreenAcceptTerms": "Khi xác nhận số điện thoại, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của chúng tôi.",
+  "@loginVerifyScreenAcceptTerms": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonPhoneNumber": "Số điện thoại",
+  "@commonPhoneNumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonNext": "Tiếp tục",
+  "@commonNext": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "@@last_modified": "2020-02-13T16:17:44.878547",
+  "loginVerifyScreenTitle": "Verify your phone number to continue.",
+  "@loginVerifyScreenTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "loginVerifyScreenAcceptTerms": "By verifying phone number, you agree to our Terms of Service and Privacy Policy",
+  "@loginVerifyScreenAcceptTerms": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonPhoneNumber": "Phone number",
+  "@commonPhoneNumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonNext": "Next",
+  "@commonNext": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

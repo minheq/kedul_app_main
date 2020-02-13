@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/form/form_builder.dart';
+import 'package:kedul_app_main/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
@@ -29,6 +30,8 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = MyAppLocalization.of(context);
+
     return FormBuilder<LoginVerifyFormValue>(
         onSubmit: (value, helpers) async {
           AuthModel authModel = Provider.of(context, listen: false);
@@ -70,15 +73,13 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
                       ),
                       SizedBox(height: 80),
                       Text(
-                        'Verify your phone number to continue.',
+                        l10n.loginVerifyScreenTitle,
                         style: Theme.of(context).textTheme.headline1,
                       ),
                       SizedBox(height: 56),
                       FormFieldContainer(
-                        labelText: "Phone number",
-                        hintText:
-                            "By verifying phone number, you agree to our Terms of Service and Privacy Policy",
-                        errorText: form.errors['phoneNumber'],
+                        labelText: l10n.commonPhoneNumber,
+                        hintText: l10n.loginVerifyScreenAcceptTerms,
                         child: PhoneNumberFormField(
                           initialValue: PhoneNumber(
                               phoneNumber: form.values.phoneNumber,
@@ -103,7 +104,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
               persistentFooterButtons: [
                 PrimaryButton(
                     onPressed: form.handleSubmit,
-                    title: "Next",
+                    title: l10n.commonNext,
                     isSubmitting: form.isSubmitting),
                 SizedBox()
               ]);

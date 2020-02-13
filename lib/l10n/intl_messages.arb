@@ -1,0 +1,24 @@
+{
+  "@@last_modified": "2020-02-13T19:22:11.257336",
+  "commonNext": "Hello World",
+  "@commonNext": {
+    "description": "Title for the Demo application",
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonPhoneNumber": "Phone number",
+  "@commonPhoneNumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "loginVerifyScreenTitle": "Verify your phone number to continue.",
+  "@loginVerifyScreenTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "loginVerifyScreenAcceptTerms": "By verifying phone number, you agree to our Terms of Service and Privacy Policy",
+  "@loginVerifyScreenAcceptTerms": {
+    "type": "text",
+    "placeholders": {}
+  }
+}

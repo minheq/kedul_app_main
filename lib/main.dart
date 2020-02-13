@@ -3,6 +3,7 @@ import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/auth/user_model.dart';
 import 'package:kedul_app_main/auth/user_repository.dart';
+import 'package:kedul_app_main/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:kedul_app_main/theme.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,6 +45,16 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          MyAppLocalizationDelegate(),
+        ],
+        supportedLocales: [
+          Locale('vi', ''),
+          Locale('en', ''),
+        ],
         theme: ThemeData(
             appBarTheme: AppBarTheme(
               elevation: 0.0,
