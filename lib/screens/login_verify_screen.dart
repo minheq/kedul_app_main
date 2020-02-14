@@ -51,9 +51,6 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
             setState(() {
               helpers.setFormError(e.message);
             });
-          } catch (e) {
-            // TODO: add error reporting
-            print(e);
           } finally {
             helpers.setSubmitting(false);
           }

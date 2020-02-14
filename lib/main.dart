@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,15 +19,17 @@ import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
 
 void main() {
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
   runApp(MyApp());
 }
 
-AppConfig appConfig = AppConfig();
-AppEnvironment appEnvironment = AppEnvironment();
-APIClient apiClient = APIClient(appConfig.apiBaseURL);
-FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
-
 class MyApp extends StatelessWidget {
+  static AppConfig appConfig = AppConfig();
+  static AppEnvironment appEnvironment = AppEnvironment();
+  static APIClient apiClient = APIClient(appConfig.apiBaseURL);
+  static FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -62,12 +65,17 @@ class MyApp extends StatelessWidget {
           },
         )
       ],
-      child: App(),
+      child: App(appEnvironment, firebaseAnalytics),
     );
   }
 }
 
 class App extends StatelessWidget {
+  App(appEnvironment, firebaseAnalytics);
+
+  final AppEnvironment appEnvironment = AppEnvironment();
+  final FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
+
   @override
   Widget build(BuildContext context) {
     ThemeModel theme = Provider.of<ThemeModel>(context);
