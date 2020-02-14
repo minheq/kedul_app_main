@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -21,7 +23,9 @@ import 'package:kedul_app_main/screens/login_verify_screen.dart';
 void main() {
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
-  runApp(MyApp());
+  runZoned(() {
+    runApp(MyApp());
+  }, onError: Crashlytics.instance.recordError);
 }
 
 class MyApp extends StatelessWidget {
@@ -50,13 +54,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<UserModel>(
           create: (context) {
-            return UserModel(
-                userRepository: UserRepository(apiClient: apiClient));
+            return UserModel(UserRepository(apiClient));
           },
         ),
         ChangeNotifierProxyProvider<UserModel, AuthModel>(
           create: (context) {
-            return AuthModel(apiClient: apiClient);
+            return AuthModel(apiClient);
           },
           update: (context, userModel, authModel) {
             authModel.setUserModel(userModel);

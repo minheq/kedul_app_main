@@ -5,9 +5,9 @@ import 'package:kedul_app_main/auth/user_repository.dart';
 class UserModel extends ChangeNotifier {
   User _currentUser;
 
-  UserRepository userRepository;
+  UserRepository _userRepository;
 
-  UserModel({@required this.userRepository});
+  UserModel(this._userRepository);
 
   bool get isAuthenticated {
     return _currentUser != null;

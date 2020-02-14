@@ -1,42 +1,44 @@
 import 'package:http/http.dart' as http;
 
-bool isBadRequest(http.Response response) {
-  if (response.statusCode == 400) {
-    return true;
+class HTTPResponseUtils {
+  static bool isBadRequest(http.Response response) {
+    if (response.statusCode == 400) {
+      return true;
+    }
+
+    return false;
   }
 
-  return false;
-}
+  static bool isUnauhorized(http.Response response) {
+    if (response.statusCode == 401) {
+      return true;
+    }
 
-bool isUnauhorized(http.Response response) {
-  if (response.statusCode == 401) {
-    return true;
+    return false;
   }
 
-  return false;
-}
+  static bool isNotFound(http.Response response) {
+    if (response.statusCode == 404) {
+      return true;
+    }
 
-bool isNotFound(http.Response response) {
-  if (response.statusCode == 404) {
-    return true;
+    return false;
   }
 
-  return false;
-}
+  static bool isServerError(http.Response response) {
+    if (response.statusCode == 500) {
+      return true;
+    }
 
-bool isServerError(http.Response response) {
-  if (response.statusCode == 500) {
-    return true;
+    return false;
   }
 
-  return false;
-}
-
-bool isErrorResponse(http.Response response) {
-  return isBadRequest(response) ||
-      isUnauhorized(response) ||
-      isNotFound(response) ||
-      isServerError(response);
+  static bool isErrorResponse(http.Response response) {
+    return isBadRequest(response) ||
+        isUnauhorized(response) ||
+        isNotFound(response) ||
+        isServerError(response);
+  }
 }
 
 class ErrorResponse {

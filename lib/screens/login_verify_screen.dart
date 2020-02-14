@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
@@ -10,8 +11,8 @@ import 'package:kedul_app_main/widgets/phone_number_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
-class LoginVerifyFormValue {
-  LoginVerifyFormValue({this.phoneNumber, this.countryCode});
+class _LoginVerifyFormValue {
+  _LoginVerifyFormValue({this.phoneNumber, this.countryCode});
 
   String phoneNumber;
   String countryCode;
@@ -33,7 +34,9 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
   Widget build(BuildContext context) {
     final l10n = MyAppLocalization.of(context);
 
-    return FormBuilder<LoginVerifyFormValue>(
+    return FormBuilder<_LoginVerifyFormValue>(
+        initialValues:
+            _LoginVerifyFormValue(phoneNumber: '', countryCode: 'VN'),
         onSubmit: (value, helpers) async {
           AuthModel auth = Provider.of<AuthModel>(context, listen: false);
 
@@ -44,7 +47,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
             Navigator.pushNamed(
               context,
               LoginVerifyCheckScreen.routeName,
-              arguments: ScreenArguments(
+              arguments: LoginVerifyCheckScreenArguments(
                   verificationID, value.phoneNumber, value.countryCode),
             );
           } on APIErrorException catch (e) {
@@ -55,7 +58,6 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
             helpers.setSubmitting(false);
           }
         },
-        initialValues: LoginVerifyFormValue(phoneNumber: '', countryCode: 'VN'),
         builder: (context, form) {
           ThemeModel theme = Provider.of<ThemeModel>(context);
 

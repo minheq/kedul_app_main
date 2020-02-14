@@ -7,12 +7,13 @@ import 'package:kedul_app_main/widgets/otp_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
-class ScreenArguments {
+class LoginVerifyCheckScreenArguments {
   final String verificationID;
   final String phoneNumber;
   final String countryCode;
 
-  ScreenArguments(this.verificationID, this.phoneNumber, this.countryCode);
+  LoginVerifyCheckScreenArguments(
+      this.verificationID, this.phoneNumber, this.countryCode);
 }
 
 class LoginVerifyCheckScreen extends StatefulWidget {
@@ -31,7 +32,8 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
   String code = '';
 
   Future<void> handleLoginVerifyCheck() async {
-    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+    final LoginVerifyCheckScreenArguments args =
+        ModalRoute.of(context).settings.arguments;
     AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
 
     if (args.verificationID == null) {
@@ -54,7 +56,8 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+    final LoginVerifyCheckScreenArguments args =
+        ModalRoute.of(context).settings.arguments;
     ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
