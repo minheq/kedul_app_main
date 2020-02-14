@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/theme.dart';
+import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/otp_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';

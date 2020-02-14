@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ThemeModel extends ChangeNotifier {
+class ThemeModel {
   final ThemeColors colors = ThemeColors();
   final ThemeUtilityStyles utilityStyles = ThemeUtilityStyles();
   final ThemeTextStyles textStyles = ThemeTextStyles();
@@ -29,6 +29,10 @@ class ThemeUtilityStyles {
   final double controlHeight = 56.0;
 
   final double borderRadius = 16.0;
+
+  final InputDecorationTheme inputDecoration = InputDecorationTheme(
+      border: InputBorder.none,
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.0));
 }
 
 class ThemeTextStyles {
@@ -44,6 +48,7 @@ class ThemeTextStyles {
   final TextStyle caption = TextStyle(fontSize: 12.8);
   final TextStyle button =
       TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal);
+  final TextStyle overline = TextStyle(fontSize: 12.8);
 }
 
 class MyAppPalette {

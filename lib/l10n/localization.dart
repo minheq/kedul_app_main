@@ -1,21 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'l10n/messages_all.dart';
-
-Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates = [
-  GlobalMaterialLocalizations.delegate,
-  GlobalWidgetsLocalizations.delegate,
-  GlobalCupertinoLocalizations.delegate,
-  MyAppLocalizationDelegate(),
-];
-
-Iterable<Locale> supportedLocales = [
-  Locale('vi', ''),
-  Locale('en', ''),
-];
+import 'package:kedul_app_main/l10n/messages_all.dart';
 
 class MyAppLocalization {
   MyAppLocalization(this.localeName);

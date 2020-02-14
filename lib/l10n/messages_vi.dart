@@ -23,7 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "commonNext" : MessageLookupByLibrary.simpleMessage("Tiếp tục"),
     "commonPhoneNumber" : MessageLookupByLibrary.simpleMessage("Số điện thoại"),
-    "loginVerifyScreenAcceptTerms" : MessageLookupByLibrary.simpleMessage("Khi xác nhận số điện thoại, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của chúng tôi."),
+    "loginVerifyScreenAcceptTerms" : MessageLookupByLibrary.simpleMessage("Khi xác nhận số điện thoại, bạn đồng ý với điều khoản dịch vụ và chính sách bảo mật của chúng tôi."),
     "loginVerifyScreenTitle" : MessageLookupByLibrary.simpleMessage("Xác nhận số điện thoại của bạn để tiếp tục.")
   };
 }

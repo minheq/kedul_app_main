@@ -1,4 +1,4 @@
-import 'package:kedul_app_main/theme.dart';
+import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/widgets/touchable_container.dart';
 import 'package:provider/provider.dart';
