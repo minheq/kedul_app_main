@@ -1,12 +1,16 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:kedul_app_main/analytics/analytics_model.dart';
+import 'package:kedul_app_main/analytics/console_analytics_model.dart';
+import 'package:kedul_app_main/analytics/firebase_analytics_model.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/auth/user_model.dart';
 import 'package:kedul_app_main/auth/user_repository.dart';
+import 'package:kedul_app_main/config.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +21,10 @@ void main() {
   runApp(MyApp());
 }
 
-APIClient apiClient = APIClient();
+AppConfig appConfig = AppConfig();
+AppEnvironment appEnvironment = AppEnvironment();
+APIClient apiClient = APIClient(appConfig.apiBaseURL);
+FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
 
 class MyApp extends StatelessWidget {
   @override
@@ -26,7 +33,11 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider<AnalyticsModel>(
           create: (context) {
-            return AnalyticsModel();
+            if (appEnvironment.isProduction) {
+              return FirebaseAnalyticsModel(firebaseAnalytics);
+            }
+
+            return ConsoleAnalyticsModel();
           },
         ),
         Provider<ThemeModel>(
@@ -60,10 +71,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeModel theme = Provider.of<ThemeModel>(context);
-    AnalyticsModel analytics = Provider.of<AnalyticsModel>(context);
-
     FirebaseAnalyticsObserver observer =
-        FirebaseAnalyticsObserver(analytics: analytics);
+        FirebaseAnalyticsObserver(analytics: firebaseAnalytics);
 
     return MaterialApp(
       localizationsDelegates: [
@@ -104,7 +113,7 @@ class App extends StatelessWidget {
           fontFamily: theme.textStyles.fontFamily,
           scaffoldBackgroundColor: theme.colors.background,
           inputDecorationTheme: theme.utilityStyles.inputDecoration),
-      navigatorObservers: <NavigatorObserver>[observer],
+      navigatorObservers: appEnvironment.isProduction ? [observer] : [],
       initialRoute: LoginVerifyScreen.routeName,
       routes: {
         LoginVerifyScreen.routeName: (context) => LoginVerifyScreen(),

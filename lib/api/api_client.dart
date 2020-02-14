@@ -4,7 +4,7 @@ class APIClient {
   final http.Client client = http.Client();
   final String baseURL;
 
-  APIClient({this.baseURL = "http://localhost:4000"});
+  APIClient(this.baseURL);
 
   Future<http.Response> get(String url) {
     return client.get(url);

@@ -26,7 +26,6 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
-                    flex: 5,
                     child: CountryCodePicker(
                         onChanged: (countryCode) {
                           if (onChanged != null) {
@@ -52,7 +51,7 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                         width: 1,
                       )),
                   Expanded(
-                      flex: 13,
+                      flex: 2,
                       child: TextFormField(
                           initialValue: initialValue.phoneNumber,
                           onChanged: (phoneNumber) {

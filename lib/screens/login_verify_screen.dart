@@ -69,12 +69,12 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      SizedBox(height: 56),
+                      SizedBox(height: 40),
                       Image(
                         image: AssetImage('assets/logo.png'),
                         width: 104,
                       ),
-                      SizedBox(height: 80),
+                      SizedBox(height: 40),
                       Text(
                         l10n.loginVerifyScreenTitle,
                         style: theme.textStyles.headline1,

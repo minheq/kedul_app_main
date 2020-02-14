@@ -1,3 +1,8 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart';
 
-class AnalyticsModel extends FirebaseAnalytics {}
+abstract class AnalyticsModel {
+  Future<void> logEvent(
+      {@required String name, Map<String, dynamic> parameters});
+  Future<void> setCurrentScreen(
+      {@required String screenName, String screenClassOverride = 'Flutter'});
+}
