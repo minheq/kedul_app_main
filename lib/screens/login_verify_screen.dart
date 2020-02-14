@@ -6,7 +6,7 @@ import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
-import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
+import 'package:kedul_app_main/widgets/phone_number_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
@@ -83,15 +83,15 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
                       FormFieldContainer(
                         labelText: l10n.commonPhoneNumber,
                         hintText: l10n.loginVerifyScreenAcceptTerms,
-                        child: PhoneNumberFormField(
-                          initialValue: PhoneNumber(
-                              phoneNumber: form.values.phoneNumber,
-                              countryCode: form.values.countryCode),
-                          onChanged: (value) {
-                            form.values.phoneNumber = value.phoneNumber;
-                            form.values.countryCode = value.countryCode;
+                        child: PhoneNumberField(
+                          initialPhoneNumber: form.values.phoneNumber,
+                          onPhoneNumberChanged: (phoneNumber) {
+                            form.values.phoneNumber = phoneNumber;
                           },
-                          onFieldSubmitted: (PhoneNumber value) {
+                          onCountryCodeChanged: (countryCode) {
+                            form.values.countryCode = countryCode;
+                          },
+                          onFieldSubmitted: (phoneNumber) {
                             form.handleSubmit();
                           },
                         ),
