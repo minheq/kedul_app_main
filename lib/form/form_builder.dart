@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FormBuilderHelpers<T> {
-  FormBuilderHelpers({this.setSubmitting, this.setFormError});
+  FormBuilderHelpers({this.setSubmitting, this.setStatus});
 
   final Function(bool isSubmitting) setSubmitting;
-  final Function(String status) setFormError;
+  final Function(String status) setStatus;
 }
 
 class FormBuilder<T extends Object> extends StatefulWidget {
@@ -12,7 +12,7 @@ class FormBuilder<T extends Object> extends StatefulWidget {
   final T initialValues;
 
   /// OnSubmit is a call back for handleSubmit
-  final void Function(T values, FormBuilderHelpers<T> state) onSubmit;
+  final Future<void> Function(T values, FormBuilderHelpers<T> state) onSubmit;
 
   /// Builder to build widgets using the form state
   final Widget Function(BuildContext context, FormBuilderState<T> state)
@@ -64,7 +64,7 @@ class FormBuilderState<T> {
 class _FormBuilderState<T> extends State<FormBuilder<T>> {
   FormBuilderState<T> _state;
 
-  final formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void handleSetSubmitting(bool isSubmitting) {
     setState(() {
@@ -79,12 +79,10 @@ class _FormBuilderState<T> extends State<FormBuilder<T>> {
   }
 
   void handleReset() {
-    setState(() {
-      _state.values = widget.initialValues;
-    });
+    _formKey.currentState.reset();
   }
 
-  void handleSubmit() {
+  Future<void> handleSubmit() async {
     if (widget.validate != null) {
       Map<String, String> errors = widget.validate(_state.values);
 
@@ -96,14 +94,24 @@ class _FormBuilderState<T> extends State<FormBuilder<T>> {
       }
     }
 
-    widget.onSubmit(
-        _state.values,
-        FormBuilderHelpers(
-            setFormError: handleSetStatus, setSubmitting: handleSetSubmitting));
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+
+    _formKey.currentState.save();
 
     setState(() {
       _state.errors = Map();
       _state.isSubmitting = true;
+    });
+
+    await widget.onSubmit(
+        _state.values,
+        FormBuilderHelpers(
+            setStatus: handleSetStatus, setSubmitting: handleSetSubmitting));
+
+    setState(() {
+      _state.isSubmitting = false;
     });
   }
 
@@ -121,6 +129,6 @@ class _FormBuilderState<T> extends State<FormBuilder<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(key: formKey, child: widget.builder(context, _state));
+    return Form(key: _formKey, child: widget.builder(context, _state));
   }
 }
