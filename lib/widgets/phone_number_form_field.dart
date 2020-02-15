@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:provider/provider.dart';
 
+@immutable
 class PhoneNumber {
   PhoneNumber({@required this.phoneNumber, @required this.countryCode});
 
-  String phoneNumber;
-  String countryCode;
+  final String phoneNumber;
+  final String countryCode;
 }
 
 class PhoneNumberFormField extends FormField<PhoneNumber> {

@@ -14,8 +14,12 @@ class OTPFormField extends FormField<String> {
             initialValue: initialValue,
             builder: (FormFieldState<String> state) {
               return TextFormField(
-                  // initialValue: initialValue,
+                  initialValue: initialValue,
                   onChanged: (otp) {
+                    if (onChanged != null) {
+                      onChanged(otp);
+                    }
+
                     state.didChange(otp);
                   },
                   onFieldSubmitted: onFieldSubmitted,
