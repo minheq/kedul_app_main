@@ -55,10 +55,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
         _status = e.message;
       });
     } catch (e, s) {
-      analytics.recordError(e, s, context: {
-        'phoneNumber': _phoneNumber,
-        'countryCode': _countryCode,
-      });
+      analytics.recordError(e, s);
 
       setState(() {
         _status = l10n.commonSomethingWentWrong;
