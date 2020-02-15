@@ -1,45 +1,35 @@
 import 'package:flutter/material.dart';
 
-class FormBuilderHelpers<T> {
+class FormBuilderHelpers {
   FormBuilderHelpers({this.setSubmitting, this.setStatus});
 
   final Function(bool isSubmitting) setSubmitting;
   final Function(String status) setStatus;
 }
 
-class FormBuilder<T extends Object> extends StatefulWidget {
-  /// InitialValues are initial values for the form values
-  final T initialValues;
-
+class FormBuilder extends StatefulWidget {
   /// OnSubmit is a call back for handleSubmit
-  final Future<void> Function(T values, FormBuilderHelpers<T> state) onSubmit;
+  final Future<void> Function(FormBuilderHelpers state) onSubmit;
 
   /// Builder to build widgets using the form state
-  final Widget Function(BuildContext context, FormBuilderState<T> state)
-      builder;
+  final Widget Function(BuildContext context, FormBuilderState state) builder;
 
   /// Validate is called when submitting the form. Sets errors if it fails some validation
-  final Map<String, String> Function(T values) validate;
+  final Map<String, String> Function() validate;
 
-  FormBuilder(
-      {Key key,
-      this.initialValues,
-      this.onSubmit,
-      this.validate,
-      @required this.builder})
+  FormBuilder({Key key, this.onSubmit, this.validate, @required this.builder})
       : assert(builder != null),
         super(key: key);
 
   @override
-  State<FormBuilder<T>> createState() => _FormBuilderState<T>();
+  State<FormBuilder> createState() => _FormBuilderState();
 }
 
-class FormBuilderState<T> {
+class FormBuilderState {
   FormBuilderState(
       {this.handleReset,
       this.handleSubmit,
       this.isSubmitting = false,
-      this.values,
       this.errors});
 
   /// handleSubmit should be called when the form is ready for submission
@@ -51,9 +41,6 @@ class FormBuilderState<T> {
   /// isSubmitting indicates that the form is submitted and awaits some response
   bool isSubmitting;
 
-  /// values is the stored form values
-  T values;
-
   /// status of the form can be anything. For example, backend errors after submitting the form.
   String status;
 
@@ -61,8 +48,8 @@ class FormBuilderState<T> {
   Map<String, String> errors;
 }
 
-class _FormBuilderState<T> extends State<FormBuilder<T>> {
-  FormBuilderState<T> _state;
+class _FormBuilderState extends State<FormBuilder> {
+  FormBuilderState _state;
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -84,7 +71,7 @@ class _FormBuilderState<T> extends State<FormBuilder<T>> {
 
   Future<void> handleSubmit() async {
     if (widget.validate != null) {
-      Map<String, String> errors = widget.validate(_state.values);
+      Map<String, String> errors = widget.validate();
 
       if (errors.isNotEmpty) {
         setState(() {
@@ -105,10 +92,8 @@ class _FormBuilderState<T> extends State<FormBuilder<T>> {
       _state.isSubmitting = true;
     });
 
-    await widget.onSubmit(
-        _state.values,
-        FormBuilderHelpers(
-            setStatus: handleSetStatus, setSubmitting: handleSetSubmitting));
+    await widget.onSubmit(FormBuilderHelpers(
+        setStatus: handleSetStatus, setSubmitting: handleSetSubmitting));
 
     setState(() {
       _state.isSubmitting = false;
@@ -120,7 +105,6 @@ class _FormBuilderState<T> extends State<FormBuilder<T>> {
     super.initState();
 
     _state = FormBuilderState(
-      values: widget.initialValues,
       handleSubmit: handleSubmit,
       handleReset: handleReset,
       errors: Map(),
