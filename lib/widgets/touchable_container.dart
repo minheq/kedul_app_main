@@ -1,5 +1,6 @@
-import 'package:kedul_app_main/theme.dart';
+import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class TouchableContainer extends StatelessWidget {
   TouchableContainer({
@@ -12,17 +13,16 @@ class TouchableContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeModel theme = Provider.of<ThemeModel>(context);
+
     return Container(
       decoration: BoxDecoration(
-        color: NamedColors.white,
+        color: theme.colors.content,
         borderRadius: BorderRadius.all(
           Radius.circular(16.0),
         ),
         boxShadow: <BoxShadow>[
-          BoxShadow(
-              color: NamedColors.shadow.withOpacity(0.2),
-              offset: Offset(0, 2),
-              blurRadius: 8.0),
+          theme.colors.shadow,
         ],
       ),
       child: child,

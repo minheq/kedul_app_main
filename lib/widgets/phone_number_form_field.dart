@@ -1,12 +1,15 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/theme/theme_model.dart';
+import 'package:provider/provider.dart';
 
+@immutable
 class PhoneNumber {
   PhoneNumber({@required this.phoneNumber, @required this.countryCode});
 
-  String phoneNumber;
-  String countryCode;
+  final String phoneNumber;
+  final String countryCode;
 }
 
 class PhoneNumberFormField extends FormField<PhoneNumber> {
@@ -21,12 +24,13 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
             validator: validator,
             initialValue: initialValue,
             builder: (FormFieldState<PhoneNumber> state) {
+              ThemeModel theme = Provider.of(state.context);
+
               return Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
-                    flex: 5,
                     child: CountryCodePicker(
                         onChanged: (countryCode) {
                           if (onChanged != null) {
@@ -40,19 +44,19 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                               countryCode: countryCode.code));
                         },
                         padding: EdgeInsets.only(left: 8.0),
-                        initialSelection: 'VN',
-                        favorite: ['VN'],
+                        initialSelection: initialValue.countryCode,
+                        favorite: [initialValue.countryCode],
                         showCountryOnly: false,
                         alignLeft: true),
                   ),
                   SizedBox(
                       height: 32,
                       child: VerticalDivider(
-                        color: Colors.black45,
+                        color: theme.colors.border,
                         width: 1,
                       )),
                   Expanded(
-                      flex: 13,
+                      flex: 2,
                       child: TextFormField(
                           initialValue: initialValue.phoneNumber,
                           onChanged: (phoneNumber) {

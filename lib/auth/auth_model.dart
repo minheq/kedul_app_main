@@ -7,8 +7,66 @@ import 'package:kedul_app_main/auth/user_model.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/api/http_response_utils.dart';
 
-class LoginVerifyBody {
-  LoginVerifyBody({this.phoneNumber, this.countryCode});
+class AuthModel extends ChangeNotifier {
+  UserModel _userModel;
+  APIClient _apiClient;
+
+  AuthModel(this._apiClient);
+
+  void setUserModel(UserModel userModel) {
+    _userModel = userModel;
+  }
+
+  bool get isAuthenticated {
+    return _userModel.isAuthenticated;
+  }
+
+  Future<User> get currentUser async {
+    return _userModel.currentUser;
+  }
+
+  // Returns verificationID string use for further confirmation
+  Future<String> loginVerify(String phoneNumber, String countryCode) async {
+    String body =
+        _LoginVerifyBody(phoneNumber: phoneNumber, countryCode: countryCode)
+            .toJson();
+
+    final response = await _apiClient.post('/login_verify', body);
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      final data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    final data = _LoginVerifyData.fromJson(json.decode(response.body));
+
+    return data.verificationID;
+  }
+
+  Future<String> loginVerifyCheck(String verificationID, String code) async {
+    String body =
+        _LoginVerifyCheckBody(verificationID: verificationID, code: code)
+            .toJson();
+
+    final response = await _apiClient.post('/login_verify_check', body);
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      final data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    final data = _LoginVerifyCheckData.fromJson(json.decode(response.body));
+
+    return data.accessToken;
+  }
+
+  void logOut() {}
+}
+
+class _LoginVerifyBody {
+  _LoginVerifyBody({this.phoneNumber, this.countryCode});
 
   String phoneNumber;
   String countryCode;
@@ -25,20 +83,20 @@ class LoginVerifyBody {
   }
 }
 
-class LoginVerifyData {
+class _LoginVerifyData {
   final String verificationID;
 
-  LoginVerifyData({this.verificationID});
+  _LoginVerifyData({this.verificationID});
 
-  factory LoginVerifyData.fromJson(Map<String, dynamic> json) {
-    return LoginVerifyData(
+  factory _LoginVerifyData.fromJson(Map<String, dynamic> json) {
+    return _LoginVerifyData(
       verificationID: json['verificationID'],
     );
   }
 }
 
-class LoginVerifyCheckBody {
-  LoginVerifyCheckBody({this.verificationID, this.code});
+class _LoginVerifyCheckBody {
+  _LoginVerifyCheckBody({this.verificationID, this.code});
 
   String verificationID;
   String code;
@@ -55,72 +113,14 @@ class LoginVerifyCheckBody {
   }
 }
 
-class LoginVerifyCheckData {
+class _LoginVerifyCheckData {
   final String accessToken;
 
-  LoginVerifyCheckData({this.accessToken});
+  _LoginVerifyCheckData({this.accessToken});
 
-  factory LoginVerifyCheckData.fromJson(Map<String, dynamic> json) {
-    return LoginVerifyCheckData(
+  factory _LoginVerifyCheckData.fromJson(Map<String, dynamic> json) {
+    return _LoginVerifyCheckData(
       accessToken: json['accessToken'],
     );
   }
-}
-
-class AuthModel extends ChangeNotifier {
-  UserModel userModel;
-  APIClient apiClient;
-
-  AuthModel({@required this.apiClient});
-
-  void setUserModel(UserModel userModel) {
-    this.userModel = userModel;
-  }
-
-  bool get isAuthenticated {
-    return userModel.isAuthenticated;
-  }
-
-  Future<User> get currentUser async {
-    return userModel.currentUser;
-  }
-
-  // Returns verificationID string use for further confirmation
-  Future<String> loginVerify(String phoneNumber, String countryCode) async {
-    String body =
-        LoginVerifyBody(phoneNumber: phoneNumber, countryCode: countryCode)
-            .toJson();
-
-    final response = await apiClient.post('/login_verify', body);
-
-    if (isErrorResponse(response)) {
-      final data = ErrorResponse.fromJson(json.decode(response.body));
-
-      throw APIErrorException(message: data.message);
-    }
-
-    final data = LoginVerifyData.fromJson(json.decode(response.body));
-
-    return data.verificationID;
-  }
-
-  Future<String> loginVerifyCheck(String verificationID, String code) async {
-    String body =
-        LoginVerifyCheckBody(verificationID: verificationID, code: code)
-            .toJson();
-
-    final response = await apiClient.post('/login_verify_check', body);
-
-    if (isErrorResponse(response)) {
-      final data = ErrorResponse.fromJson(json.decode(response.body));
-
-      throw APIErrorException(message: data.message);
-    }
-
-    final data = LoginVerifyCheckData.fromJson(json.decode(response.body));
-
-    return data.accessToken;
-  }
-
-  void logOut() {}
 }

@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/form/form_builder.dart';
+import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
+import 'package:kedul_app_main/theme/theme_model.dart';
+import 'package:kedul_app_main/widgets/BottomActionBar.dart';
+import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
-
-class LoginVerifyFormValue {
-  LoginVerifyFormValue({this.phoneNumber, this.countryCode});
-
-  String phoneNumber;
-  String countryCode;
-}
 
 class LoginVerifyScreen extends StatefulWidget {
   static const String routeName = '/login_verify';
@@ -27,86 +24,99 @@ class LoginVerifyScreen extends StatefulWidget {
 class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
   _LoginVerifyScreenState();
 
+  String _phoneNumber = '';
+  String _countryCode = 'VN';
+  bool _isSubmitting = false;
+  String _status;
+
+  Future<void> handleSubmit() async {
+    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+    MyAppLocalization l10n = MyAppLocalization.of(context);
+    AnalyticsModel analytics = Provider.of<AnalyticsModel>(context);
+
+    try {
+      analytics.log('_LoginVerifyScreenState.handleSubmit');
+
+      setState(() {
+        _isSubmitting = true;
+      });
+
+      String verificationID =
+          await auth.loginVerify(_phoneNumber, _countryCode);
+
+      Navigator.pushNamed(
+        context,
+        LoginVerifyCheckScreen.routeName,
+        arguments: LoginVerifyCheckScreenArguments(
+            verificationID, _phoneNumber, _countryCode),
+      );
+    } on APIErrorException catch (e) {
+      setState(() {
+        _status = e.message;
+      });
+    } catch (e, s) {
+      analytics.recordError(e, s);
+
+      setState(() {
+        _status = l10n.commonSomethingWentWrong;
+      });
+    } finally {
+      setState(() {
+        _isSubmitting = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FormBuilder<LoginVerifyFormValue>(
-        onSubmit: (value, helpers) async {
-          AuthModel authModel = Provider.of(context, listen: false);
+    MyAppLocalization l10n = MyAppLocalization.of(context);
+    ThemeModel theme = Provider.of<ThemeModel>(context);
 
-          try {
-            String verificationID = await authModel.loginVerify(
-                value.phoneNumber, value.countryCode);
-
-            Navigator.pushNamed(
-              context,
-              LoginVerifyCheckScreen.routeName,
-              arguments: ScreenArguments(
-                  verificationID, value.phoneNumber, value.countryCode),
-            );
-          } on APIErrorException catch (e) {
-            setState(() {
-              helpers.setFormError(e.message);
-            });
-          } catch (e) {
-            // TODO: add error reporting
-            print(e);
-          } finally {
-            helpers.setSubmitting(false);
-          }
-        },
-        initialValues: LoginVerifyFormValue(phoneNumber: '', countryCode: 'VN'),
-        builder: (context, form) {
-          return Scaffold(
-              body: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 56),
-                      Image(
-                        image: AssetImage('assets/logo.png'),
-                        width: 104,
-                      ),
-                      SizedBox(height: 80),
-                      Text(
-                        'Verify your phone number to continue.',
-                        style: Theme.of(context).textTheme.headline1,
-                      ),
-                      SizedBox(height: 56),
-                      FormFieldContainer(
-                        labelText: "Phone number",
-                        hintText:
-                            "By verifying phone number, you agree to our Terms of Service and Privacy Policy",
-                        errorText: form.errors['phoneNumber'],
-                        child: PhoneNumberFormField(
-                          initialValue: PhoneNumber(
-                              phoneNumber: form.values.phoneNumber,
-                              countryCode: form.values.countryCode),
-                          onChanged: (value) {
-                            form.values.phoneNumber = value.phoneNumber;
-                            form.values.countryCode = value.countryCode;
-                          },
-                          onFieldSubmitted: (PhoneNumber value) {
-                            form.handleSubmit();
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      if (form.status != null)
-                        Text(
-                          form.status,
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
-                    ],
-                  )),
-              persistentFooterButtons: [
-                PrimaryButton(
-                    onPressed: form.handleSubmit,
-                    title: "Next",
-                    isSubmitting: form.isSubmitting),
-                SizedBox()
-              ]);
-        });
+    return Scaffold(
+        body: BodyPadding(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 40),
+            Image(
+              image: AssetImage('assets/logo.png'),
+              width: 104,
+            ),
+            SizedBox(height: 40),
+            Text(
+              l10n.loginVerifyScreenTitle,
+              style: theme.textStyles.headline1,
+            ),
+            SizedBox(height: 56),
+            FormFieldContainer(
+              labelText: l10n.commonPhoneNumber,
+              hintText: l10n.loginVerifyScreenAcceptTerms,
+              child: PhoneNumberFormField(
+                initialValue: PhoneNumber(countryCode: 'VN', phoneNumber: ''),
+                onChanged: (phoneNumber) {
+                  setState(() {
+                    _phoneNumber = phoneNumber.phoneNumber;
+                    _countryCode = phoneNumber.countryCode;
+                  });
+                },
+                onFieldSubmitted: (phoneNumber) {
+                  handleSubmit();
+                },
+              ),
+            ),
+            if (_status != null) SizedBox(height: 4),
+            if (_status != null)
+              Text(
+                _status,
+                style: TextStyle(color: theme.colors.textError),
+              ),
+          ],
+        )),
+        bottomNavigationBar: BottomActionBar(children: [
+          PrimaryButton(
+              onPressed: handleSubmit,
+              title: l10n.commonNext,
+              isSubmitting: _isSubmitting)
+        ]));
   }
 }
