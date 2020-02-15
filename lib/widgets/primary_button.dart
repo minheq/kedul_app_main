@@ -22,6 +22,8 @@ class PrimaryButton extends StatelessWidget {
         height: theme.utilityStyles.controlHeight,
         child: TouchableContainer(
             child: RaisedButton(
+          color: theme.colors.buttonPrimary,
+          elevation: 0,
           onPressed: isSubmitting ? null : onPressed,
           child: Text(
             isSubmitting ? "Submitting" : title,
