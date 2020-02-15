@@ -25,7 +25,9 @@ class PrimaryButton extends StatelessWidget {
           onPressed: isSubmitting ? null : onPressed,
           child: Text(
             isSubmitting ? "Submitting" : title,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: theme.colors.textButtonPrimary),
           ),
           padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 16.0),
           shape:

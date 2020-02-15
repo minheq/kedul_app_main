@@ -14,6 +14,7 @@ class ThemeColors {
   final Color textMuted = MyAppPalette.grey700;
   final Color textPrimary = MyAppPalette.grey900;
   final Color textError = MyAppPalette.red700;
+  final Color textButtonPrimary = MyAppPalette.white;
 
   final Color border = MyAppPalette.grey700;
   final Color content = MyAppPalette.white;

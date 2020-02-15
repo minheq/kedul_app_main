@@ -5,6 +5,8 @@ import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
+import 'package:kedul_app_main/widgets/BottomActionBar.dart';
+import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
@@ -22,9 +24,9 @@ class LoginVerifyScreen extends StatefulWidget {
 class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
   _LoginVerifyScreenState();
 
-  String _phoneNumber;
-  String _countryCode;
-  bool _isSubmitting;
+  String _phoneNumber = '';
+  String _countryCode = 'VN';
+  bool _isSubmitting = false;
   String _status;
 
   Future<void> handleSubmit() async {
@@ -74,50 +76,50 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
     ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
-        body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        body: BodyPadding(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 40),
-                Image(
-                  image: AssetImage('assets/logo.png'),
-                  width: 104,
-                ),
-                SizedBox(height: 40),
-                Text(
-                  l10n.loginVerifyScreenTitle,
-                  style: theme.textStyles.headline1,
-                ),
-                SizedBox(height: 56),
-                FormFieldContainer(
-                  labelText: l10n.commonPhoneNumber,
-                  hintText: l10n.loginVerifyScreenAcceptTerms,
-                  child: PhoneNumberFormField(
-                    initialValue:
-                        PhoneNumber(countryCode: 'VN', phoneNumber: ''),
-                    onChanged: (phoneNumber) {
-                      _phoneNumber = phoneNumber.phoneNumber;
-                      _countryCode = phoneNumber.countryCode;
-                    },
-                    onFieldSubmitted: (phoneNumber) {
-                      handleSubmit();
-                    },
-                  ),
-                ),
-                SizedBox(height: 4),
-                if (_status != null)
-                  Text(
-                    _status,
-                    style: TextStyle(color: theme.colors.textError),
-                  ),
-              ],
-            )),
-        persistentFooterButtons: [
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 40),
+            Image(
+              image: AssetImage('assets/logo.png'),
+              width: 104,
+            ),
+            SizedBox(height: 40),
+            Text(
+              l10n.loginVerifyScreenTitle,
+              style: theme.textStyles.headline1,
+            ),
+            SizedBox(height: 56),
+            FormFieldContainer(
+              labelText: l10n.commonPhoneNumber,
+              hintText: l10n.loginVerifyScreenAcceptTerms,
+              child: PhoneNumberFormField(
+                initialValue: PhoneNumber(countryCode: 'VN', phoneNumber: ''),
+                onChanged: (phoneNumber) {
+                  setState(() {
+                    _phoneNumber = phoneNumber.phoneNumber;
+                    _countryCode = phoneNumber.countryCode;
+                  });
+                },
+                onFieldSubmitted: (phoneNumber) {
+                  handleSubmit();
+                },
+              ),
+            ),
+            if (_status != null) SizedBox(height: 4),
+            if (_status != null)
+              Text(
+                _status,
+                style: TextStyle(color: theme.colors.textError),
+              ),
+          ],
+        )),
+        bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
               onPressed: handleSubmit,
               title: l10n.commonNext,
-              isSubmitting: _isSubmitting),
-        ]);
+              isSubmitting: _isSubmitting)
+        ]));
   }
 }
