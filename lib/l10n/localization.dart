@@ -27,7 +27,14 @@ class MyAppLocalization {
     return Intl.message(
       'Hello World',
       name: 'commonNext',
-      desc: 'Title for the Demo application',
+      locale: localeName,
+    );
+  }
+
+  String get commonSomethingWentWrong {
+    return Intl.message(
+      'Something went wrong',
+      name: 'commonSomethingWentWrong',
       locale: localeName,
     );
   }

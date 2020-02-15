@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/form/form_builder.dart';
@@ -33,8 +34,11 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
       _LoginVerifyFormValue values, FormBuilderHelpers helpers) async {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
+    AnalyticsModel analytics = Provider.of<AnalyticsModel>(context);
 
     try {
+      analytics.log('_LoginVerifyScreenState.handleSubmit');
+
       String verificationID =
           await auth.loginVerify(values.phoneNumber, values.countryCode);
 
@@ -48,10 +52,14 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
       setState(() {
         helpers.setStatus(e.message);
       });
-    } catch (e) {
-      // TODO: Call crash api with additional context
+    } catch (e, s) {
+      analytics.recordError(e, s, context: {
+        'phoneNumber': values.phoneNumber,
+        'countryCode': values.countryCode,
+      });
+
       setState(() {
-        helpers.setStatus('Something went wrong');
+        helpers.setStatus(l10n.commonSomethingWentWrong);
       });
     }
   }
