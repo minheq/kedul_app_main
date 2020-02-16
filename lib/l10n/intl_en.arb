@@ -1,5 +1,25 @@
 {
   "@@last_modified": "2020-02-13T16:17:44.878547",
+  "commonNext": "Next",
+  "@commonNext": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonSomethingWentWrong": "Something went wrong",
+  "@commonSomethingWentWrong": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonPhoneNumber": "Phone number",
+  "@commonPhoneNumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonVerificationCode": "Verification code",
+  "@commonVerificationCode": {
+    "type": "text",
+    "placeholders": {}
+  },
   "loginVerifyScreenTitle": "Verify your phone number to continue.",
   "@loginVerifyScreenTitle": {
     "type": "text",
@@ -10,14 +30,16 @@
     "type": "text",
     "placeholders": {}
   },
-  "commonPhoneNumber": "Phone number",
-  "@commonPhoneNumber": {
+  "loginVerifyCheckScreenTitle": "Enter verification code",
+  "@loginVerifyCheckScreenTitle": {
     "type": "text",
     "placeholders": {}
   },
-  "commonNext": "Next",
-  "@commonNext": {
+  "loginVerifyCheckScreenVerificationCodeSent": "We have sent verification code to {phoneNumber}",
+  "@loginVerifyCheckScreenVerificationCodeSent": {
     "type": "text",
-    "placeholders": {}
+    "placeholders": {
+      "phoneNumber": {}
+    }
   }
 }

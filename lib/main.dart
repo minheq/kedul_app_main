@@ -15,7 +15,10 @@ import 'package:kedul_app_main/auth/user_model.dart';
 import 'package:kedul_app_main/auth/user_repository.dart';
 import 'package:kedul_app_main/config.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
+import 'package:kedul_app_main/screens/calendar_main_screen.dart';
 import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
+import 'package:kedul_app_main/storage/secure_storage_model.dart';
+import 'package:kedul_app_main/storage/storage_model.dart';
 import 'package:provider/provider.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
@@ -31,8 +34,11 @@ void main() {
 class MyApp extends StatelessWidget {
   static AppConfig appConfig = AppConfig();
   static AppEnvironment appEnvironment = AppEnvironment();
-  static APIClient apiClient = APIClient(appConfig.apiBaseURL);
   static FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
+  static SecureStorageModel secureStorageModel = SecureStorageModel();
+  static StorageModel storageModel = StorageModel();
+  static APIClient apiClient =
+      APIClient(appConfig.apiBaseURL, secureStorageModel);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +65,7 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProxyProvider<UserModel, AuthModel>(
           create: (context) {
-            return AuthModel(apiClient);
+            return AuthModel(apiClient, secureStorageModel);
           },
           update: (context, userModel, authModel) {
             authModel.setUserModel(userModel);
@@ -129,6 +135,7 @@ class App extends StatelessWidget {
       routes: {
         LoginVerifyScreen.routeName: (context) => LoginVerifyScreen(),
         LoginVerifyCheckScreen.routeName: (context) => LoginVerifyCheckScreen(),
+        CalendarMainScreen.routeName: (context) => CalendarMainScreen(),
       },
     );
   }

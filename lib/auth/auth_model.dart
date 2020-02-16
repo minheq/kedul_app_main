@@ -6,12 +6,14 @@ import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/auth/user_model.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/api/http_response_utils.dart';
+import 'package:kedul_app_main/storage/secure_storage_model.dart';
 
 class AuthModel extends ChangeNotifier {
   UserModel _userModel;
-  APIClient _apiClient;
+  final APIClient _apiClient;
+  final SecureStorageModel _secureStorageModel;
 
-  AuthModel(this._apiClient);
+  AuthModel(this._apiClient, this._secureStorageModel);
 
   void setUserModel(UserModel userModel) {
     _userModel = userModel;
@@ -58,6 +60,8 @@ class AuthModel extends ChangeNotifier {
     }
 
     final data = _LoginVerifyCheckData.fromJson(json.decode(response.body));
+
+    await _secureStorageModel.write('access_token', data.accessToken);
 
     return data.accessToken;
   }
