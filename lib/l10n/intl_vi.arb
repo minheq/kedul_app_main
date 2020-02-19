@@ -30,13 +30,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "loginVerifyCheckScreenTitle": "Nhập mã xác nhận",
-  "@loginVerifyCheckScreenTitle": {
+  "loginCheckScreenTitle": "Nhập mã xác nhận",
+  "@loginCheckScreenTitle": {
     "type": "text",
     "placeholders": {}
   },
-  "loginVerifyCheckScreenVerificationCodeSent": "Chúng tôi đã gửi mã xác nhận tới {phoneNumber}",
-  "@loginVerifyCheckScreenVerificationCodeSent": {
+  "loginCheckScreenVerificationCodeSent": "Chúng tôi đã gửi mã xác nhận tới {phoneNumber}",
+  "@loginCheckScreenVerificationCodeSent": {
     "type": "text",
     "placeholders": {
       "phoneNumber": {}

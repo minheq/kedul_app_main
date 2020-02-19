@@ -24,20 +24,16 @@ import 'package:kedul_app_main/screens/login_verify_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   AppConfig appConfig = AppConfig();
   AppEnvironment appEnvironment = AppEnvironment();
   SecureStorageModel secureStorageModel = SecureStorageModel();
   FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
   APIClient apiClient = APIClient(appConfig.apiBaseURL, secureStorageModel);
-  AnalyticsModel analytics;
-
-  if (appEnvironment.isProduction) {
-    analytics = FirebaseAnalyticsModel(firebaseAnalytics);
-  } else {
-    analytics = ConsoleAnalyticsModel();
-  }
-
+  AnalyticsModel analytics = appEnvironment.isProduction
+      ? FirebaseAnalyticsModel(firebaseAnalytics)
+      : ConsoleAnalyticsModel();
   AuthModel authModel = AuthModel(
       apiClient, secureStorageModel, UserRepository(apiClient), analytics);
 
@@ -54,8 +50,6 @@ Future<void> main() async {
     analytics.log('user_is_authenticated');
     initialRoute = CalendarMainScreen.routeName;
   }
-
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   runZoned(() {
     runApp(MyApp(

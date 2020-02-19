@@ -27,8 +27,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "commonPhoneNumber" : MessageLookupByLibrary.simpleMessage("Phone number"),
     "commonSomethingWentWrong" : MessageLookupByLibrary.simpleMessage("Something went wrong"),
     "commonVerificationCode" : MessageLookupByLibrary.simpleMessage("Verification code"),
-    "loginVerifyCheckScreenTitle" : MessageLookupByLibrary.simpleMessage("Enter verification code"),
-    "loginVerifyCheckScreenVerificationCodeSent" : m0,
+    "loginCheckScreenTitle" : MessageLookupByLibrary.simpleMessage("Enter verification code"),
+    "loginCheckScreenVerificationCodeSent" : m0,
     "loginVerifyScreenAcceptTerms" : MessageLookupByLibrary.simpleMessage("By verifying phone number, you agree to our Terms of Service and Privacy Policy"),
     "loginVerifyScreenTitle" : MessageLookupByLibrary.simpleMessage("Verify your phone number to continue.")
   };

@@ -34,7 +34,7 @@ class ThemeUtilityStyles {
 
   final InputDecorationTheme inputDecoration = InputDecorationTheme(
       border: InputBorder.none,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.0));
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 18.0));
 }
 
 class ThemeTextStyles {

@@ -30,13 +30,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "loginVerifyCheckScreenTitle": "Enter verification code",
-  "@loginVerifyCheckScreenTitle": {
+  "loginCheckScreenTitle": "Enter verification code",
+  "@loginCheckScreenTitle": {
     "type": "text",
     "placeholders": {}
   },
-  "loginVerifyCheckScreenVerificationCodeSent": "We have sent verification code to {phoneNumber}",
-  "@loginVerifyCheckScreenVerificationCodeSent": {
+  "loginCheckScreenVerificationCodeSent": "We have sent verification code to {phoneNumber}",
+  "@loginCheckScreenVerificationCodeSent": {
     "type": "text",
     "placeholders": {
       "phoneNumber": {}

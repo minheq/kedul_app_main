@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2020-02-16T21:27:20.584582",
+  "@@last_modified": "2020-02-19T21:27:57.142855",
   "commonNext": "Next",
   "@commonNext": {
     "type": "text",
@@ -30,13 +30,13 @@
     "type": "text",
     "placeholders": {}
   },
-  "loginVerifyCheckScreenTitle": "Enter verification code",
-  "@loginVerifyCheckScreenTitle": {
+  "loginCheckScreenTitle": "Enter verification code",
+  "@loginCheckScreenTitle": {
     "type": "text",
     "placeholders": {}
   },
-  "loginVerifyCheckScreenVerificationCodeSent": "We have sent verification code to {phoneNumber}",
-  "@loginVerifyCheckScreenVerificationCodeSent": {
+  "loginCheckScreenVerificationCodeSent": "We have sent verification code to {phoneNumber}",
+  "@loginCheckScreenVerificationCodeSent": {
     "type": "text",
     "placeholders": {
       "phoneNumber": {}
