@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kedul_app_main/storage/secure_storage_model.dart';
+import 'package:kedul_app_main/auth/auth_model.dart';
+import 'package:kedul_app_main/screens/login_verify_screen.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
-
-final secureStorageModel = SecureStorageModel();
+import 'package:provider/provider.dart';
 
 class CalendarMainScreen extends StatefulWidget {
   static const String routeName = '/calendar_main';
@@ -16,9 +16,12 @@ class CalendarMainScreen extends StatefulWidget {
 class _CalendarMainScreenState extends State<CalendarMainScreen> {
   _CalendarMainScreenState();
 
-  Future<void> loadData() async {
-    final jwt = await secureStorageModel.read('access_token');
-    print(jwt);
+  Future<void> handleLogOut() async {
+    AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
+
+    await authModel.logOut();
+
+    Navigator.pushReplacementNamed(context, LoginVerifyScreen.routeName);
   }
 
   @override
@@ -32,8 +35,8 @@ class _CalendarMainScreenState extends State<CalendarMainScreen> {
                 SizedBox(height: 96),
                 Text("Calendar Main Screen"),
                 PrimaryButton(
-                  onPressed: loadData,
-                  title: 'print',
+                  onPressed: handleLogOut,
+                  title: 'log out',
                 )
               ],
             )));

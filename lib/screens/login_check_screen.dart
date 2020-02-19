@@ -12,26 +12,26 @@ import 'package:kedul_app_main/widgets/otp_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
-class LoginVerifyCheckScreenArguments {
+class LoginCheckScreenArguments {
   final String verificationID;
   final String phoneNumber;
   final String countryCode;
 
-  LoginVerifyCheckScreenArguments(
+  LoginCheckScreenArguments(
       this.verificationID, this.phoneNumber, this.countryCode);
 }
 
-class LoginVerifyCheckScreen extends StatefulWidget {
-  static const String routeName = '/login_verify_check';
+class LoginCheckScreen extends StatefulWidget {
+  static const String routeName = '/login_check';
 
   @override
-  _LoginVerifyCheckScreenState createState() {
-    return _LoginVerifyCheckScreenState();
+  _LoginCheckScreenState createState() {
+    return _LoginCheckScreenState();
   }
 }
 
-class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
-  _LoginVerifyCheckScreenState();
+class _LoginCheckScreenState extends State<LoginCheckScreen> {
+  _LoginCheckScreenState();
 
   final formKey = GlobalKey<FormState>();
   String _code = '';
@@ -39,20 +39,19 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
   String _status;
 
   Future<void> handleLoginVerifyCheck() async {
-    LoginVerifyCheckScreenArguments args =
-        ModalRoute.of(context).settings.arguments;
+    LoginCheckScreenArguments args = ModalRoute.of(context).settings.arguments;
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
         Provider.of<AnalyticsModel>(context, listen: false);
 
     try {
-      analytics.log('login_verify_check');
+      analytics.log('login_check');
 
       if (args.verificationID == null) {
         _status = l10n.commonSomethingWentWrong;
         StateError e = StateError(
-            'verificationID argument was not passed to LoginVerifyCheckScreen');
+            'verificationID argument was not passed to LoginCheckScreen');
         analytics.recordError(e, e.stackTrace);
         return;
       }
@@ -87,8 +86,7 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
   @override
   Widget build(BuildContext context) {
     MyAppLocalization l10n = MyAppLocalization.of(context);
-    LoginVerifyCheckScreenArguments args =
-        ModalRoute.of(context).settings.arguments;
+    LoginCheckScreenArguments args = ModalRoute.of(context).settings.arguments;
     ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
@@ -98,12 +96,11 @@ class _LoginVerifyCheckScreenState extends State<LoginVerifyCheckScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n.loginVerifyCheckScreenTitle,
+              l10n.loginCheckScreenTitle,
               style: theme.textStyles.headline1,
             ),
             SizedBox(height: 16),
-            Text(l10n
-                .loginVerifyCheckScreenVerificationCodeSent(args.phoneNumber)),
+            Text(l10n.loginCheckScreenVerificationCodeSent(args.phoneNumber)),
             SizedBox(height: 56),
             FormFieldContainer(
               labelText: l10n.commonVerificationCode,

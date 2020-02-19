@@ -10,4 +10,8 @@ class SecureStorageModel {
   Future<String> read(String key) async {
     return await storage.read(key: key);
   }
+
+  Future<void> remove(String key) async {
+    return await storage.delete(key: key);
+  }
 }

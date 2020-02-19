@@ -71,18 +71,18 @@ class MyAppLocalization {
     );
   }
 
-  String get loginVerifyCheckScreenTitle {
+  String get loginCheckScreenTitle {
     return Intl.message(
       'Enter verification code',
-      name: 'loginVerifyCheckScreenTitle',
+      name: 'loginCheckScreenTitle',
       locale: localeName,
     );
   }
 
-  String loginVerifyCheckScreenVerificationCodeSent(String phoneNumber) {
+  String loginCheckScreenVerificationCodeSent(String phoneNumber) {
     return Intl.message(
       'We have sent verification code to $phoneNumber',
-      name: 'loginVerifyCheckScreenVerificationCodeSent',
+      name: 'loginCheckScreenVerificationCodeSent',
       args: [phoneNumber],
       locale: localeName,
     );

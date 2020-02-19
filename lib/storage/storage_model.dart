@@ -12,4 +12,10 @@ class StorageModel {
 
     return prefs.getString(key);
   }
+
+  Future<void> remove(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.remove(key);
+  }
 }

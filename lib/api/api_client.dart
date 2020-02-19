@@ -20,7 +20,7 @@ class APIClient {
     String accessToken = await _getAccessToken();
 
     return _client.get(_baseURL + pathname,
-        headers: {HttpHeaders.authorizationHeader: "Basic $accessToken"});
+        headers: {HttpHeaders.authorizationHeader: "Bearer $accessToken"});
   }
 
   Future<http.Response> post(String pathname, String body) async {
@@ -29,7 +29,7 @@ class APIClient {
     return _client.post(_baseURL + pathname,
         headers: {
           'Content-Type': 'application/json',
-          HttpHeaders.authorizationHeader: "Basic $accessToken"
+          HttpHeaders.authorizationHeader: "Bearer $accessToken"
         },
         body: body);
   }

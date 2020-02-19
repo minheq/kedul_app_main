@@ -3,7 +3,7 @@ import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
-import 'package:kedul_app_main/screens/login_verify_check_screen.dart';
+import 'package:kedul_app_main/screens/login_check_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/BottomActionBar.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
@@ -47,8 +47,8 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
 
       Navigator.pushNamed(
         context,
-        LoginVerifyCheckScreen.routeName,
-        arguments: LoginVerifyCheckScreenArguments(
+        LoginCheckScreen.routeName,
+        arguments: LoginCheckScreenArguments(
             verificationID, _phoneNumber, _countryCode),
       );
     } on APIErrorException catch (e) {
