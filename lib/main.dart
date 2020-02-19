@@ -22,7 +22,7 @@ import 'package:kedul_app_main/storage/secure_storage_model.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   AppConfig appConfig = AppConfig();
