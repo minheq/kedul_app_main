@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/screens/calendar_appointments_screen.dart';
 import 'package:kedul_app_main/screens/home_screen.dart';
+import 'package:kedul_app_main/screens/profile_account_settings.dart';
+import 'package:kedul_app_main/screens/profile_update_phone_number_check_screen.dart';
+import 'package:kedul_app_main/screens/profile_update_phone_number_verify_screen.dart';
 import 'package:kedul_app_main/screens/profile_user_edit_screen.dart';
 import 'package:kedul_app_main/screens/profile_user_screen.dart';
 import 'package:provider/provider.dart';
@@ -166,6 +169,12 @@ class MyApp extends StatelessWidget {
           // Profile
           ProfileUserScreen.routeName: (context) => ProfileUserScreen(),
           ProfileUserEditScreen.routeName: (context) => ProfileUserEditScreen(),
+          ProfileAccountSettingsScreen.routeName: (context) =>
+              ProfileAccountSettingsScreen(),
+          ProfileUpdatePhoneNumberVerifyScreen.routeName: (context) =>
+              ProfileUpdatePhoneNumberVerifyScreen(),
+          ProfileUpdatePhoneNumberCheckScreen.routeName: (context) =>
+              ProfileUpdatePhoneNumberCheckScreen(),
         },
       ),
     );

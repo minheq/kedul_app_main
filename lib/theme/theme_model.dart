@@ -48,6 +48,7 @@ class ThemeTextStyles {
       TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold);
   final TextStyle headline3 =
       TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold);
+  final TextStyle bodyText1 = TextStyle(fontSize: 20.0);
   final TextStyle bodyText2 = TextStyle(fontSize: 16.0);
   final TextStyle caption = TextStyle(fontSize: 12.8);
   final TextStyle button =

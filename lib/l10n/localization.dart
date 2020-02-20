@@ -95,6 +95,22 @@ class MyAppLocalization {
     );
   }
 
+  String get profileAccountSettingsTitle {
+    return Intl.message(
+      'Account settings',
+      name: 'profileAccountSettingsTitle',
+      locale: localeName,
+    );
+  }
+
+  String get profileUpdatePhoneNumberVerifyTitle {
+    return Intl.message(
+      'Update phone number',
+      name: 'profileUpdatePhoneNumberVerifyTitle',
+      locale: localeName,
+    );
+  }
+
   String loginCheckScreenVerificationCodeSent(String phoneNumber) {
     return Intl.message(
       'We have sent verification code to $phoneNumber',

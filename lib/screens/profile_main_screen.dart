@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/auth/user_entity.dart';
+import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
+import 'package:kedul_app_main/screens/profile_account_settings.dart';
 import 'package:kedul_app_main/screens/profile_user_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
+import 'package:kedul_app_main/widgets/list_item.dart';
+import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
 class ProfileMainScreen extends StatefulWidget {
@@ -27,52 +31,49 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MyAppLocalization l10n = MyAppLocalization.of(context);
     AuthModel auth = Provider.of<AuthModel>(context);
     ThemeModel theme = Provider.of<ThemeModel>(context);
     User currentUser = auth.currentUser;
 
     return Scaffold(
-      body: BodyPadding(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          SizedBox(height: 96),
-          _ListItem(
-            child: Text(
-              currentUser.fullName == "" ? "Setup profile" : "See all",
-              style: theme.textStyles.link,
+      body: SafeArea(
+        child: BodyPadding(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            ListItem(
+              image: ProfilePicture(
+                image: null,
+                name: currentUser.fullName,
+                size: 48,
+              ),
+              title: currentUser.fullName == ""
+                  ? "Setup profile"
+                  : currentUser.fullName,
+              onTap: () {
+                Navigator.pushNamed(context, ProfileUserScreen.routeName);
+              },
             ),
-            onTap: () {
-              Navigator.pushNamed(context, ProfileUserScreen.routeName);
-            },
-          ),
-          Container(
-            child: InkWell(
-                child: Text(
-                  "Log out",
-                  style: theme.textStyles.link,
-                ),
-                onTap: handleLogOut),
-          )
-        ],
-      )),
-    );
-  }
-}
-
-class _ListItem extends StatelessWidget {
-  _ListItem({this.child, this.onTap});
-
-  final Widget child;
-  final void Function() onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeModel theme = Provider.of<ThemeModel>(context);
-
-    return Container(
-      height: theme.utilityStyles.controlHeight,
-      child: InkWell(child: child, onTap: onTap),
+            ListItem(
+              title: l10n.profileAccountSettingsTitle,
+              onTap: () {
+                Navigator.pushNamed(
+                    context, ProfileAccountSettingsScreen.routeName);
+              },
+            ),
+            SizedBox(height: 48),
+            Container(
+              child: InkWell(
+                  child: Text(
+                    "Log out",
+                    style: TextStyle(color: theme.colors.textMuted),
+                  ),
+                  onTap: handleLogOut),
+            )
+          ],
+        )),
+      ),
     );
   }
 }
