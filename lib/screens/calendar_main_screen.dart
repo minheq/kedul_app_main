@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/screens/calendar_appointments_screen.dart';
-import 'package:kedul_app_main/widgets/text_link.dart';
+import 'package:kedul_app_main/theme/theme_model.dart';
+import 'package:kedul_app_main/widgets/body_padding.dart';
+import 'package:provider/provider.dart';
 
 class CalendarMainScreen extends StatefulWidget {
   @override
@@ -14,17 +16,26 @@ class _CalendarMainScreenState extends State<CalendarMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeModel theme = Provider.of<ThemeModel>(context);
+
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+      body: BodyPadding(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text("Calendar Main Screen"),
-              TextLink("See all", CalendarAppointmentsScreen.routeName),
-            ],
-          )),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("Calendar Main Screen"),
+          InkWell(
+              child: Text(
+                "See all",
+                style: theme.textStyles.link,
+              ),
+              onTap: () {
+                Navigator.pushNamed(
+                    context, CalendarAppointmentsScreen.routeName);
+              }),
+        ],
+      )),
     );
   }
 }

@@ -7,18 +7,15 @@ import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/api/http_response_utils.dart';
-import 'package:kedul_app_main/auth/user_repository.dart';
 import 'package:kedul_app_main/storage/secure_storage_model.dart';
 
 class AuthModel extends ChangeNotifier {
   User _currentUser;
   final APIClient _apiClient;
   final SecureStorageModel _secureStorageModel;
-  final UserRepository _userRepository;
   final AnalyticsModel _analyticsModel;
 
-  AuthModel(this._apiClient, this._secureStorageModel, this._userRepository,
-      this._analyticsModel);
+  AuthModel(this._apiClient, this._secureStorageModel, this._analyticsModel);
 
   bool get isAuthenticated {
     return _currentUser != null;
@@ -30,12 +27,17 @@ class AuthModel extends ChangeNotifier {
 
   Future<User> loadCurrentUser() async {
     try {
-      User user = await _userRepository.getCurrentUser();
+      http.Response response = await _apiClient.get('/auth/current_user');
+
+      if (HTTPResponseUtils.isErrorResponse(response)) {
+        return null;
+      }
+
+      User user = User.fromJson(json.decode(response.body));
+
       _currentUser = user;
 
       return user;
-    } on APIErrorException {
-      return null;
     } catch (e, s) {
       _analyticsModel.recordError(e, s);
 
@@ -87,6 +89,55 @@ class AuthModel extends ChangeNotifier {
   Future<void> logOut() async {
     await _secureStorageModel.remove('access_token');
     _currentUser = null;
+  }
+
+  Future<User> updatePhoneNumberVerify() async {
+    return null;
+  }
+
+  Future<User> updatePhoneNumberCheck() async {
+    return null;
+  }
+
+  Future<User> updateUserProfile(String fullName, String profileImageID) async {
+    String body = _UpdateUserProfileBody(
+            fullName: fullName, profileImageID: profileImageID)
+        .toJson();
+
+    http.Response response =
+        await _apiClient.post('/auth/update_user_profile', body);
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    User user = User.fromJson(json.decode(response.body));
+
+    _currentUser = user;
+
+    notifyListeners();
+
+    return user;
+  }
+}
+
+class _UpdateUserProfileBody {
+  _UpdateUserProfileBody({this.fullName, this.profileImageID});
+
+  String fullName;
+  String profileImageID;
+
+  String toJson() {
+    var mapData = new Map();
+
+    mapData['full_name'] = fullName;
+    mapData['profile_image_id'] = profileImageID;
+
+    String body = json.encode(mapData);
+
+    return body;
   }
 }
 

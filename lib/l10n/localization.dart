@@ -31,6 +31,22 @@ class MyAppLocalization {
     );
   }
 
+  String get commonSave {
+    return Intl.message(
+      'Save',
+      name: 'commonSave',
+      locale: localeName,
+    );
+  }
+
+  String get commonFullName {
+    return Intl.message(
+      'Full name',
+      name: 'commonFullName',
+      locale: localeName,
+    );
+  }
+
   String get commonSomethingWentWrong {
     return Intl.message(
       'Something went wrong',

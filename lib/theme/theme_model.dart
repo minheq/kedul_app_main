@@ -21,6 +21,8 @@ class ThemeColors {
   final Color content = MyAppPalette.white;
   final Color background = MyAppPalette.white;
 
+  final Color boxPrimaryLight = MyAppPalette.green100;
+
   final BoxShadow shadow = BoxShadow(
       color: MyAppPalette.grey700.withOpacity(0.2),
       offset: Offset(0, 2),
@@ -51,6 +53,8 @@ class ThemeTextStyles {
   final TextStyle button =
       TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal);
   final TextStyle overline = TextStyle(fontSize: 12.8);
+  final TextStyle link =
+      TextStyle(fontSize: 16.0, color: MyAppPalette.green900);
 }
 
 class MyAppPalette {

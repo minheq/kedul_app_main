@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/screens/calendar_appointments_screen.dart';
 import 'package:kedul_app_main/screens/home_screen.dart';
+import 'package:kedul_app_main/screens/profile_user_edit_screen.dart';
 import 'package:kedul_app_main/screens/profile_user_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -16,10 +17,8 @@ import 'package:kedul_app_main/analytics/console_analytics_model.dart';
 import 'package:kedul_app_main/analytics/firebase_analytics_model.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/auth/user_repository.dart';
 import 'package:kedul_app_main/config.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
-import 'package:kedul_app_main/screens/calendar_main_screen.dart';
 import 'package:kedul_app_main/screens/login_check_screen.dart';
 import 'package:kedul_app_main/storage/secure_storage_model.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
@@ -37,8 +36,7 @@ Future<void> main() async {
   AnalyticsModel analytics = appEnvironment.isProduction
       ? FirebaseAnalyticsModel(firebaseAnalytics)
       : ConsoleAnalyticsModel();
-  AuthModel authModel = AuthModel(
-      apiClient, secureStorageModel, UserRepository(apiClient), analytics);
+  AuthModel authModel = AuthModel(apiClient, secureStorageModel, analytics);
 
   analytics.log('app_init');
 
@@ -155,12 +153,19 @@ class MyApp extends StatelessWidget {
         navigatorObservers: appEnvironment.isProduction ? [observer] : [],
         initialRoute: initialRoute,
         routes: {
+          HomeScreen.routeName: (context) => HomeScreen(),
+
+          // Auth
           LoginVerifyScreen.routeName: (context) => LoginVerifyScreen(),
           LoginCheckScreen.routeName: (context) => LoginCheckScreen(),
-          HomeScreen.routeName: (context) => HomeScreen(),
-          ProfileUserScreen.routeName: (context) => ProfileUserScreen(),
+
+          // Calendar
           CalendarAppointmentsScreen.routeName: (context) =>
               CalendarAppointmentsScreen(),
+
+          // Profile
+          ProfileUserScreen.routeName: (context) => ProfileUserScreen(),
+          ProfileUserEditScreen.routeName: (context) => ProfileUserEditScreen(),
         },
       ),
     );

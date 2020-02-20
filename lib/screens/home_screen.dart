@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _selectedIndex = 0;
 
-  final List<Widget> _mainScreens = [
+  final List<Widget> _mainScreens = <Widget>[
     CalendarMainScreen(),
     CalendarMainScreen(),
     CalendarMainScreen(),
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         body: _mainScreens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
-          items: [
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Feather.calendar),
               title: Text(
