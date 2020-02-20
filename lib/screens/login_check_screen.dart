@@ -3,9 +3,9 @@ import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
-import 'package:kedul_app_main/screens/calendar_main_screen.dart';
+import 'package:kedul_app_main/screens/home_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
-import 'package:kedul_app_main/widgets/BottomActionBar.dart';
+import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/otp_form_field.dart';
@@ -64,7 +64,7 @@ class _LoginCheckScreenState extends State<LoginCheckScreen> {
 
       Navigator.pushNamed(
         context,
-        CalendarMainScreen.routeName,
+        HomeScreen.routeName,
       );
     } on APIErrorException catch (e) {
       setState(() {

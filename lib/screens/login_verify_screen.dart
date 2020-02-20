@@ -5,7 +5,7 @@ import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_check_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
-import 'package:kedul_app_main/widgets/BottomActionBar.dart';
+import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';

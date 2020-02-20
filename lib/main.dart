@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:kedul_app_main/auth/user_entity.dart';
+import 'package:kedul_app_main/screens/calendar_appointments_screen.dart';
+import 'package:kedul_app_main/screens/home_screen.dart';
+import 'package:kedul_app_main/screens/profile_user_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -48,7 +51,7 @@ Future<void> main() async {
     initialRoute = LoginVerifyScreen.routeName;
   } else {
     analytics.log('user_is_authenticated');
-    initialRoute = CalendarMainScreen.routeName;
+    initialRoute = HomeScreen.routeName;
   }
 
   runZoned(() {
@@ -88,7 +91,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeModel theme = ThemeModel();
+    ThemeModel theme = ThemeModel();
     FirebaseAnalyticsObserver observer =
         FirebaseAnalyticsObserver(analytics: firebaseAnalytics);
 
@@ -154,7 +157,10 @@ class MyApp extends StatelessWidget {
         routes: {
           LoginVerifyScreen.routeName: (context) => LoginVerifyScreen(),
           LoginCheckScreen.routeName: (context) => LoginCheckScreen(),
-          CalendarMainScreen.routeName: (context) => CalendarMainScreen(),
+          HomeScreen.routeName: (context) => HomeScreen(),
+          ProfileUserScreen.routeName: (context) => ProfileUserScreen(),
+          CalendarAppointmentsScreen.routeName: (context) =>
+              CalendarAppointmentsScreen(),
         },
       ),
     );
