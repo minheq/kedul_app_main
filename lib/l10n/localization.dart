@@ -25,8 +25,24 @@ class MyAppLocalization {
 
   String get commonNext {
     return Intl.message(
-      'Hello World',
+      'Next',
       name: 'commonNext',
+      locale: localeName,
+    );
+  }
+
+  String get commonSave {
+    return Intl.message(
+      'Save',
+      name: 'commonSave',
+      locale: localeName,
+    );
+  }
+
+  String get commonFullName {
+    return Intl.message(
+      'Full name',
+      name: 'commonFullName',
       locale: localeName,
     );
   }
@@ -47,6 +63,14 @@ class MyAppLocalization {
     );
   }
 
+  String get commonVerificationCode {
+    return Intl.message(
+      'Verification code',
+      name: 'commonVerificationCode',
+      locale: localeName,
+    );
+  }
+
   String get loginVerifyScreenTitle {
     return Intl.message(
       'Verify your phone number to continue.',
@@ -59,6 +83,39 @@ class MyAppLocalization {
     return Intl.message(
       'By verifying phone number, you agree to our Terms of Service and Privacy Policy',
       name: 'loginVerifyScreenAcceptTerms',
+      locale: localeName,
+    );
+  }
+
+  String get loginCheckScreenTitle {
+    return Intl.message(
+      'Enter verification code',
+      name: 'loginCheckScreenTitle',
+      locale: localeName,
+    );
+  }
+
+  String get profileAccountSettingsTitle {
+    return Intl.message(
+      'Account settings',
+      name: 'profileAccountSettingsTitle',
+      locale: localeName,
+    );
+  }
+
+  String get profileUpdatePhoneNumberVerifyTitle {
+    return Intl.message(
+      'Update phone number',
+      name: 'profileUpdatePhoneNumberVerifyTitle',
+      locale: localeName,
+    );
+  }
+
+  String loginCheckScreenVerificationCodeSent(String phoneNumber) {
+    return Intl.message(
+      'We have sent verification code to $phoneNumber',
+      name: 'loginCheckScreenVerificationCodeSent',
+      args: [phoneNumber],
       locale: localeName,
     );
   }

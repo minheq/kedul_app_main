@@ -19,10 +19,16 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'vi';
 
+  static m0(phoneNumber) => "Chúng tôi đã gửi mã xác nhận tới ${phoneNumber}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "commonNext" : MessageLookupByLibrary.simpleMessage("Tiếp tục"),
     "commonPhoneNumber" : MessageLookupByLibrary.simpleMessage("Số điện thoại"),
+    "commonSomethingWentWrong" : MessageLookupByLibrary.simpleMessage("Đã xảy ra lỗi"),
+    "commonVerificationCode" : MessageLookupByLibrary.simpleMessage("Mã xác nhận"),
+    "loginCheckScreenTitle" : MessageLookupByLibrary.simpleMessage("Nhập mã xác nhận"),
+    "loginCheckScreenVerificationCodeSent" : m0,
     "loginVerifyScreenAcceptTerms" : MessageLookupByLibrary.simpleMessage("Khi xác nhận số điện thoại, bạn đồng ý với điều khoản dịch vụ và chính sách bảo mật của chúng tôi."),
     "loginVerifyScreenTitle" : MessageLookupByLibrary.simpleMessage("Xác nhận số điện thoại của bạn để tiếp tục.")
   };

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
+import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
-import 'package:kedul_app_main/screens/login_check_screen.dart';
+import 'package:kedul_app_main/screens/profile_update_phone_number_check_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
@@ -12,43 +13,44 @@ import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
 
-class LoginVerifyScreen extends StatefulWidget {
-  static const String routeName = '/login_verify';
+class ProfileUpdatePhoneNumberVerifyScreen extends StatefulWidget {
+  static const String routeName = '/profile_update_phone_number_verify';
 
   @override
-  _LoginVerifyScreenState createState() {
-    return _LoginVerifyScreenState();
+  _ProfileUpdatePhoneNumberVerifyScreenState createState() {
+    return _ProfileUpdatePhoneNumberVerifyScreenState();
   }
 }
 
-class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
-  _LoginVerifyScreenState();
+class _ProfileUpdatePhoneNumberVerifyScreenState
+    extends State<ProfileUpdatePhoneNumberVerifyScreen> {
+  _ProfileUpdatePhoneNumberVerifyScreenState();
 
   String _phoneNumber = '';
   String _countryCode = 'VN';
   bool _isSubmitting = false;
   String _status;
 
-  Future<void> handleLoginVerify() async {
+  Future<void> handleUpdatePhoneNumberVerify() async {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
         Provider.of<AnalyticsModel>(context, listen: false);
 
     try {
-      analytics.log('login_verify');
+      analytics.log('update_phone_number_verify');
 
       setState(() {
         _isSubmitting = true;
       });
 
       String verificationID =
-          await auth.loginVerify(_phoneNumber, _countryCode);
+          await auth.updatePhoneNumberVerify(_phoneNumber, _countryCode);
 
       Navigator.pushNamed(
         context,
-        LoginCheckScreen.routeName,
-        arguments: LoginCheckScreenArguments(
+        ProfileUpdatePhoneNumberCheckScreen.routeName,
+        arguments: ProfileUpdatePhoneNumberCheckScreenArguments(
             verificationID, _phoneNumber, _countryCode),
       );
     } on APIErrorException catch (e) {
@@ -72,28 +74,23 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
   Widget build(BuildContext context) {
     MyAppLocalization l10n = MyAppLocalization.of(context);
     ThemeModel theme = Provider.of<ThemeModel>(context);
+    AuthModel auth = Provider.of<AuthModel>(context);
+    User currentUser = auth.currentUser;
 
     return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.profileUpdatePhoneNumberVerifyTitle),
+        ),
         body: BodyPadding(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 40),
-            Image(
-              image: AssetImage('assets/logo.png'),
-              width: 104,
-            ),
-            SizedBox(height: 40),
-            Text(
-              l10n.loginVerifyScreenTitle,
-              style: theme.textStyles.headline1,
-            ),
-            SizedBox(height: 56),
             FormFieldContainer(
               labelText: l10n.commonPhoneNumber,
-              hintText: l10n.loginVerifyScreenAcceptTerms,
               child: PhoneNumberFormField(
-                initialValue: PhoneNumber(countryCode: 'VN', phoneNumber: ''),
+                initialValue: PhoneNumber(
+                    countryCode: currentUser.countryCode,
+                    phoneNumber: currentUser.phoneNumber),
                 onChanged: (phoneNumber) {
                   setState(() {
                     _phoneNumber = phoneNumber.phoneNumber;
@@ -101,7 +98,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
                   });
                 },
                 onFieldSubmitted: (phoneNumber) {
-                  handleLoginVerify();
+                  handleUpdatePhoneNumberVerify();
                 },
               ),
             ),
@@ -115,7 +112,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
         )),
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
-              onPressed: handleLoginVerify,
+              onPressed: handleUpdatePhoneNumberVerify,
               title: l10n.commonNext,
               isSubmitting: _isSubmitting)
         ]));

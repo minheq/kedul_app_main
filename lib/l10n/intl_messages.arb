@@ -1,13 +1,22 @@
 {
-  "@@last_modified": "2020-02-14T13:14:47.939633",
-  "commonNext": "Hello World",
+  "@@last_modified": "2020-02-19T21:27:57.142855",
+  "commonNext": "Next",
   "@commonNext": {
-    "description": "Title for the Demo application",
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonSomethingWentWrong": "Something went wrong",
+  "@commonSomethingWentWrong": {
     "type": "text",
     "placeholders": {}
   },
   "commonPhoneNumber": "Phone number",
   "@commonPhoneNumber": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "commonVerificationCode": "Verification code",
+  "@commonVerificationCode": {
     "type": "text",
     "placeholders": {}
   },
@@ -20,5 +29,17 @@
   "@loginVerifyScreenAcceptTerms": {
     "type": "text",
     "placeholders": {}
+  },
+  "loginCheckScreenTitle": "Enter verification code",
+  "@loginCheckScreenTitle": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "loginCheckScreenVerificationCodeSent": "We have sent verification code to {phoneNumber}",
+  "@loginCheckScreenVerificationCodeSent": {
+    "type": "text",
+    "placeholders": {
+      "phoneNumber": {}
+    }
   }
 }

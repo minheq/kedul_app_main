@@ -8,18 +8,20 @@ class ThemeModel {
 }
 
 class ThemeColors {
-  final Color buttonPrimary = MyAppPalette.green300;
+  final Color buttonPrimary = MyAppPalette.green700;
 
   final Color textDefault = MyAppPalette.grey900;
   final Color textMuted = MyAppPalette.grey700;
-  final Color textPrimary = MyAppPalette.grey900;
+  final Color textPrimary = MyAppPalette.green800;
   final Color textError = MyAppPalette.red700;
   final Color textLink = MyAppPalette.green900;
-  final Color textButtonPrimary = MyAppPalette.grey900;
+  final Color textButtonPrimary = MyAppPalette.white;
 
   final Color border = MyAppPalette.grey700;
   final Color content = MyAppPalette.white;
   final Color background = MyAppPalette.white;
+
+  final Color boxPrimaryLight = MyAppPalette.green100;
 
   final BoxShadow shadow = BoxShadow(
       color: MyAppPalette.grey700.withOpacity(0.2),
@@ -34,7 +36,7 @@ class ThemeUtilityStyles {
 
   final InputDecorationTheme inputDecoration = InputDecorationTheme(
       border: InputBorder.none,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.0));
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 18.0));
 }
 
 class ThemeTextStyles {
@@ -46,26 +48,29 @@ class ThemeTextStyles {
       TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold);
   final TextStyle headline3 =
       TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold);
+  final TextStyle bodyText1 = TextStyle(fontSize: 20.0);
   final TextStyle bodyText2 = TextStyle(fontSize: 16.0);
   final TextStyle caption = TextStyle(fontSize: 12.8);
   final TextStyle button =
       TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal);
   final TextStyle overline = TextStyle(fontSize: 12.8);
+  final TextStyle link =
+      TextStyle(fontSize: 16.0, color: MyAppPalette.green900);
 }
 
 class MyAppPalette {
   MyAppPalette._();
 
-  static const Color green50 = Color(0xffebfbf4);
-  static const Color green100 = Color(0xffaaf0dd);
-  static const Color green200 = Color(0xffaaf0d7);
-  static const Color green300 = Color(0xffAAF0D0);
-  static const Color green400 = Color(0xff94ecc5);
-  static const Color green500 = Color(0xff7fe8ba);
-  static const Color green600 = Color(0xff69e5ae);
-  static const Color green700 = Color(0xff53e1a2);
-  static const Color green800 = Color(0xff3edd97);
-  static const Color green900 = Color(0xff28da8b);
+  static const Color green50 = Color(0xffEFFCF6);
+  static const Color green100 = Color(0xffC6F7E2);
+  static const Color green200 = Color(0xff8EEDC7);
+  static const Color green300 = Color(0xff65D6AD);
+  static const Color green400 = Color(0xff3EBD93);
+  static const Color green500 = Color(0xff27AB83);
+  static const Color green600 = Color(0xff199473);
+  static const Color green700 = Color(0xff14866E);
+  static const Color green800 = Color(0xff0C6B58);
+  static const Color green900 = Color(0xff014D40);
 
   static const Color grey50 = Color(0xffFAFAFA);
   static const Color grey100 = Color(0xffF5F5F5);

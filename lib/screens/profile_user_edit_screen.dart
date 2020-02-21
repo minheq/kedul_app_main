@@ -2,55 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
+import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
-import 'package:kedul_app_main/screens/login_check_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
-import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
+import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
-import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
+import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
-class LoginVerifyScreen extends StatefulWidget {
-  static const String routeName = '/login_verify';
+class ProfileUserEditScreen extends StatefulWidget {
+  static const String routeName = '/profile_user_edit_screen';
 
   @override
-  _LoginVerifyScreenState createState() {
-    return _LoginVerifyScreenState();
+  _ProfileUserEditScreenState createState() {
+    return _ProfileUserEditScreenState();
   }
 }
 
-class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
-  _LoginVerifyScreenState();
+class _ProfileUserEditScreenState extends State<ProfileUserEditScreen> {
+  _ProfileUserEditScreenState();
 
-  String _phoneNumber = '';
-  String _countryCode = 'VN';
+  String _fullName;
+  String _profileImageID;
   bool _isSubmitting = false;
   String _status;
 
-  Future<void> handleLoginVerify() async {
+  Future<void> handleUpdateUserProfile() async {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
         Provider.of<AnalyticsModel>(context, listen: false);
 
     try {
-      analytics.log('login_verify');
+      analytics.log('update_user_profile');
 
       setState(() {
         _isSubmitting = true;
       });
 
-      String verificationID =
-          await auth.loginVerify(_phoneNumber, _countryCode);
+      await auth.updateUserProfile(_fullName, _profileImageID);
 
-      Navigator.pushNamed(
-        context,
-        LoginCheckScreen.routeName,
-        arguments: LoginCheckScreenArguments(
-            verificationID, _phoneNumber, _countryCode),
-      );
+      Navigator.pop(context);
     } on APIErrorException catch (e) {
       setState(() {
         _status = e.message;
@@ -71,37 +65,32 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
   @override
   Widget build(BuildContext context) {
     MyAppLocalization l10n = MyAppLocalization.of(context);
+    AuthModel authModel = Provider.of<AuthModel>(context);
+    User currentUser = authModel.currentUser;
     ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
+        appBar: AppBar(),
         body: BodyPadding(
             child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 40),
-            Image(
-              image: AssetImage('assets/logo.png'),
-              width: 104,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ProfilePicture(
+                  image: null,
+                  name: currentUser.fullName,
+                  size: 120,
+                )
+              ],
             ),
-            SizedBox(height: 40),
-            Text(
-              l10n.loginVerifyScreenTitle,
-              style: theme.textStyles.headline1,
-            ),
-            SizedBox(height: 56),
+            SizedBox(height: 16.0),
             FormFieldContainer(
-              labelText: l10n.commonPhoneNumber,
-              hintText: l10n.loginVerifyScreenAcceptTerms,
-              child: PhoneNumberFormField(
-                initialValue: PhoneNumber(countryCode: 'VN', phoneNumber: ''),
-                onChanged: (phoneNumber) {
-                  setState(() {
-                    _phoneNumber = phoneNumber.phoneNumber;
-                    _countryCode = phoneNumber.countryCode;
-                  });
-                },
-                onFieldSubmitted: (phoneNumber) {
-                  handleLoginVerify();
+              labelText: l10n.commonFullName,
+              child: TextFormField(
+                initialValue: currentUser.fullName,
+                onChanged: (name) {
+                  _fullName = name;
                 },
               ),
             ),
@@ -115,8 +104,8 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
         )),
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
-              onPressed: handleLoginVerify,
-              title: l10n.commonNext,
+              onPressed: handleUpdateUserProfile,
+              title: l10n.commonSave,
               isSubmitting: _isSubmitting)
         ]));
   }

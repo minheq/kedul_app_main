@@ -1,81 +1,175 @@
 import 'dart:convert';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/analytics/analytics_model.dart';
+
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/user_entity.dart';
-import 'package:kedul_app_main/auth/user_model.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/api/http_response_utils.dart';
+import 'package:kedul_app_main/storage/secure_storage_model.dart';
 
 class AuthModel extends ChangeNotifier {
-  UserModel _userModel;
-  APIClient _apiClient;
+  User _currentUser;
+  final APIClient _apiClient;
+  final SecureStorageModel _secureStorageModel;
+  final AnalyticsModel _analyticsModel;
 
-  AuthModel(this._apiClient);
-
-  void setUserModel(UserModel userModel) {
-    _userModel = userModel;
-  }
+  AuthModel(this._apiClient, this._secureStorageModel, this._analyticsModel);
 
   bool get isAuthenticated {
-    return _userModel.isAuthenticated;
+    return _currentUser != null;
   }
 
-  Future<User> get currentUser async {
-    return _userModel.currentUser;
+  User get currentUser {
+    return _currentUser;
+  }
+
+  Future<User> loadCurrentUser() async {
+    try {
+      http.Response response = await _apiClient.get('/auth/current_user');
+
+      if (HTTPResponseUtils.isErrorResponse(response)) {
+        return null;
+      }
+
+      User user = User.fromJson(json.decode(response.body));
+
+      _currentUser = user;
+
+      return user;
+    } catch (e, s) {
+      _analyticsModel.recordError(e, s);
+
+      return null;
+    }
   }
 
   // Returns verificationID string use for further confirmation
   Future<String> loginVerify(String phoneNumber, String countryCode) async {
-    String body =
-        _LoginVerifyBody(phoneNumber: phoneNumber, countryCode: countryCode)
-            .toJson();
+    String body = _PhoneNumberVerifyBody(
+            phoneNumber: phoneNumber, countryCode: countryCode)
+        .toJson();
 
-    final response = await _apiClient.post('/login_verify', body);
+    http.Response response = await _apiClient.post('/auth/login_verify', body);
 
     if (HTTPResponseUtils.isErrorResponse(response)) {
-      final data = ErrorResponse.fromJson(json.decode(response.body));
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
 
       throw APIErrorException(message: data.message);
     }
 
-    final data = _LoginVerifyData.fromJson(json.decode(response.body));
+    _PhoneNumberVerifyData data =
+        _PhoneNumberVerifyData.fromJson(json.decode(response.body));
 
     return data.verificationID;
   }
 
-  Future<String> loginVerifyCheck(String verificationID, String code) async {
+  Future<String> loginCheck(String verificationID, String code) async {
     String body =
-        _LoginVerifyCheckBody(verificationID: verificationID, code: code)
+        _PhoneNumberCheckBody(verificationID: verificationID, code: code)
             .toJson();
 
-    final response = await _apiClient.post('/login_verify_check', body);
+    http.Response response = await _apiClient.post('/auth/login_check', body);
 
     if (HTTPResponseUtils.isErrorResponse(response)) {
-      final data = ErrorResponse.fromJson(json.decode(response.body));
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
 
       throw APIErrorException(message: data.message);
     }
 
-    final data = _LoginVerifyCheckData.fromJson(json.decode(response.body));
+    _LoginCheckData data = _LoginCheckData.fromJson(json.decode(response.body));
+
+    await _secureStorageModel.write('access_token', data.accessToken);
 
     return data.accessToken;
   }
 
-  void logOut() {}
+  Future<void> logOut() async {
+    await _secureStorageModel.remove('access_token');
+    _currentUser = null;
+  }
+
+  Future<String> updatePhoneNumberVerify(
+      String phoneNumber, String countryCode) async {
+    String body = _PhoneNumberVerifyBody(
+            phoneNumber: phoneNumber, countryCode: countryCode)
+        .toJson();
+
+    http.Response response =
+        await _apiClient.post('/auth/update_phone_number_verify', body);
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    _PhoneNumberVerifyData data =
+        _PhoneNumberVerifyData.fromJson(json.decode(response.body));
+
+    return data.verificationID;
+  }
+
+  Future<User> updatePhoneNumberCheck(
+      String verificationID, String code) async {
+    String body =
+        _PhoneNumberCheckBody(verificationID: verificationID, code: code)
+            .toJson();
+
+    http.Response response =
+        await _apiClient.post('/auth/update_phone_number_check', body);
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    User user = User.fromJson(json.decode(response.body));
+
+    _currentUser = user;
+
+    notifyListeners();
+
+    return user;
+  }
+
+  Future<User> updateUserProfile(String fullName, String profileImageID) async {
+    String body = _UpdateUserProfileBody(
+            fullName: fullName, profileImageID: profileImageID)
+        .toJson();
+
+    http.Response response =
+        await _apiClient.post('/auth/update_user_profile', body);
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    User user = User.fromJson(json.decode(response.body));
+
+    _currentUser = user;
+
+    notifyListeners();
+
+    return user;
+  }
 }
 
-class _LoginVerifyBody {
-  _LoginVerifyBody({this.phoneNumber, this.countryCode});
+class _UpdateUserProfileBody {
+  _UpdateUserProfileBody({this.fullName, this.profileImageID});
 
-  String phoneNumber;
-  String countryCode;
+  String fullName;
+  String profileImageID;
 
   String toJson() {
     var mapData = new Map();
 
-    mapData['phoneNumber'] = phoneNumber;
-    mapData['countryCode'] = countryCode;
+    mapData['full_name'] = fullName;
+    mapData['profile_image_id'] = profileImageID;
 
     String body = json.encode(mapData);
 
@@ -83,20 +177,38 @@ class _LoginVerifyBody {
   }
 }
 
-class _LoginVerifyData {
+class _PhoneNumberVerifyBody {
+  _PhoneNumberVerifyBody({this.phoneNumber, this.countryCode});
+
+  String phoneNumber;
+  String countryCode;
+
+  String toJson() {
+    var mapData = new Map();
+
+    mapData['phone_number'] = phoneNumber;
+    mapData['country_code'] = countryCode;
+
+    String body = json.encode(mapData);
+
+    return body;
+  }
+}
+
+class _PhoneNumberVerifyData {
   final String verificationID;
 
-  _LoginVerifyData({this.verificationID});
+  _PhoneNumberVerifyData({this.verificationID});
 
-  factory _LoginVerifyData.fromJson(Map<String, dynamic> json) {
-    return _LoginVerifyData(
-      verificationID: json['verificationID'],
+  factory _PhoneNumberVerifyData.fromJson(Map<String, dynamic> json) {
+    return _PhoneNumberVerifyData(
+      verificationID: json['verification_id'],
     );
   }
 }
 
-class _LoginVerifyCheckBody {
-  _LoginVerifyCheckBody({this.verificationID, this.code});
+class _PhoneNumberCheckBody {
+  _PhoneNumberCheckBody({this.verificationID, this.code});
 
   String verificationID;
   String code;
@@ -104,7 +216,7 @@ class _LoginVerifyCheckBody {
   String toJson() {
     var mapData = new Map();
 
-    mapData['verificationID'] = verificationID;
+    mapData['verification_id'] = verificationID;
     mapData['code'] = code;
 
     String body = json.encode(mapData);
@@ -113,14 +225,14 @@ class _LoginVerifyCheckBody {
   }
 }
 
-class _LoginVerifyCheckData {
+class _LoginCheckData {
   final String accessToken;
 
-  _LoginVerifyCheckData({this.accessToken});
+  _LoginCheckData({this.accessToken});
 
-  factory _LoginVerifyCheckData.fromJson(Map<String, dynamic> json) {
-    return _LoginVerifyCheckData(
-      accessToken: json['accessToken'],
+  factory _LoginCheckData.fromJson(Map<String, dynamic> json) {
+    return _LoginCheckData(
+      accessToken: json['access_token'],
     );
   }
 }

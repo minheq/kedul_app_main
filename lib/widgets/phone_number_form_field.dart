@@ -69,7 +69,6 @@ class PhoneNumberFormField extends FormField<PhoneNumber> {
                                 phoneNumber: phoneNumber,
                                 countryCode: state.value.countryCode));
                           },
-                          cursorColor: Theme.of(state.context).cursorColor,
                           onFieldSubmitted: (phoneNumber) {
                             onFieldSubmitted(PhoneNumber(
                                 phoneNumber: state.value.phoneNumber,
