@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker",
+        "dart-code.dart-code",
+        "dart-code.flutter",
+        "visualstudioexptteam.vscodeintellicode",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "eg2.vscode-npm-script"
+    ]
+}

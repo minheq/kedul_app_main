@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
+import 'package:kedul_app_main/utils/date_time_utils.dart';
 import 'package:provider/provider.dart';
 
 class Staff {
@@ -40,6 +41,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
       _SyncScrollControllerManager();
 
   final List<Staff> _staffList;
+  // First index should match the index of the staff from _staffList
   final List<List<Appointment>> _appointmentsList;
 
   final double _cellWidth = 150.0;
@@ -155,7 +157,26 @@ class _WeekCalendarState extends State<WeekCalendar> {
                                         Container(
                                             height: _HOURS * _cellHeight,
                                             width: _cellWidth,
-                                            color: Colors.yellow)
+                                            child: Stack(
+                                              children: <Widget>[
+                                                if (staff.name == 'Mike')
+                                                  Positioned(
+                                                      top: 30,
+                                                      width: _cellWidth,
+                                                      child: Container(
+                                                        height: 100,
+                                                        color: Colors.yellow,
+                                                      )),
+                                                if (staff.name == 'Mike')
+                                                  Positioned(
+                                                      top: 190,
+                                                      width: _cellWidth,
+                                                      child: Container(
+                                                        height: 100,
+                                                        color: Colors.yellow,
+                                                      ))
+                                              ],
+                                            ))
                                       ]);
                                     }).toList())
                                   ]),
@@ -173,6 +194,112 @@ class _WeekCalendarState extends State<WeekCalendar> {
   }
 }
 
+class AppointmentCoordinate {
+  AppointmentCoordinate(
+      {this.top, this.height, this.width, this.offsetWidth, this.appointment});
+
+  int top;
+  int height;
+  double width;
+  double offsetWidth;
+  Appointment appointment;
+}
+
+class WeekCalendarUtils {
+  final int _minuteStep = 5;
+
+  /// filterAppointmentsWithinDay ensures appointments start time and end time are within a day.
+  /// For example, if an appoinntment starts at 23:00 and ends next day 01:00
+  /// the function will split the appointment to 23:00-23:59 and 00:00-01:00,
+  /// and discard the one with the date that's different from the day.
+  static List<Appointment> filterAppointmentsWithinDay(
+      List<Appointment> appointments, DateTime day) {
+    List<Appointment> filteredAppointments = [];
+    DateTime endOfDay = DateTimeUtils.endOfDay(day);
+    DateTime startOfDay = DateTimeUtils.startOfDay(day);
+
+    for (Appointment appointment in appointments) {
+      if (appointment.startTime.isBefore(startOfDay)) {
+        appointment.startTime = startOfDay;
+      }
+
+      if (appointment.endTime.isAfter(endOfDay)) {
+        appointment.endTime = endOfDay;
+      }
+
+      filteredAppointments.add(appointment);
+    }
+
+    return appointments;
+  }
+
+  static List<AppointmentCoordinate> toAppointmentCoordinates(
+      List<Appointment> appointments, DateTime day) {
+    DateTime startOfDay = DateTimeUtils.startOfDay(day);
+
+    List<AppointmentCoordinate> coordinates = [];
+
+    appointments.sort((a, b) {
+      return a.startTime.compareTo(b.startTime);
+    });
+
+    for (Appointment appointment in appointments) {
+      AppointmentCoordinate coordinate = AppointmentCoordinate();
+
+      coordinate.appointment = appointment;
+
+      int differenceFromStartOfDayInMinutes =
+          appointment.startTime.difference(startOfDay).inMinutes;
+      coordinate.top = differenceFromStartOfDayInMinutes;
+
+      int appointmentInMinutes =
+          appointment.endTime.difference(appointment.startTime).inMinutes;
+      coordinate.height = appointmentInMinutes;
+
+      coordinates.add(coordinate);
+    }
+
+    // This algorithm is O(n^2). We can probably do better,
+    // but given the input size is small it should work fine for now
+    for (AppointmentCoordinate coordinate in coordinates) {
+      int overlapCount = 0;
+      bool hasOverlappedSelf = false;
+      double offset = 0;
+
+      for (AppointmentCoordinate compared in coordinates) {
+        bool areOverlapping = coordinate.top < compared.top
+            ? coordinate.top - coordinate.height < compared.top
+            : compared.top - compared.height < coordinate.top;
+
+        if (areOverlapping == false) {
+          continue;
+        }
+
+        overlapCount++;
+
+        if (identical(coordinate.appointment, compared.appointment)) {
+          hasOverlappedSelf = true;
+        }
+
+        if (hasOverlappedSelf == false) {
+          offset++;
+        }
+      }
+
+      coordinate.offsetWidth = offset;
+      coordinate.width = 1 / overlapCount;
+    }
+
+    return coordinates;
+  }
+}
+
+/// _SyncScrollControllerManager manages synchronization of vertical scroll position
+/// of left side and right side of the calendar
+/// On the high level, it works by when left side scrolls, it tells the right side scroller
+/// scroll to the same position.
+/// For this to work, it has to prevent cyclic notification by marking which of them is the main
+/// driver, and only scroll the sibling.
 class _SyncScrollControllerManager {
   List<ScrollController> _registeredScrollControllers =
       new List<ScrollController>();
