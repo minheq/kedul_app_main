@@ -78,26 +78,35 @@ class _WeekCalendarState extends State<WeekCalendar> {
                   // Left side
                   Container(
                     width: _leftColumnWidth,
-                    // Listen to the vertical scroll
-                    child: NotificationListener<ScrollNotification>(
-                      onNotification: (ScrollNotification scrollNotification) {
-                        // Scroll right side vertical scroller simultanously
-                        _syncScrollController.processScrollNotification(
-                            scrollNotification,
-                            _leftSideVerticalScrollController);
-                        return false;
-                      },
-                      child: ListView(
-                        physics: ClampingScrollPhysics(),
-                        controller: _leftSideVerticalScrollController,
-                        children: <Widget>[
-                          Container(
-                            height: _cellHeight,
-                            width: _leftColumnWidth,
+                    child: Column(
+                      children: <Widget>[
+                        // Top left cell
+                        Container(
+                          height: _cellHeight,
+                          width: _leftColumnWidth,
+                        ),
+                        // Hours column
+                        Expanded(
+                          // Listen to the vertical scroll
+                          child: NotificationListener<ScrollNotification>(
+                            onNotification:
+                                (ScrollNotification scrollNotification) {
+                              // Scroll right side vertical scroller simultanously
+                              _syncScrollController.processScrollNotification(
+                                  scrollNotification,
+                                  _leftSideVerticalScrollController);
+                              return false;
+                            },
+                            child: ListView(
+                              physics: ClampingScrollPhysics(),
+                              controller: _leftSideVerticalScrollController,
+                              children: <Widget>[
+                                _Hours(_cellHeight, _leftColumnWidth),
+                              ],
+                            ),
                           ),
-                          _Hours(_cellHeight, _leftColumnWidth),
-                        ],
-                      ),
+                        )
+                      ],
                     ),
                   ),
                   // Right side
