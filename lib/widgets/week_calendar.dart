@@ -1,19 +1,5 @@
 import 'package:flutter/material.dart';
 
-List<Staff> staffList = [
-  Staff(name: 'Mike'),
-  Staff(name: 'Bob'),
-  Staff(name: 'Aria'),
-  Staff(name: 'Alexa'),
-];
-
-List<List<Appointment>> appointmentList = [
-  [Appointment(name: '1'), Appointment(name: '1'), Appointment(name: '1')],
-  [Appointment(name: '2'), Appointment(name: '2'), Appointment(name: '2')],
-  [Appointment(name: '3'), Appointment(name: '3'), Appointment(name: '3')],
-  [Appointment(name: '3'), Appointment(name: '3'), Appointment(name: '3')],
-];
-
 class Staff {
   Staff({this.name});
 
@@ -21,26 +7,41 @@ class Staff {
 }
 
 class Appointment {
-  Appointment({this.name});
+  Appointment({this.name, this.startTime, this.endTime});
 
   String name;
+  DateTime startTime;
+  DateTime endTime;
 }
 
+const int _HOURS = 24;
+
 class WeekCalendar extends StatefulWidget {
+  WeekCalendar(this._staffList, this._appointmentsList);
+
+  final List<Staff> _staffList;
+  final List<List<Appointment>> _appointmentsList;
+
   @override
-  _WeekCalendarState createState() => _WeekCalendarState();
+  _WeekCalendarState createState() =>
+      _WeekCalendarState(_staffList, _appointmentsList);
 }
 
 class _WeekCalendarState extends State<WeekCalendar> {
+  _WeekCalendarState(this._staffList, this._appointmentsList);
+
   ScrollController _leftSideVerticalScrollController = ScrollController();
   ScrollController _rightSideVerticalScrollController = ScrollController();
   ScrollController _rightSideHorizontalScrollController = ScrollController();
   _SyncScrollControllerManager _syncScrollController =
       _SyncScrollControllerManager();
 
-  final double cellWidth = 150.0;
-  final double cellHeight = 80.0;
-  final double leftColumnWidth = 40.0;
+  final List<Staff> _staffList;
+  final List<List<Appointment>> _appointmentsList;
+
+  final double _cellWidth = 150.0;
+  final double _cellHeight = 48.0;
+  final double _leftColumnWidth = 40.0;
 
   @override
   void initState() {
@@ -76,7 +77,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
                 children: <Widget>[
                   // Left side
                   Container(
-                    width: leftColumnWidth,
+                    width: _leftColumnWidth,
                     // Listen to the vertical scroll
                     child: NotificationListener<ScrollNotification>(
                       onNotification: (ScrollNotification scrollNotification) {
@@ -89,15 +90,13 @@ class _WeekCalendarState extends State<WeekCalendar> {
                       child: ListView(
                         physics: ClampingScrollPhysics(),
                         controller: _leftSideVerticalScrollController,
-                        children: List<int>.generate(21, (i) => i + 1)
-                            .map<Widget>((e) {
-                          return Container(
-                            height: cellHeight,
-                            width: leftColumnWidth,
-                            color: Colors.red,
-                            child: Center(child: Text('$e')),
-                          );
-                        }).toList(),
+                        children: <Widget>[
+                          Container(
+                            height: _cellHeight,
+                            width: _leftColumnWidth,
+                          ),
+                          _Hours(_cellHeight, _leftColumnWidth),
+                        ],
                       ),
                     ),
                   ),
@@ -108,17 +107,17 @@ class _WeekCalendarState extends State<WeekCalendar> {
                     scrollDirection: Axis.horizontal,
                     controller: _rightSideHorizontalScrollController,
                     child: Container(
-                      width: cellWidth * staffList.length,
+                      width: _cellWidth * _staffList.length,
                       child: Column(
                         children: <Widget>[
                           // Header
                           Container(
                               color: Colors.green,
                               child: Row(
-                                  children: staffList.map<Widget>((staff) {
+                                  children: _staffList.map<Widget>((staff) {
                                 return Container(
-                                  height: cellHeight,
-                                  width: cellWidth,
+                                  height: _cellHeight,
+                                  width: _cellWidth,
                                   color: Colors.blue,
                                   child: Center(child: Text(staff.name)),
                                 );
@@ -141,18 +140,13 @@ class _WeekCalendarState extends State<WeekCalendar> {
                                   children: [
                                     Row(
                                         children:
-                                            staffList.map<Widget>((staff) {
-                                      return Column(
-                                          children: List<int>.generate(
-                                                  20, (i) => i + 1)
-                                              .map<Widget>((e) {
-                                        return Container(
-                                          height: cellHeight,
-                                          width: cellWidth,
-                                          color: Colors.yellow,
-                                          child: Center(child: Text('$e')),
-                                        );
-                                      }).toList());
+                                            _staffList.map<Widget>((staff) {
+                                      return Column(children: <Widget>[
+                                        Container(
+                                            height: _HOURS * _cellHeight,
+                                            width: _cellWidth,
+                                            color: Colors.yellow)
+                                      ]);
                                     }).toList())
                                   ]),
                             ),
@@ -210,5 +204,32 @@ class _SyncScrollControllerManager {
         return;
       }
     }
+  }
+}
+
+class _Hours extends StatelessWidget {
+  _Hours(this._cellHeight, this._leftColumnWidth);
+
+  final double _cellHeight;
+  final double _leftColumnWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    List<int> hours = List<int>.generate(_HOURS, (i) {
+      return i;
+    });
+
+    List<Widget> hoursWidgetList = List<Widget>();
+
+    for (int hour in hours) {
+      hoursWidgetList.add(Container(
+        height: _cellHeight,
+        width: _leftColumnWidth,
+        color: Colors.red,
+        child: Center(child: Text('$hour')),
+      ));
+    }
+
+    return Column(children: hoursWidgetList);
   }
 }
