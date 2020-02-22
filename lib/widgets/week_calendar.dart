@@ -239,10 +239,12 @@ class WeekCalendarUtils {
 
     List<AppointmentCoordinate> coordinates = [];
 
+    // Order appointments by their start time
     appointments.sort((a, b) {
       return a.startTime.compareTo(b.startTime);
     });
 
+    // Create coordinates and give them top position and height
     for (Appointment appointment in appointments) {
       AppointmentCoordinate coordinate = AppointmentCoordinate();
 
@@ -259,35 +261,58 @@ class WeekCalendarUtils {
       coordinates.add(coordinate);
     }
 
-    // This algorithm is O(n^2). We can probably do better,
-    // but given the input size is small it should work fine for now
-    for (AppointmentCoordinate coordinate in coordinates) {
-      int overlapCount = 0;
-      bool hasOverlappedSelf = false;
-      double offset = 0;
+    // Update coordinates with width and offsetWidth
+    // Note that we want coordinates to not overlap each other when shown in column
+    //
+    // How it works:
+    // Assuming we have 5 appointments, denoted by [startTime, endtime]
+    // [[0, 3], [2.5, 4], [3, 5], [6, 8], [7, 9]] (there will be 2 overlapping groups)
+    //
+    // In the first iteration, where start and end is 0
+    // prevCoordinate = [0, 3], nextCoordinate = [2.5, 4]
+    // the ranges are overlapping so end will increment, start=0 and end=1
+    // Next iteration:
+    // prevCoordinate = [2.5, 4], nextCoordinate = [3, 5]
+    // the ranges are overlapping so end will increment, start=0 and end=2
+    // Next iteration:
+    // prevCoordinate = [3, 5], nextCoordinate = [6, 8]
+    // the ranges are NOT overlapping. we take the sublist of appointments from start=0 to end=2
+    // and add it to overlapping coordinates group list [[[0, 3], [2.5, 4], [3, 5]]]
+    // then we set start and end to be end + 1, so start=3 and end=3
+    // Next iteration:
+    // prevCoordinate = [6, 8], nextCoordinate = [7, 9]
+    // the ranges are overlapping so end will increment, start=3 and end=4
+    // Next iteration:
+    // end is 4, which is the last item, we add the remainer of the appointments to the group list
+    // from start=3 and end=4
+    // we increment end to exit the while loop
 
-      for (AppointmentCoordinate compared in coordinates) {
-        bool areOverlapping = coordinate.top < compared.top
-            ? coordinate.top - coordinate.height < compared.top
-            : compared.top - compared.height < coordinate.top;
+    List<List<AppointmentCoordinate>> overlappingCoordinatesGroup = [];
 
-        if (areOverlapping == false) {
-          continue;
-        }
+    int start = 0;
+    int end = 0;
 
-        overlapCount++;
-
-        if (identical(coordinate.appointment, compared.appointment)) {
-          hasOverlappedSelf = true;
-        }
-
-        if (hasOverlappedSelf == false) {
-          offset++;
-        }
+    while (end != appointments.length) {
+      if (end == appointments.length - 1) {
+        overlappingCoordinatesGroup.add(coordinates.sublist(start));
+        end++;
+        continue;
       }
 
-      coordinate.offsetWidth = offset;
-      coordinate.width = 1 / overlapCount;
+      AppointmentCoordinate prevCoordinate = coordinates[end];
+      AppointmentCoordinate nextCoordinate = coordinates[end + 1];
+
+      bool areCoordinatesOverlapping =
+          nextCoordinate.top - nextCoordinate.height < prevCoordinate.top;
+
+      if (areCoordinatesOverlapping) {
+        end++;
+        continue;
+      }
+
+      end = end + 1;
+      overlappingCoordinatesGroup.add(coordinates.sublist(start, end));
+      start = end;
     }
 
     return coordinates;

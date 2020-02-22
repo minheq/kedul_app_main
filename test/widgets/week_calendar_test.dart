@@ -1,5 +1,3 @@
-// Import the test package and Counter class
-// import 'package:test/test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kedul_app_main/utils/date_time_utils.dart';
 import 'package:kedul_app_main/widgets/week_calendar.dart';
@@ -11,12 +9,12 @@ List<Appointment> appointmentList = [
       endTime: DateTime(2020, 2, 22, 1, 0)),
   Appointment(
       name: '1',
-      startTime: DateTime(2020, 2, 22, 13, 40),
-      endTime: DateTime(2020, 2, 22, 14, 0)),
+      startTime: DateTime(2020, 2, 22, 13, 0),
+      endTime: DateTime(2020, 2, 22, 15, 0)),
   Appointment(
       name: '1',
-      startTime: DateTime(2020, 2, 22, 13, 50),
-      endTime: DateTime(2020, 2, 22, 14, 10)),
+      startTime: DateTime(2020, 2, 22, 14, 0),
+      endTime: DateTime(2020, 2, 22, 16, 0)),
   Appointment(
       name: '1',
       startTime: DateTime(2020, 2, 22, 17, 0),
