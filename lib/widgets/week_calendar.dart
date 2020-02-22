@@ -1,4 +1,7 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/theme/theme_model.dart';
+import 'package:provider/provider.dart';
 
 class Staff {
   Staff({this.name});
@@ -41,7 +44,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
 
   final double _cellWidth = 150.0;
   final double _cellHeight = 48.0;
-  final double _leftColumnWidth = 40.0;
+  final double _leftColumnWidth = 48.0;
 
   @override
   void initState() {
@@ -75,17 +78,15 @@ class _WeekCalendarState extends State<WeekCalendar> {
               height: boxConstraint.maxHeight,
               child: Row(
                 children: <Widget>[
-                  // Left side
+                  // Left side (hours column)
                   Container(
                     width: _leftColumnWidth,
                     child: Column(
                       children: <Widget>[
-                        // Top left cell
                         Container(
                           height: _cellHeight,
                           width: _leftColumnWidth,
                         ),
-                        // Hours column
                         Expanded(
                           // Listen to the vertical scroll
                           child: NotificationListener<ScrollNotification>(
@@ -101,7 +102,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
                               physics: ClampingScrollPhysics(),
                               controller: _leftSideVerticalScrollController,
                               children: <Widget>[
-                                _Hours(_cellHeight, _leftColumnWidth),
+                                _HoursColumn(_cellHeight, _leftColumnWidth),
                               ],
                             ),
                           ),
@@ -109,7 +110,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
                       ],
                     ),
                   ),
-                  // Right side
+                  // Right side (header and events)
                   Expanded(
                       child: SingleChildScrollView(
                     physics: ClampingScrollPhysics(),
@@ -216,26 +217,36 @@ class _SyncScrollControllerManager {
   }
 }
 
-class _Hours extends StatelessWidget {
-  _Hours(this._cellHeight, this._leftColumnWidth);
+class _HoursColumn extends StatelessWidget {
+  _HoursColumn(this._cellHeight, this._leftColumnWidth);
 
   final double _cellHeight;
   final double _leftColumnWidth;
+  final List<DateTime> hours = List<DateTime>.generate(_HOURS, (i) {
+    return DateTime(2020, 1, 1, i);
+  });
 
   @override
   Widget build(BuildContext context) {
-    List<int> hours = List<int>.generate(_HOURS, (i) {
-      return i;
-    });
+    ThemeModel theme = Provider.of<ThemeModel>(context);
 
     List<Widget> hoursWidgetList = List<Widget>();
 
-    for (int hour in hours) {
+    for (DateTime hour in hours) {
+      if (hour.hour == 0) {
+        hoursWidgetList
+            .add(Container(height: _cellHeight, width: _leftColumnWidth));
+        continue;
+      }
+
       hoursWidgetList.add(Container(
         height: _cellHeight,
         width: _leftColumnWidth,
-        color: Colors.red,
-        child: Center(child: Text('$hour')),
+        child: Text(
+          '${DateFormat.j().format(hour)}',
+          style: theme.textStyles.caption,
+          textAlign: TextAlign.center,
+        ),
       ));
     }
 
