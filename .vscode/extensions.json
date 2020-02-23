@@ -5,7 +5,6 @@
         "dart-code.flutter",
         "visualstudioexptteam.vscodeintellicode",
         "eamodio.gitlens",
-        "github.vscode-pull-request-github",
-        "eg2.vscode-npm-script"
+        "github.vscode-pull-request-github"
     ]
 }

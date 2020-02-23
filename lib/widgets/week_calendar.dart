@@ -315,7 +315,23 @@ class WeekCalendarUtils {
       start = end;
     }
 
-    return coordinates;
+    // Unroll overlapping groups and combine them into final list of coordinates
+    final List<AppointmentCoordinate> finalCoordinates = [];
+
+    for (List<AppointmentCoordinate> group in overlappingCoordinatesGroup) {
+      double coordinateWidth = 1 / group.length;
+
+      for (int i = 0; i < group.length; i++) {
+        AppointmentCoordinate coordinate = group[i];
+
+        coordinate.width = coordinateWidth;
+        coordinate.offsetWidth = i.toDouble();
+
+        finalCoordinates.add(coordinate);
+      }
+    }
+
+    return finalCoordinates;
   }
 }
 
