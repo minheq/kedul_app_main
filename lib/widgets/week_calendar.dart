@@ -21,19 +21,26 @@ class Appointment {
 const int _HOURS = 24;
 
 class WeekCalendar extends StatefulWidget {
-  WeekCalendar(this._staffList, this._appointmentsList, this._day);
+  WeekCalendar(
+      {this.staffList, this.appointmentList, this.day, this.onTapAppointment});
 
-  final DateTime _day;
-  final List<Staff> _staffList;
-  final List<List<Appointment>> _appointmentsList;
+  final DateTime day;
+  final List<Staff> staffList;
+  final List<List<Appointment>> appointmentList;
+  final Function(Appointment) onTapAppointment;
 
   @override
-  _WeekCalendarState createState() =>
-      _WeekCalendarState(_staffList, _appointmentsList, _day);
+  _WeekCalendarState createState() => _WeekCalendarState(
+        staffList: staffList,
+        appointmentList: appointmentList,
+        onTapAppointment: onTapAppointment,
+        day: day,
+      );
 }
 
 class _WeekCalendarState extends State<WeekCalendar> {
-  _WeekCalendarState(this._staffList, this._appointmentsList, this._day);
+  _WeekCalendarState(
+      {this.staffList, this.appointmentList, this.day, this.onTapAppointment});
 
   ScrollController _leftSideVerticalScrollController = ScrollController();
   ScrollController _rightSideVerticalScrollController = ScrollController();
@@ -41,10 +48,11 @@ class _WeekCalendarState extends State<WeekCalendar> {
   _SyncScrollControllerManager _syncScrollController =
       _SyncScrollControllerManager();
 
-  final DateTime _day;
-  final List<Staff> _staffList;
-  // First index should match the index of the staff from _staffList
-  final List<List<Appointment>> _appointmentsList;
+  final DateTime day;
+  final List<Staff> staffList;
+  // First index should match the index of the staff from staffList
+  final List<List<Appointment>> appointmentList;
+  final Function(Appointment) onTapAppointment;
 
   final double _cellWidth = 150.0;
   final double _cellHeight = 60.0;
@@ -78,27 +86,33 @@ class _WeekCalendarState extends State<WeekCalendar> {
     List<Widget> appointmentColumns = [];
 
     // Calculate
-    for (int i = 0; i < _staffList.length; i++) {
-      List<Appointment> staffAppointmentList = _appointmentsList[i];
+    for (int i = 0; i < staffList.length; i++) {
+      List<Appointment> staffAppointmentList = appointmentList[i];
       List<Appointment> filteredAppointmentList =
           WeekCalendarUtils.filterAppointmentsWithinDay(
-              staffAppointmentList, _day);
+              staffAppointmentList, day);
 
       List<AppointmentCoordinate> appointmentCoordinates =
           WeekCalendarUtils.toAppointmentCoordinates(filteredAppointmentList,
-              _day, _cellWidth, DateTimeUtils.minutesInADay.toDouble());
+              day, _cellWidth, DateTimeUtils.minutesInADay.toDouble());
 
       List<Widget> appointmentCoordinateWidgets = [];
 
       for (AppointmentCoordinate coordinate in appointmentCoordinates) {
         appointmentCoordinateWidgets.add(Positioned(
-            top: coordinate.top,
-            width: coordinate.width,
-            left: coordinate.left,
+          top: coordinate.top,
+          width: coordinate.width,
+          left: coordinate.left,
+          child: InkWell(
+            onTap: () {
+              onTapAppointment(coordinate.appointment);
+            },
             child: Container(
               height: coordinate.height,
               color: Colors.yellow,
-            )));
+            ),
+          ),
+        ));
       }
 
       appointmentColumns.add(Column(children: <Widget>[
@@ -139,7 +153,6 @@ class _WeekCalendarState extends State<WeekCalendar> {
       child: LayoutBuilder(
         builder: (context, boxConstraint) {
           return Container(
-              color: Colors.grey,
               height: boxConstraint.maxHeight,
               child: Row(
                 children: <Widget>[
@@ -183,14 +196,14 @@ class _WeekCalendarState extends State<WeekCalendar> {
                     scrollDirection: Axis.horizontal,
                     controller: _rightSideHorizontalScrollController,
                     child: Container(
-                      width: _cellWidth * _staffList.length,
+                      width: _cellWidth * staffList.length,
                       child: Column(
                         children: <Widget>[
                           // Header
                           Container(
                               color: Colors.green,
                               child: Row(
-                                  children: _staffList.map<Widget>((staff) {
+                                  children: staffList.map<Widget>((staff) {
                                 return Container(
                                   height: _cellHeight,
                                   width: _cellWidth,

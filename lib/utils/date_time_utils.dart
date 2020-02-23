@@ -8,6 +8,4 @@ class DateTimeUtils {
   static DateTime startOfDay(DateTime day) {
     return DateTime(day.year, day.month, day.day);
   }
-
-  static DateTime areOverlapping(DateTime leftDate, DateTime rightDate) {}
 }

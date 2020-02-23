@@ -63,7 +63,14 @@ class _CalendarAppointmentsScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text("Appointments"),
-          WeekCalendar(_staffList, _appointmentList, DateTime(2020, 2, 22))
+          WeekCalendar(
+            staffList: _staffList,
+            appointmentList: _appointmentList,
+            day: DateTime(2020, 2, 22),
+            onTapAppointment: (appointment) {
+              print(appointment);
+            },
+          )
         ],
       )),
     );
