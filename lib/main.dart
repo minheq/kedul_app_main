@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:kedul_app_main/auth/user_entity.dart';
+import 'package:kedul_app_main/screens/appointment_details_screen.dart';
 import 'package:kedul_app_main/screens/calendar_appointments_screen.dart';
 import 'package:kedul_app_main/screens/home_screen.dart';
 import 'package:kedul_app_main/screens/profile_account_settings.dart';
@@ -165,6 +166,10 @@ class MyApp extends StatelessWidget {
           // Calendar
           CalendarAppointmentsScreen.routeName: (context) =>
               CalendarAppointmentsScreen(),
+
+          // Appointment
+          AppointmentDetailsScreen.routeName: (context) =>
+              AppointmentDetailsScreen(),
 
           // Profile
           ProfileUserScreen.routeName: (context) => ProfileUserScreen(),

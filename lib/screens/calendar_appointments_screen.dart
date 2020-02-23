@@ -1,8 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
-import 'package:provider/provider.dart';
+import 'package:kedul_app_main/widgets/week_calendar.dart';
+
+List<Staff> _staffList = [
+  Staff(name: 'Mike'),
+  Staff(name: 'Bob'),
+  Staff(name: 'Aria'),
+  Staff(name: 'Alexa'),
+];
+
+List<List<Appointment>> _appointmentList = [
+  // Mike
+  [
+    Appointment(
+        name: '1',
+        startTime: DateTime(2020, 2, 21, 23, 0),
+        endTime: DateTime(2020, 2, 22, 1, 0)),
+    Appointment(
+        name: '1',
+        startTime: DateTime(2020, 2, 22, 13, 0),
+        endTime: DateTime(2020, 2, 22, 15, 0)),
+    Appointment(
+        name: '1',
+        startTime: DateTime(2020, 2, 22, 14, 0),
+        endTime: DateTime(2020, 2, 22, 16, 0)),
+    Appointment(
+        name: '1',
+        startTime: DateTime(2020, 2, 22, 17, 0),
+        endTime: DateTime(2020, 2, 22, 18, 0)),
+    Appointment(
+        name: '1',
+        startTime: DateTime(2020, 2, 22, 23, 0),
+        endTime: DateTime(2020, 2, 23, 1, 0))
+  ],
+  // Bob
+  [],
+  // Aria
+  [],
+  // Alexa
+  [],
+];
 
 class CalendarAppointmentsScreen extends StatefulWidget {
   static const String routeName = '/calendar_appointments';
@@ -19,17 +56,21 @@ class _CalendarAppointmentsScreenState
 
   @override
   Widget build(BuildContext context) {
-    AuthModel authModel = Provider.of<AuthModel>(context);
-    User currentUser = authModel.currentUser;
-
     return Scaffold(
       appBar: AppBar(),
       body: BodyPadding(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text("Calendar Appointment"),
-          Text(currentUser.fullName),
+          Text("Appointments"),
+          WeekCalendar(
+            staffList: _staffList,
+            appointmentList: _appointmentList,
+            day: DateTime(2020, 2, 22),
+            onTapAppointment: (appointment) {
+              print(appointment);
+            },
+          )
         ],
       )),
     );
