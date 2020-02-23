@@ -14,12 +14,16 @@ List<List<Appointment>> _appointmentList = [
   [
     Appointment(
         name: '1',
-        startTime: DateTime(2020, 2, 22, 13, 40),
-        endTime: DateTime(2020, 2, 22, 14, 00)),
+        startTime: DateTime(2020, 2, 21, 23, 0),
+        endTime: DateTime(2020, 2, 22, 1, 0)),
     Appointment(
         name: '1',
-        startTime: DateTime(2020, 2, 22, 13, 50),
-        endTime: DateTime(2020, 2, 22, 14, 10)),
+        startTime: DateTime(2020, 2, 22, 13, 0),
+        endTime: DateTime(2020, 2, 22, 15, 0)),
+    Appointment(
+        name: '1',
+        startTime: DateTime(2020, 2, 22, 14, 0),
+        endTime: DateTime(2020, 2, 22, 16, 0)),
     Appointment(
         name: '1',
         startTime: DateTime(2020, 2, 22, 17, 0),
@@ -59,7 +63,7 @@ class _CalendarAppointmentsScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text("Appointments"),
-          WeekCalendar(_staffList, _appointmentList)
+          WeekCalendar(_staffList, _appointmentList, DateTime(2020, 2, 22))
         ],
       )),
     );

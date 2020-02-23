@@ -21,18 +21,19 @@ class Appointment {
 const int _HOURS = 24;
 
 class WeekCalendar extends StatefulWidget {
-  WeekCalendar(this._staffList, this._appointmentsList);
+  WeekCalendar(this._staffList, this._appointmentsList, this._day);
 
+  final DateTime _day;
   final List<Staff> _staffList;
   final List<List<Appointment>> _appointmentsList;
 
   @override
   _WeekCalendarState createState() =>
-      _WeekCalendarState(_staffList, _appointmentsList);
+      _WeekCalendarState(_staffList, _appointmentsList, _day);
 }
 
 class _WeekCalendarState extends State<WeekCalendar> {
-  _WeekCalendarState(this._staffList, this._appointmentsList);
+  _WeekCalendarState(this._staffList, this._appointmentsList, this._day);
 
   ScrollController _leftSideVerticalScrollController = ScrollController();
   ScrollController _rightSideVerticalScrollController = ScrollController();
@@ -40,12 +41,13 @@ class _WeekCalendarState extends State<WeekCalendar> {
   _SyncScrollControllerManager _syncScrollController =
       _SyncScrollControllerManager();
 
+  final DateTime _day;
   final List<Staff> _staffList;
   // First index should match the index of the staff from _staffList
   final List<List<Appointment>> _appointmentsList;
 
   final double _cellWidth = 150.0;
-  final double _cellHeight = 48.0;
+  final double _cellHeight = 60.0;
   final double _leftColumnWidth = 48.0;
 
   @override
@@ -72,6 +74,67 @@ class _WeekCalendarState extends State<WeekCalendar> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeModel theme = Provider.of<ThemeModel>(context);
+    List<Widget> appointmentColumns = [];
+
+    // Calculate
+    for (int i = 0; i < _staffList.length; i++) {
+      List<Appointment> staffAppointmentList = _appointmentsList[i];
+      List<Appointment> filteredAppointmentList =
+          WeekCalendarUtils.filterAppointmentsWithinDay(
+              staffAppointmentList, _day);
+
+      List<AppointmentCoordinate> appointmentCoordinates =
+          WeekCalendarUtils.toAppointmentCoordinates(filteredAppointmentList,
+              _day, _cellWidth, DateTimeUtils.minutesInADay.toDouble());
+
+      List<Widget> appointmentCoordinateWidgets = [];
+
+      for (AppointmentCoordinate coordinate in appointmentCoordinates) {
+        appointmentCoordinateWidgets.add(Positioned(
+            top: coordinate.top,
+            width: coordinate.width,
+            left: coordinate.left,
+            child: Container(
+              height: coordinate.height,
+              color: Colors.yellow,
+            )));
+      }
+
+      appointmentColumns.add(Column(children: <Widget>[
+        Container(
+            height: _HOURS * _cellHeight,
+            width: _cellWidth,
+            child: Stack(
+              children: appointmentCoordinateWidgets,
+            ))
+      ]));
+    }
+
+    // Hours column
+    final List<DateTime> hours = List<DateTime>.generate(_HOURS, (i) {
+      return DateTime(2020, 1, 1, i);
+    });
+    List<Widget> hoursWidgetList = List<Widget>();
+
+    for (DateTime hour in hours) {
+      if (hour.hour == 0) {
+        hoursWidgetList
+            .add(Container(height: _cellHeight, width: _leftColumnWidth));
+        continue;
+      }
+
+      hoursWidgetList.add(Container(
+        height: _cellHeight,
+        width: _leftColumnWidth,
+        child: Text(
+          '${DateFormat.j().format(hour)}',
+          style: theme.textStyles.caption,
+          textAlign: TextAlign.center,
+        ),
+      ));
+    }
+
     return Expanded(
       child: LayoutBuilder(
         builder: (context, boxConstraint) {
@@ -80,17 +143,18 @@ class _WeekCalendarState extends State<WeekCalendar> {
               height: boxConstraint.maxHeight,
               child: Row(
                 children: <Widget>[
-                  // Left side (hours column)
+                  // Left side
                   Container(
                     width: _leftColumnWidth,
                     child: Column(
                       children: <Widget>[
+                        // Top cell placeholder
                         Container(
                           height: _cellHeight,
                           width: _leftColumnWidth,
                         ),
+                        // Hours column
                         Expanded(
-                          // Listen to the vertical scroll
                           child: NotificationListener<ScrollNotification>(
                             onNotification:
                                 (ScrollNotification scrollNotification) {
@@ -104,7 +168,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
                               physics: ClampingScrollPhysics(),
                               controller: _leftSideVerticalScrollController,
                               children: <Widget>[
-                                _HoursColumn(_cellHeight, _leftColumnWidth),
+                                Column(children: hoursWidgetList),
                               ],
                             ),
                           ),
@@ -150,35 +214,7 @@ class _WeekCalendarState extends State<WeekCalendar> {
                                       _rightSideVerticalScrollController,
                                   physics: ClampingScrollPhysics(),
                                   children: [
-                                    Row(
-                                        children:
-                                            _staffList.map<Widget>((staff) {
-                                      return Column(children: <Widget>[
-                                        Container(
-                                            height: _HOURS * _cellHeight,
-                                            width: _cellWidth,
-                                            child: Stack(
-                                              children: <Widget>[
-                                                if (staff.name == 'Mike')
-                                                  Positioned(
-                                                      top: 30,
-                                                      width: _cellWidth,
-                                                      child: Container(
-                                                        height: 100,
-                                                        color: Colors.yellow,
-                                                      )),
-                                                if (staff.name == 'Mike')
-                                                  Positioned(
-                                                      top: 190,
-                                                      width: _cellWidth,
-                                                      child: Container(
-                                                        height: 100,
-                                                        color: Colors.yellow,
-                                                      ))
-                                              ],
-                                            ))
-                                      ]);
-                                    }).toList())
+                                    Row(children: appointmentColumns)
                                   ]),
                             ),
                           )
@@ -196,18 +232,16 @@ class _WeekCalendarState extends State<WeekCalendar> {
 
 class AppointmentCoordinate {
   AppointmentCoordinate(
-      {this.top, this.height, this.width, this.offsetWidth, this.appointment});
+      {this.top, this.height, this.width, this.left, this.appointment});
 
-  int top;
-  int height;
+  double height;
+  double top;
   double width;
-  double offsetWidth;
+  double left;
   Appointment appointment;
 }
 
 class WeekCalendarUtils {
-  final int _minuteStep = 5;
-
   /// filterAppointmentsWithinDay ensures appointments start time and end time are within a day.
   /// For example, if an appoinntment starts at 23:00 and ends next day 01:00
   /// the function will split the appointment to 23:00-23:59 and 00:00-01:00,
@@ -234,7 +268,10 @@ class WeekCalendarUtils {
   }
 
   static List<AppointmentCoordinate> toAppointmentCoordinates(
-      List<Appointment> appointments, DateTime day) {
+      List<Appointment> appointments,
+      DateTime day,
+      double columnWidth,
+      double columnHeight) {
     DateTime startOfDay = DateTimeUtils.startOfDay(day);
 
     List<AppointmentCoordinate> coordinates = [];
@@ -252,11 +289,11 @@ class WeekCalendarUtils {
 
       int differenceFromStartOfDayInMinutes =
           appointment.startTime.difference(startOfDay).inMinutes;
-      coordinate.top = differenceFromStartOfDayInMinutes;
+      coordinate.top = differenceFromStartOfDayInMinutes.toDouble();
 
       int appointmentInMinutes =
           appointment.endTime.difference(appointment.startTime).inMinutes;
-      coordinate.height = appointmentInMinutes;
+      coordinate.height = appointmentInMinutes.toDouble();
 
       coordinates.add(coordinate);
     }
@@ -319,13 +356,13 @@ class WeekCalendarUtils {
     final List<AppointmentCoordinate> finalCoordinates = [];
 
     for (List<AppointmentCoordinate> group in overlappingCoordinatesGroup) {
-      double coordinateWidth = 1 / group.length;
+      double coordinateWidthRatio = 1 / group.length;
 
       for (int i = 0; i < group.length; i++) {
         AppointmentCoordinate coordinate = group[i];
 
-        coordinate.width = coordinateWidth;
-        coordinate.offsetWidth = i.toDouble();
+        coordinate.width = columnWidth * coordinateWidthRatio;
+        coordinate.left = coordinate.width * i;
 
         finalCoordinates.add(coordinate);
       }
@@ -382,42 +419,5 @@ class _SyncScrollControllerManager {
         return;
       }
     }
-  }
-}
-
-class _HoursColumn extends StatelessWidget {
-  _HoursColumn(this._cellHeight, this._leftColumnWidth);
-
-  final double _cellHeight;
-  final double _leftColumnWidth;
-  final List<DateTime> hours = List<DateTime>.generate(_HOURS, (i) {
-    return DateTime(2020, 1, 1, i);
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    ThemeModel theme = Provider.of<ThemeModel>(context);
-
-    List<Widget> hoursWidgetList = List<Widget>();
-
-    for (DateTime hour in hours) {
-      if (hour.hour == 0) {
-        hoursWidgetList
-            .add(Container(height: _cellHeight, width: _leftColumnWidth));
-        continue;
-      }
-
-      hoursWidgetList.add(Container(
-        height: _cellHeight,
-        width: _leftColumnWidth,
-        child: Text(
-          '${DateFormat.j().format(hour)}',
-          style: theme.textStyles.caption,
-          textAlign: TextAlign.center,
-        ),
-      ));
-    }
-
-    return Column(children: hoursWidgetList);
   }
 }

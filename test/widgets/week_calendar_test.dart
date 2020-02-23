@@ -54,7 +54,10 @@ void main() {
 
     test('toAppointmentCoordinates', () {
       appointmentCoordinates = WeekCalendarUtils.toAppointmentCoordinates(
-          filteredAppointmentList, day);
+          filteredAppointmentList,
+          day,
+          300,
+          DateTimeUtils.minutesInADay.toDouble());
 
       print(appointmentCoordinates);
     });
