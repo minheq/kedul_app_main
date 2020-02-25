@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/screens/profile_user_edit_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';

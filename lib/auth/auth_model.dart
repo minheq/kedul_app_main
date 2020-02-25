@@ -1,13 +1,40 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:kedul_app_main/analytics/analytics_model.dart';
 
+import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
-import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/api/http_response_utils.dart';
 import 'package:kedul_app_main/storage/secure_storage_model.dart';
+
+class User {
+  final String id;
+  final String emailAddress;
+  final String phoneNumber;
+  final String countryCode;
+  final String fullName;
+  final String profileImageID;
+
+  User(
+      {this.id,
+      this.emailAddress,
+      this.phoneNumber,
+      this.countryCode,
+      this.fullName,
+      this.profileImageID});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      emailAddress: json['email_address'],
+      phoneNumber: json['phone_number'],
+      countryCode: json['country_code'],
+      fullName: json['full_name'],
+      profileImageID: json['profile_image_id'],
+    );
+  }
+}
 
 class AuthModel extends ChangeNotifier {
   User _currentUser;
@@ -166,7 +193,7 @@ class _UpdateUserProfileBody {
   String profileImageID;
 
   String toJson() {
-    var mapData = new Map();
+    Map mapData = Map();
 
     mapData['full_name'] = fullName;
     mapData['profile_image_id'] = profileImageID;
@@ -184,7 +211,7 @@ class _PhoneNumberVerifyBody {
   String countryCode;
 
   String toJson() {
-    var mapData = new Map();
+    Map mapData = Map();
 
     mapData['phone_number'] = phoneNumber;
     mapData['country_code'] = countryCode;
@@ -214,7 +241,7 @@ class _PhoneNumberCheckBody {
   String code;
 
   String toJson() {
-    var mapData = new Map();
+    Map mapData = Map();
 
     mapData['verification_id'] = verificationID;
     mapData['code'] = code;

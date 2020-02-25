@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/auth/user_entity.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
 import 'package:kedul_app_main/screens/profile_account_settings.dart';

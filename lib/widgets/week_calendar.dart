@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
-import 'package:kedul_app_main/utils/date_time_utils.dart';
+import 'package:kedul_app_main/datetime/datetime_utils.dart';
 import 'package:provider/provider.dart';
 
 class Staff {

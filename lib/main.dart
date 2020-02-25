@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:kedul_app_main/auth/user_entity.dart';
+
 import 'package:kedul_app_main/screens/appointment_details_screen.dart';
 import 'package:kedul_app_main/screens/calendar_appointments_screen.dart';
 import 'package:kedul_app_main/screens/home_screen.dart';
