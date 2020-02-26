@@ -1,13 +1,19 @@
 import 'dart:async';
 
+import 'package:kedul_app_main/app/business_model.dart';
+import 'package:kedul_app_main/app/location_model.dart';
 import 'package:kedul_app_main/screens/appointment_details_screen.dart';
 import 'package:kedul_app_main/screens/calendar_appointments_screen.dart';
 import 'package:kedul_app_main/screens/home_screen.dart';
+import 'package:kedul_app_main/screens/onboarding_business_creation_screen.dart';
+import 'package:kedul_app_main/screens/onboarding_location_creation_screen.dart';
+import 'package:kedul_app_main/screens/onboarding_main_screen.dart';
 import 'package:kedul_app_main/screens/profile_account_settings.dart';
 import 'package:kedul_app_main/screens/profile_update_phone_number_check_screen.dart';
 import 'package:kedul_app_main/screens/profile_update_phone_number_verify_screen.dart';
-import 'package:kedul_app_main/screens/profile_user_edit_screen.dart';
-import 'package:kedul_app_main/screens/profile_user_screen.dart';
+import 'package:kedul_app_main/screens/profile_user_profile_update_screen.dart';
+import 'package:kedul_app_main/screens/profile_user_details_screen.dart';
+import 'package:kedul_app_main/storage/storage_model.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -35,35 +41,46 @@ Future<void> main() async {
   AppConfig appConfig = AppConfig();
   AppEnvironment appEnvironment = AppEnvironment();
   SecureStorageModel secureStorageModel = SecureStorageModel();
+  StorageModel storageModel = StorageModel();
   FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics();
   APIClient apiClient = APIClient(appConfig.apiBaseURL, secureStorageModel);
   AnalyticsModel analytics = appEnvironment.isProduction
       ? FirebaseAnalyticsModel(firebaseAnalytics)
       : ConsoleAnalyticsModel();
   AuthModel authModel = AuthModel(apiClient, secureStorageModel, analytics);
+  BusinessModel businessModel = BusinessModel(apiClient, analytics);
+  LocationModel locationModel =
+      LocationModel(apiClient, storageModel, analytics);
 
   analytics.log('app_init');
 
-  User user = await authModel.loadCurrentUser();
+  User user = await authModel.getCurrentUser();
 
   String initialRoute;
 
   if (user == null) {
-    analytics.log('user_is_not_authenticated');
     initialRoute = LoginVerifyScreen.routeName;
   } else {
-    analytics.log('user_is_authenticated');
-    initialRoute = HomeScreen.routeName;
+    Location location = await locationModel.getCurrentLocation();
+
+    if (location == null) {
+      initialRoute = OnboardingMainScreen.routeName;
+    } else {
+      initialRoute = HomeScreen.routeName;
+    }
   }
 
   runZoned(() {
     runApp(MyApp(
       appConfig,
       appEnvironment,
+      storageModel,
       secureStorageModel,
       firebaseAnalytics,
       apiClient,
       authModel,
+      businessModel,
+      locationModel,
       analytics,
       initialRoute,
     ));
@@ -74,20 +91,26 @@ class MyApp extends StatelessWidget {
   MyApp(
     this.appConfig,
     this.appEnvironment,
+    this.storageModel,
     this.secureStorageModel,
     this.firebaseAnalytics,
     this.apiClient,
     this.authModel,
+    this.businessModel,
+    this.locationModel,
     this.analytics,
     this.initialRoute,
   );
 
   final AppConfig appConfig;
   final AppEnvironment appEnvironment;
+  final StorageModel storageModel;
   final SecureStorageModel secureStorageModel;
   final FirebaseAnalytics firebaseAnalytics;
   final APIClient apiClient;
   final AuthModel authModel;
+  final BusinessModel businessModel;
+  final LocationModel locationModel;
   final AnalyticsModel analytics;
   final String initialRoute;
 
@@ -104,6 +127,11 @@ class MyApp extends StatelessWidget {
             return analytics;
           },
         ),
+        Provider<StorageModel>(
+          create: (context) {
+            return storageModel;
+          },
+        ),
         Provider<ThemeModel>(
           create: (context) {
             return theme;
@@ -113,7 +141,17 @@ class MyApp extends StatelessWidget {
           create: (context) {
             return authModel;
           },
-        )
+        ),
+        ChangeNotifierProvider<BusinessModel>(
+          create: (context) {
+            return businessModel;
+          },
+        ),
+        ChangeNotifierProvider<LocationModel>(
+          create: (context) {
+            return locationModel;
+          },
+        ),
       ],
       child: MaterialApp(
         localizationsDelegates: [
@@ -163,6 +201,13 @@ class MyApp extends StatelessWidget {
           LoginVerifyScreen.routeName: (context) => LoginVerifyScreen(),
           LoginCheckScreen.routeName: (context) => LoginCheckScreen(),
 
+          // Onboarding
+          OnboardingMainScreen.routeName: (context) => OnboardingMainScreen(),
+          OnboardingBusinessCreationScreen.routeName: (context) =>
+              OnboardingBusinessCreationScreen(),
+          OnboardingLocationCreationScreen.routeName: (context) =>
+              OnboardingLocationCreationScreen(),
+
           // Calendar
           CalendarAppointmentsScreen.routeName: (context) =>
               CalendarAppointmentsScreen(),
@@ -172,8 +217,10 @@ class MyApp extends StatelessWidget {
               AppointmentDetailsScreen(),
 
           // Profile
-          ProfileUserScreen.routeName: (context) => ProfileUserScreen(),
-          ProfileUserEditScreen.routeName: (context) => ProfileUserEditScreen(),
+          ProfileUserDetailsScreen.routeName: (context) =>
+              ProfileUserDetailsScreen(),
+          ProfileUserProfileUpdateScreen.routeName: (context) =>
+              ProfileUserProfileUpdateScreen(),
           ProfileAccountSettingsScreen.routeName: (context) =>
               ProfileAccountSettingsScreen(),
           ProfileUpdatePhoneNumberVerifyScreen.routeName: (context) =>

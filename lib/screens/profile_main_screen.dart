@@ -3,7 +3,7 @@ import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
 import 'package:kedul_app_main/screens/profile_account_settings.dart';
-import 'package:kedul_app_main/screens/profile_user_screen.dart';
+import 'package:kedul_app_main/screens/profile_user_details_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/list_item.dart';
@@ -51,7 +51,8 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
                   ? "Setup profile"
                   : currentUser.fullName,
               onTap: () {
-                Navigator.pushNamed(context, ProfileUserScreen.routeName);
+                Navigator.pushNamed(
+                    context, ProfileUserDetailsScreen.routeName);
               },
             ),
             ListItem(

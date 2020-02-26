@@ -29,7 +29,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
   bool _isSubmitting = false;
   String _status;
 
-  Future<void> handleLoginVerify() async {
+  Future<void> handleSubmit() async {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
@@ -101,7 +101,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
                   });
                 },
                 onFieldSubmitted: (phoneNumber) {
-                  handleLoginVerify();
+                  handleSubmit();
                 },
               ),
             ),
@@ -115,7 +115,7 @@ class _LoginVerifyScreenState extends State<LoginVerifyScreen> {
         )),
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
-              onPressed: handleLoginVerify,
+              onPressed: handleSubmit,
               title: l10n.commonNext,
               isSubmitting: _isSubmitting)
         ]));

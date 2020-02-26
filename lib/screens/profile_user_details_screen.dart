@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/screens/profile_user_edit_screen.dart';
+import 'package:kedul_app_main/screens/profile_user_profile_update_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
-class ProfileUserScreen extends StatefulWidget {
-  static const String routeName = '/profile_user_screen';
+class ProfileUserDetailsScreen extends StatefulWidget {
+  static const String routeName = '/profile_user_details';
 
   @override
-  _ProfileUserScreenState createState() {
-    return _ProfileUserScreenState();
+  _ProfileUserDetailsScreenState createState() {
+    return _ProfileUserDetailsScreenState();
   }
 }
 
-class _ProfileUserScreenState extends State<ProfileUserScreen> {
-  _ProfileUserScreenState();
+class _ProfileUserDetailsScreenState extends State<ProfileUserDetailsScreen> {
+  _ProfileUserDetailsScreenState();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,8 @@ class _ProfileUserScreenState extends State<ProfileUserScreen> {
                 ),
               ),
               onTap: () {
-                Navigator.pushNamed(context, ProfileUserEditScreen.routeName);
+                Navigator.pushNamed(
+                    context, ProfileUserProfileUpdateScreen.routeName);
               })
         ],
       ),

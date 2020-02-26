@@ -52,7 +52,7 @@ class AuthModel extends ChangeNotifier {
     return _currentUser;
   }
 
-  Future<User> loadCurrentUser() async {
+  Future<User> getCurrentUser() async {
     try {
       http.Response response = await _apiClient.get('/auth/current_user');
 
