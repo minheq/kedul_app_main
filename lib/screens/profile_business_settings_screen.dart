@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/app/business_model.dart';
 import 'package:kedul_app_main/app/location_model.dart';
+import 'package:kedul_app_main/screens/profile_business_profile_update_screen.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/error_placeholder.dart';
+import 'package:kedul_app_main/widgets/link_button.dart';
 import 'package:kedul_app_main/widgets/list_item.dart';
 import 'package:kedul_app_main/widgets/loading_placeholder.dart';
+import 'package:kedul_app_main/widgets/profile_view.dart';
 import 'package:provider/provider.dart';
 
 class ProfileBusinessSettingsScreen extends StatefulWidget {
@@ -48,6 +51,14 @@ class _ProfileBusinessSettingsScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text("Business settings"),
+        actions: <Widget>[
+          LinkButton(
+              title: "Edit",
+              onPressed: () {
+                Navigator.pushNamed(
+                    context, ProfileBusinessProfileUpdateScreen.routeName);
+              })
+        ],
       ),
       body: FutureBuilder(
         future: initData(),
@@ -66,8 +77,9 @@ class _ProfileBusinessSettingsScreenState
           return BodyPadding(
               child: Column(
             children: <Widget>[
-              ListItem(
-                title: business.name,
+              ProfileView(
+                name: business.name,
+                image: null,
               )
             ],
           ));

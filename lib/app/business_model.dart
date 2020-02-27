@@ -43,11 +43,10 @@ class BusinessModel extends ChangeNotifier {
 
   BusinessModel(this._apiClient, this._analyticsModel);
 
-  Future<Business> getBusinessByID(String businessID,
-      {bool forceFetch = false}) async {
+  Future<Business> getBusinessByID(String businessID) async {
     Business cachedBusiness = _cache[businessID];
 
-    if (!forceFetch && cachedBusiness != null) {
+    if (cachedBusiness != null) {
       return cachedBusiness;
     }
 
@@ -63,11 +62,12 @@ class BusinessModel extends ChangeNotifier {
 
     _cache[business.id] = business;
 
+    notifyListeners();
+
     return business;
   }
 
-  Future<List<Business>> getBusinessesByUserID(String userID,
-      {bool forceFetch = false}) async {
+  Future<List<Business>> getBusinessesByUserID(String userID) async {
     http.Response response = await _apiClient.get('/users/$userID/businesses');
 
     if (HTTPResponseUtils.isErrorResponse(response)) {
@@ -92,7 +92,7 @@ class BusinessModel extends ChangeNotifier {
   }
 
   Future<Business> createBusiness(String name) async {
-    String body = _CreateBusinessInputBody(name: name).toJson();
+    String body = CreateBusinessInput(name: name).toJson();
 
     http.Response response = await _apiClient.post('/businesses', body);
 
@@ -102,21 +102,67 @@ class BusinessModel extends ChangeNotifier {
       throw APIErrorException(message: data.message);
     }
 
-    Business data = Business.fromJson(json.decode(response.body));
+    Business business = Business.fromJson(json.decode(response.body));
 
-    return data;
+    _cache[business.id] = business;
+
+    notifyListeners();
+
+    return business;
+  }
+
+  Future<Business> updateBusiness(
+      String businessID, UpdateBusinessInput input) async {
+    String body = input.toJson();
+
+    http.Response response =
+        await _apiClient.post('/businesses/$businessID', body);
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    Business business = Business.fromJson(json.decode(response.body));
+
+    _cache[business.id] = business;
+
+    notifyListeners();
+
+    return business;
   }
 }
 
-class _CreateBusinessInputBody {
-  _CreateBusinessInputBody({this.name});
+class CreateBusinessInput {
+  CreateBusinessInput({this.name, this.profileImageID});
 
   String name;
+  String profileImageID;
 
   String toJson() {
     Map mapData = Map();
 
     mapData['name'] = name;
+    mapData['profile_image_id'] = profileImageID;
+
+    String body = json.encode(mapData);
+
+    return body;
+  }
+}
+
+class UpdateBusinessInput {
+  UpdateBusinessInput({this.name, this.profileImageID});
+
+  String name;
+  String profileImageID;
+
+  String toJson() {
+    Map mapData = Map();
+
+    mapData['name'] = name;
+    mapData['profile_image_id'] = profileImageID;
 
     String body = json.encode(mapData);
 
