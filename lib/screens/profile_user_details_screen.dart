@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/screens/profile_user_profile_update_screen.dart';
-import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
+import 'package:kedul_app_main/widgets/link_button.dart';
 import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
@@ -21,23 +21,15 @@ class _ProfileUserDetailsScreenState extends State<ProfileUserDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     AuthModel auth = Provider.of<AuthModel>(context);
-    ThemeModel theme = Provider.of<ThemeModel>(context);
     User currentUser = auth.currentUser;
 
     return Scaffold(
       appBar: AppBar(
+        title: Text("Profile"),
         actions: <Widget>[
-          InkWell(
-              child: Container(
-                padding: EdgeInsets.all(16.0),
-                child: Center(
-                  child: Text(
-                    "Edit",
-                    style: theme.textStyles.link,
-                  ),
-                ),
-              ),
-              onTap: () {
+          LinkButton(
+              title: "Edit",
+              onPressed: () {
                 Navigator.pushNamed(
                     context, ProfileUserProfileUpdateScreen.routeName);
               })

@@ -9,8 +9,9 @@ import 'package:kedul_app_main/screens/onboarding_business_creation_screen.dart'
 import 'package:kedul_app_main/screens/onboarding_location_creation_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_location_selection_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_main_screen.dart';
-import 'package:kedul_app_main/screens/profile_account_settings.dart';
-import 'package:kedul_app_main/screens/profile_business_settings.dart';
+import 'package:kedul_app_main/screens/profile_account_settings_screen.dart';
+import 'package:kedul_app_main/screens/profile_business_settings_screen.dart';
+import 'package:kedul_app_main/screens/profile_location_details_screen.dart';
 import 'package:kedul_app_main/screens/profile_update_phone_number_check_screen.dart';
 import 'package:kedul_app_main/screens/profile_update_phone_number_verify_screen.dart';
 import 'package:kedul_app_main/screens/profile_user_profile_update_screen.dart';
@@ -234,6 +235,8 @@ class MyApp extends StatelessWidget {
               ProfileUpdatePhoneNumberCheckScreen(),
           ProfileBusinessSettingsScreen.routeName: (context) =>
               ProfileBusinessSettingsScreen(),
+          ProfileLocationDetailsScreen.routeName: (context) =>
+              ProfileLocationDetailsScreen(),
         },
       ),
     );

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:kedul_app_main/app/business_model.dart';
 import 'package:kedul_app_main/app/location_model.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
-import 'package:kedul_app_main/screens/profile_account_settings.dart';
-import 'package:kedul_app_main/screens/profile_business_settings.dart';
+import 'package:kedul_app_main/screens/profile_account_settings_screen.dart';
+import 'package:kedul_app_main/screens/profile_business_settings_screen.dart';
+import 'package:kedul_app_main/screens/profile_location_details_screen.dart';
 import 'package:kedul_app_main/screens/profile_user_details_screen.dart';
+import 'package:kedul_app_main/screens/profile_user_profile_update_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/error_placeholder.dart';
 import 'package:kedul_app_main/widgets/list_item.dart';
-import 'package:kedul_app_main/widgets/loading_container.dart';
+import 'package:kedul_app_main/widgets/loading_placeholder.dart';
 import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
@@ -22,10 +25,11 @@ class ProfileMainScreen extends StatefulWidget {
 }
 
 class _ProfileMainScreenData {
+  final Business business;
   final Location location;
   final User user;
 
-  _ProfileMainScreenData({this.location, this.user});
+  _ProfileMainScreenData({this.business, this.location, this.user});
 }
 
 class _ProfileMainScreenState extends State<ProfileMainScreen> {
@@ -34,11 +38,16 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
     AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
     LocationModel locationModel =
         Provider.of<LocationModel>(context, listen: false);
+    BusinessModel businessModel =
+        Provider.of<BusinessModel>(context, listen: false);
 
     User user = await authModel.getCurrentUser();
     Location location = await locationModel.getCurrentLocation();
+    Business business =
+        await businessModel.getBusinessByID(location.businessID);
 
-    return _ProfileMainScreenData(user: user, location: location);
+    return _ProfileMainScreenData(
+        user: user, location: location, business: business);
   }
 
   Future<void> handleLogOut() async {
@@ -68,6 +77,7 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
             }
 
             Location location = snapshot.data.location;
+            Business business = snapshot.data.business;
             User user = snapshot.data.user;
 
             return BodyPadding(
@@ -82,6 +92,12 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
                   ),
                   title: user.fullName == "" ? "Setup profile" : user.fullName,
                   onTap: () {
+                    if (user.fullName == "") {
+                      Navigator.pushNamed(
+                          context, ProfileUserProfileUpdateScreen.routeName);
+
+                      return;
+                    }
                     Navigator.pushNamed(
                         context, ProfileUserDetailsScreen.routeName);
                   },
@@ -94,7 +110,8 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
                   ),
                   title: location.name,
                   onTap: () {
-                    //
+                    Navigator.pushNamed(
+                        context, ProfileLocationDetailsScreen.routeName);
                   },
                 ),
                 ListItem(
@@ -104,13 +121,14 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
                         context, ProfileAccountSettingsScreen.routeName);
                   },
                 ),
-                ListItem(
-                  title: "Business settings",
-                  onTap: () {
-                    Navigator.pushNamed(
-                        context, ProfileBusinessSettingsScreen.routeName);
-                  },
-                ),
+                if (business.userID == user.id)
+                  ListItem(
+                    title: "Business settings",
+                    onTap: () {
+                      Navigator.pushNamed(
+                          context, ProfileBusinessSettingsScreen.routeName);
+                    },
+                  ),
                 SizedBox(height: 48),
                 Container(
                   child: InkWell(

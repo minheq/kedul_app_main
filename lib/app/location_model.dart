@@ -37,6 +37,7 @@ class Location {
 }
 
 class LocationModel extends ChangeNotifier {
+  Map<String, Location> _cache = Map();
   Location _currentLocation;
   final APIClient _apiClient;
   final StorageModel _storageModel;
@@ -52,6 +53,29 @@ class LocationModel extends ChangeNotifier {
     _currentLocation = location;
 
     await _storageModel.write("location_id", location.id);
+  }
+
+  Future<Location> getLocationByID(String locationID,
+      {bool forceFetch = false}) async {
+    Location cachedLocation = _cache[locationID];
+
+    if (!forceFetch && cachedLocation != null) {
+      return cachedLocation;
+    }
+
+    http.Response response = await _apiClient.get('/locations/$locationID');
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    Location location = Location.fromJson(json.decode(response.body));
+
+    _cache[location.id] = location;
+
+    return location;
   }
 
   Future<Location> getCurrentLocation() async {

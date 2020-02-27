@@ -3,7 +3,7 @@ import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
-import 'package:kedul_app_main/screens/profile_account_settings.dart';
+import 'package:kedul_app_main/screens/profile_account_settings_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
