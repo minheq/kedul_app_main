@@ -38,6 +38,10 @@ class _OnboardingMainScreenState extends State<OnboardingMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Subscriptions
+    Provider.of<AuthModel>(context);
+    Provider.of<BusinessModel>(context);
+
     return Scaffold(
       body: FutureBuilder(
           future: initData(),

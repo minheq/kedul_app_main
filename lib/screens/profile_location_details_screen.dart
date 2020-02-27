@@ -36,6 +36,9 @@ class _ProfileLocationDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
+    // Subscriptions
+    Provider.of<LocationModel>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Location"),

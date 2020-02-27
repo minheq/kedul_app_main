@@ -41,6 +41,10 @@ class _ProfileBusinessSettingsScreenState
 
   @override
   Widget build(BuildContext context) {
+    // Subscriptions
+    Provider.of<BusinessModel>(context);
+    Provider.of<LocationModel>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Business settings"),

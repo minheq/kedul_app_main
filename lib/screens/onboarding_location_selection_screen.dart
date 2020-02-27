@@ -82,6 +82,10 @@ class OnboardingLocationSelectionScreenState
   @override
   Widget build(BuildContext context) {
     ThemeModel theme = Provider.of<ThemeModel>(context);
+    // Subscriptions
+    Provider.of<AuthModel>(context);
+    Provider.of<BusinessModel>(context);
+    Provider.of<LocationModel>(context);
 
     return Scaffold(
       appBar: AppBar(),

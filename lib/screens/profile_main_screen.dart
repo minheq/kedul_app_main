@@ -34,6 +34,7 @@ class _ProfileMainScreenData {
 
 class _ProfileMainScreenState extends State<ProfileMainScreen> {
   _ProfileMainScreenState();
+
   Future<_ProfileMainScreenData> initData() async {
     AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
     LocationModel locationModel =
@@ -62,6 +63,10 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
   Widget build(BuildContext context) {
     MyAppLocalization l10n = MyAppLocalization.of(context);
     ThemeModel theme = Provider.of<ThemeModel>(context);
+    // Subscriptions
+    Provider.of<AuthModel>(context);
+    Provider.of<BusinessModel>(context);
+    Provider.of<LocationModel>(context);
 
     return Scaffold(
       body: SafeArea(
