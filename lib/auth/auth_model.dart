@@ -7,6 +7,7 @@ import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/api/api_client.dart';
 import 'package:kedul_app_main/api/http_response_utils.dart';
 import 'package:kedul_app_main/storage/secure_storage_model.dart';
+import 'package:kedul_app_main/storage/storage_model.dart';
 
 class User {
   final String id;
@@ -40,9 +41,11 @@ class AuthModel extends ChangeNotifier {
   User _currentUser;
   final APIClient _apiClient;
   final SecureStorageModel _secureStorageModel;
+  final StorageModel _storageModel;
   final AnalyticsModel _analyticsModel;
 
-  AuthModel(this._apiClient, this._secureStorageModel, this._analyticsModel);
+  AuthModel(this._apiClient, this._secureStorageModel, this._storageModel,
+      this._analyticsModel);
 
   bool get isAuthenticated {
     return _currentUser != null;
@@ -114,6 +117,7 @@ class AuthModel extends ChangeNotifier {
 
   Future<void> logOut() async {
     await _secureStorageModel.remove('access_token');
+    await _storageModel.remove("location_id");
     _currentUser = null;
   }
 

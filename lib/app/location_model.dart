@@ -48,7 +48,17 @@ class LocationModel extends ChangeNotifier {
     return _currentLocation;
   }
 
+  Future<void> setCurrentLocation(Location location) async {
+    _currentLocation = location;
+
+    await _storageModel.write("location_id", location.id);
+  }
+
   Future<Location> getCurrentLocation() async {
+    if (_currentLocation != null) {
+      return _currentLocation;
+    }
+
     String locationID;
 
     try {
@@ -75,14 +85,17 @@ class LocationModel extends ChangeNotifier {
 
       return location;
     } catch (e, s) {
+      // Clear saved location_id since it is causing trouble
+      await _storageModel.remove("location_id");
       _analyticsModel.recordError(e, s);
 
       return null;
     }
   }
 
-  Future<Location> createLocation(String name) async {
-    String body = _CreateLocationInputBody(name: name).toJson();
+  Future<Location> createLocation(String name, String businessID) async {
+    String body =
+        _CreateLocationInputBody(name: name, businessID: businessID).toJson();
 
     http.Response response = await _apiClient.post('/locations', body);
 
@@ -96,17 +109,46 @@ class LocationModel extends ChangeNotifier {
 
     return data;
   }
+
+  Future<List<Location>> getLocationsByUserIDAndBusinessID(
+      String userID, String businessID,
+      {bool forceFetch = false}) async {
+    http.Response response =
+        await _apiClient.get('/users/$userID/businesses/$businessID/locations');
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    Map<String, dynamic> locationConnection = json.decode(response.body);
+
+    Iterable data = locationConnection['data'];
+
+    List<Location> locations = [];
+
+    for (Map json in data) {
+      Location location = Location.fromJson(json);
+
+      locations.add(location);
+    }
+
+    return locations;
+  }
 }
 
 class _CreateLocationInputBody {
-  _CreateLocationInputBody({this.name});
+  _CreateLocationInputBody({this.name, this.businessID});
 
   String name;
+  String businessID;
 
   String toJson() {
     Map mapData = Map();
 
     mapData['name'] = name;
+    mapData['business_id'] = businessID;
 
     String body = json.encode(mapData);
 

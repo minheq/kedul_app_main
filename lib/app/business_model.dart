@@ -36,7 +36,7 @@ class Business {
 }
 
 class BusinessModel extends ChangeNotifier {
-  Map<String, Business> _cache;
+  Map<String, Business> _cache = Map();
 
   final APIClient _apiClient;
   final AnalyticsModel _analyticsModel;
@@ -45,8 +45,7 @@ class BusinessModel extends ChangeNotifier {
 
   Future<Business> getBusinessByID(String businessID,
       {bool forceFetch = false}) async {
-    const op = "getBusinessByID";
-    Business cachedBusiness = _cache["${op}_$businessID"];
+    Business cachedBusiness = _cache[businessID];
 
     if (!forceFetch && cachedBusiness != null) {
       return cachedBusiness;
@@ -62,15 +61,13 @@ class BusinessModel extends ChangeNotifier {
 
     Business business = Business.fromJson(json.decode(response.body));
 
-    _cache["${op}_${business.id}"] = business;
+    _cache[business.id] = business;
 
     return business;
   }
 
   Future<List<Business>> getBusinessesByUserID(String userID,
       {bool forceFetch = false}) async {
-    const op = "getBusinessesByUserID";
-    // List<Business> cachedBusinesses = _cache["${op}_$userID"];
     http.Response response = await _apiClient.get('/users/$userID/businesses');
 
     if (HTTPResponseUtils.isErrorResponse(response)) {
@@ -86,7 +83,9 @@ class BusinessModel extends ChangeNotifier {
     List<Business> businesses = [];
 
     for (Map json in data) {
-      businesses.add(Business.fromJson(json));
+      Business business = Business.fromJson(json);
+
+      businesses.add(business);
     }
 
     return businesses;

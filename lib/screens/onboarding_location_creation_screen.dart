@@ -4,6 +4,7 @@ import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/app/location_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/home_screen.dart';
+import 'package:kedul_app_main/screens/onboarding_main_screen.dart';
 import 'package:kedul_app_main/storage/storage_model.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
@@ -43,6 +44,8 @@ class _OnboardingLocationCreationScreenState
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
         Provider.of<AnalyticsModel>(context, listen: false);
+    OnboardingLocationCreationScreenArguments args =
+        ModalRoute.of(context).settings.arguments;
 
     try {
       analytics.log('create_location');
@@ -51,7 +54,8 @@ class _OnboardingLocationCreationScreenState
         _isSubmitting = true;
       });
 
-      Location location = await locationModel.createLocation(_name);
+      Location location =
+          await locationModel.createLocation(_name, args.businessID);
 
       await storageModel.write("location_id", location.id);
 
@@ -81,44 +85,51 @@ class _OnboardingLocationCreationScreenState
     MyAppLocalization l10n = MyAppLocalization.of(context);
     ThemeModel theme = Provider.of<ThemeModel>(context);
 
-    return Scaffold(
-        appBar: AppBar(),
-        body: BodyPadding(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Give your location a name",
-              style: theme.textStyles.headline1,
-            ),
-            SizedBox(height: 56),
-            FormFieldContainer(
-              labelText: "Name",
-              child: TextFormField(
-                initialValue: "",
-                onChanged: (name) {
-                  setState(() {
-                    _name = name;
-                  });
-                },
-                onFieldSubmitted: (name) {
-                  handleSubmit();
-                },
-              ),
-            ),
-            if (_status != null) SizedBox(height: 16),
-            if (_status != null)
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).popUntil(
+            (route) => route.settings.name == OnboardingMainScreen.routeName);
+        return false;
+      },
+      child: Scaffold(
+          appBar: AppBar(),
+          body: BodyPadding(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Text(
-                _status,
-                style: TextStyle(color: theme.colors.textError),
+                "Give your location a name",
+                style: theme.textStyles.headline1,
               ),
-          ],
-        )),
-        bottomNavigationBar: BottomActionBar(children: [
-          PrimaryButton(
-              onPressed: handleSubmit,
-              title: l10n.commonNext,
-              isSubmitting: _isSubmitting)
-        ]));
+              SizedBox(height: 56),
+              FormFieldContainer(
+                labelText: "Name",
+                child: TextFormField(
+                  initialValue: "",
+                  onChanged: (name) {
+                    setState(() {
+                      _name = name;
+                    });
+                  },
+                  onFieldSubmitted: (name) {
+                    handleSubmit();
+                  },
+                ),
+              ),
+              if (_status != null) SizedBox(height: 16),
+              if (_status != null)
+                Text(
+                  _status,
+                  style: TextStyle(color: theme.colors.textError),
+                ),
+            ],
+          )),
+          bottomNavigationBar: BottomActionBar(children: [
+            PrimaryButton(
+                onPressed: handleSubmit,
+                title: l10n.commonNext,
+                isSubmitting: _isSubmitting)
+          ])),
+    );
   }
 }

@@ -7,8 +7,10 @@ import 'package:kedul_app_main/screens/calendar_appointments_screen.dart';
 import 'package:kedul_app_main/screens/home_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_business_creation_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_location_creation_screen.dart';
+import 'package:kedul_app_main/screens/onboarding_location_selection_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_main_screen.dart';
 import 'package:kedul_app_main/screens/profile_account_settings.dart';
+import 'package:kedul_app_main/screens/profile_business_settings.dart';
 import 'package:kedul_app_main/screens/profile_update_phone_number_check_screen.dart';
 import 'package:kedul_app_main/screens/profile_update_phone_number_verify_screen.dart';
 import 'package:kedul_app_main/screens/profile_user_profile_update_screen.dart';
@@ -47,7 +49,8 @@ Future<void> main() async {
   AnalyticsModel analytics = appEnvironment.isProduction
       ? FirebaseAnalyticsModel(firebaseAnalytics)
       : ConsoleAnalyticsModel();
-  AuthModel authModel = AuthModel(apiClient, secureStorageModel, analytics);
+  AuthModel authModel =
+      AuthModel(apiClient, secureStorageModel, storageModel, analytics);
   BusinessModel businessModel = BusinessModel(apiClient, analytics);
   LocationModel locationModel =
       LocationModel(apiClient, storageModel, analytics);
@@ -207,6 +210,8 @@ class MyApp extends StatelessWidget {
               OnboardingBusinessCreationScreen(),
           OnboardingLocationCreationScreen.routeName: (context) =>
               OnboardingLocationCreationScreen(),
+          OnboardingLocationSelectionScreen.routeName: (context) =>
+              OnboardingLocationSelectionScreen(),
 
           // Calendar
           CalendarAppointmentsScreen.routeName: (context) =>
@@ -227,6 +232,8 @@ class MyApp extends StatelessWidget {
               ProfileUpdatePhoneNumberVerifyScreen(),
           ProfileUpdatePhoneNumberCheckScreen.routeName: (context) =>
               ProfileUpdatePhoneNumberCheckScreen(),
+          ProfileBusinessSettingsScreen.routeName: (context) =>
+              ProfileBusinessSettingsScreen(),
         },
       ),
     );
