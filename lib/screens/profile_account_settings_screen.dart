@@ -25,7 +25,6 @@ class _ProfileAccountSettingsScreenState
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AuthModel authModel = Provider.of<AuthModel>(context);
     User currentUser = authModel.currentUser;
-    ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
       appBar: AppBar(

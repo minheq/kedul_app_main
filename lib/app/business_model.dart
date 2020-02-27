@@ -91,8 +91,8 @@ class BusinessModel extends ChangeNotifier {
     return businesses;
   }
 
-  Future<Business> createBusiness(String name) async {
-    String body = CreateBusinessInput(name: name).toJson();
+  Future<Business> createBusiness(CreateBusinessInput input) async {
+    String body = input.toJson();
 
     http.Response response = await _apiClient.post('/businesses', body);
 

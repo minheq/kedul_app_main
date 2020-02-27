@@ -32,7 +32,7 @@ class _OnboardingLocationCreationScreenState
     extends State<OnboardingLocationCreationScreen> {
   _OnboardingLocationCreationScreenState();
 
-  String _name = '';
+  CreateLocationInput _input = CreateLocationInput();
   bool _isSubmitting = false;
   String _status;
 
@@ -54,8 +54,9 @@ class _OnboardingLocationCreationScreenState
         _isSubmitting = true;
       });
 
-      Location location =
-          await locationModel.createLocation(_name, args.businessID);
+      _input.businessID = args.businessID;
+
+      Location location = await locationModel.createLocation(_input);
 
       await storageModel.write("location_id", location.id);
 
@@ -108,7 +109,7 @@ class _OnboardingLocationCreationScreenState
                   initialValue: "",
                   onChanged: (name) {
                     setState(() {
-                      _name = name;
+                      _input.name = name;
                     });
                   },
                   onFieldSubmitted: (name) {

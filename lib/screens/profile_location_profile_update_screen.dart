@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
-import 'package:kedul_app_main/app/business_model.dart';
+import 'package:kedul_app_main/app/location_model.dart';
 import 'package:kedul_app_main/app/location_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
@@ -14,60 +14,56 @@ import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
-class ProfileBusinessProfileUpdateScreen extends StatefulWidget {
-  static const String routeName = '/profile_business_profile_update_screen';
+class ProfileLocationProfileUpdateScreen extends StatefulWidget {
+  static const String routeName = '/profile_location_profile_update_screen';
 
   @override
-  _ProfileBusinessProfileUpdateScreenState createState() {
-    return _ProfileBusinessProfileUpdateScreenState();
+  _ProfileLocationProfileUpdateScreenState createState() {
+    return _ProfileLocationProfileUpdateScreenState();
   }
 }
 
-class _ProfileBusinessProfileUpdateScreenData {
-  final Business business;
+class _ProfileLocationProfileUpdateScreenData {
+  final Location location;
 
-  _ProfileBusinessProfileUpdateScreenData({this.business});
+  _ProfileLocationProfileUpdateScreenData({this.location});
 }
 
-class _ProfileBusinessProfileUpdateScreenState
-    extends State<ProfileBusinessProfileUpdateScreen> {
-  _ProfileBusinessProfileUpdateScreenState();
+class _ProfileLocationProfileUpdateScreenState
+    extends State<ProfileLocationProfileUpdateScreen> {
+  _ProfileLocationProfileUpdateScreenState();
 
-  UpdateBusinessInput _input = UpdateBusinessInput();
+  UpdateLocationInput _input = UpdateLocationInput();
   bool _isSubmitting = false;
   String _status;
-  String _businessID;
+  String _locationID;
 
-  Future<_ProfileBusinessProfileUpdateScreenData> _initData() async {
-    BusinessModel businessModel =
-        Provider.of<BusinessModel>(context, listen: false);
+  Future<_ProfileLocationProfileUpdateScreenData> _initData() async {
     LocationModel locationModel =
         Provider.of<LocationModel>(context, listen: false);
 
     Location currentLocation = await locationModel.getCurrentLocation();
-    Business business =
-        await businessModel.getBusinessByID(currentLocation.businessID);
 
-    _businessID = business.id;
+    _locationID = currentLocation.id;
 
-    return _ProfileBusinessProfileUpdateScreenData(business: business);
+    return _ProfileLocationProfileUpdateScreenData(location: currentLocation);
   }
 
   Future<void> _handleSubmit() async {
-    BusinessModel businessModel =
-        Provider.of<BusinessModel>(context, listen: false);
+    LocationModel locationModel =
+        Provider.of<LocationModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
         Provider.of<AnalyticsModel>(context, listen: false);
 
     try {
-      analytics.log('update_business');
+      analytics.log('update_location');
 
       setState(() {
         _isSubmitting = true;
       });
 
-      await businessModel.updateBusiness(_businessID, _input);
+      await locationModel.updateLocation(_locationID, _input);
 
       Navigator.pop(context);
     } on APIErrorException catch (e) {
@@ -94,12 +90,12 @@ class _ProfileBusinessProfileUpdateScreenState
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Update business profile"),
+          title: Text("Update location profile"),
         ),
         body: FutureBuilder(
           future: _initData(),
           builder: (context,
-              AsyncSnapshot<_ProfileBusinessProfileUpdateScreenData> snapshot) {
+              AsyncSnapshot<_ProfileLocationProfileUpdateScreenData> snapshot) {
             if (snapshot.hasError) {
               return ErrorPlaceholder(error: snapshot.error);
             }
@@ -108,7 +104,7 @@ class _ProfileBusinessProfileUpdateScreenState
               return LoadingPlaceholder();
             }
 
-            Business business = snapshot.data.business;
+            Location location = snapshot.data.location;
 
             return BodyPadding(
                 child: Column(
@@ -119,7 +115,7 @@ class _ProfileBusinessProfileUpdateScreenState
                   children: <Widget>[
                     ProfilePicture(
                       image: null,
-                      name: business.name,
+                      name: location.name,
                       size: 120,
                     )
                   ],
@@ -128,7 +124,7 @@ class _ProfileBusinessProfileUpdateScreenState
                 FormFieldContainer(
                   labelText: l10n.commonFullName,
                   child: TextFormField(
-                    initialValue: business.name,
+                    initialValue: location.name,
                     onChanged: (name) {
                       _input.name = name;
                     },

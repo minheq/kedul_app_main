@@ -24,16 +24,16 @@ class _OnboardingBusinessCreationScreenState
     extends State<OnboardingBusinessCreationScreen> {
   _OnboardingBusinessCreationScreenState();
 
-  String _name = '';
+  CreateBusinessInput _input = CreateBusinessInput();
   bool _isSubmitting = false;
   String _status;
 
   Future<void> handleSubmit() async {
-    BusinessModel businessModel =
-        Provider.of<BusinessModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
         Provider.of<AnalyticsModel>(context, listen: false);
+    BusinessModel businessModel =
+        Provider.of<BusinessModel>(context, listen: false);
 
     try {
       analytics.log('create_business');
@@ -42,7 +42,7 @@ class _OnboardingBusinessCreationScreenState
         _isSubmitting = true;
       });
 
-      Business business = await businessModel.createBusiness(_name);
+      Business business = await businessModel.createBusiness(_input);
 
       Navigator.pushNamed(
         context,
@@ -88,7 +88,7 @@ class _OnboardingBusinessCreationScreenState
                 initialValue: "",
                 onChanged: (name) {
                   setState(() {
-                    _name = name;
+                    _input.name = name;
                   });
                 },
                 onFieldSubmitted: (name) {

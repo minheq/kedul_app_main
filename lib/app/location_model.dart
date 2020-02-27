@@ -77,6 +77,8 @@ class LocationModel extends ChangeNotifier {
 
     _cache[location.id] = location;
 
+    notifyListeners();
+
     return location;
   }
 
@@ -119,9 +121,8 @@ class LocationModel extends ChangeNotifier {
     }
   }
 
-  Future<Location> createLocation(String name, String businessID) async {
-    String body =
-        _CreateLocationInputBody(name: name, businessID: businessID).toJson();
+  Future<Location> createLocation(CreateLocationInput input) async {
+    String body = input.toJson();
 
     http.Response response = await _apiClient.post('/locations', body);
 
@@ -134,6 +135,30 @@ class LocationModel extends ChangeNotifier {
     Location location = Location.fromJson(json.decode(response.body));
 
     _cache[location.id] = location;
+
+    notifyListeners();
+
+    return location;
+  }
+
+  Future<Location> updateLocation(
+      String locationID, UpdateLocationInput input) async {
+    String body = input.toJson();
+
+    http.Response response =
+        await _apiClient.post('/locations/$locationID', body);
+
+    if (HTTPResponseUtils.isErrorResponse(response)) {
+      ErrorResponse data = ErrorResponse.fromJson(json.decode(response.body));
+
+      throw APIErrorException(message: data.message);
+    }
+
+    Location location = Location.fromJson(json.decode(response.body));
+
+    _cache[location.id] = location;
+
+    notifyListeners();
 
     return location;
   }
@@ -166,17 +191,37 @@ class LocationModel extends ChangeNotifier {
   }
 }
 
-class _CreateLocationInputBody {
-  _CreateLocationInputBody({this.name, this.businessID});
+class CreateLocationInput {
+  CreateLocationInput({this.businessID, this.name, this.profileImageID});
 
   String name;
+  String profileImageID;
   String businessID;
 
   String toJson() {
     Map mapData = Map();
 
+    mapData['business_id'] = name;
     mapData['name'] = name;
-    mapData['business_id'] = businessID;
+    mapData['profile_image_id'] = profileImageID;
+
+    String body = json.encode(mapData);
+
+    return body;
+  }
+}
+
+class UpdateLocationInput {
+  UpdateLocationInput({this.name, this.profileImageID});
+
+  String name;
+  String profileImageID;
+
+  String toJson() {
+    Map mapData = Map();
+
+    mapData['name'] = name;
+    mapData['profile_image_id'] = profileImageID;
 
     String body = json.encode(mapData);
 

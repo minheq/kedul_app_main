@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/app/location_model.dart';
+import 'package:kedul_app_main/screens/profile_location_profile_update_screen.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/error_placeholder.dart';
-import 'package:kedul_app_main/widgets/list_item.dart';
+import 'package:kedul_app_main/widgets/link_button.dart';
 import 'package:kedul_app_main/widgets/loading_placeholder.dart';
+import 'package:kedul_app_main/widgets/profile_view.dart';
 import 'package:provider/provider.dart';
 
 class ProfileLocationDetailsScreen extends StatefulWidget {
@@ -42,6 +44,14 @@ class _ProfileLocationDetailsScreenState
     return Scaffold(
       appBar: AppBar(
         title: Text("Location"),
+        actions: <Widget>[
+          LinkButton(
+              title: "Edit",
+              onPressed: () {
+                Navigator.pushNamed(
+                    context, ProfileLocationProfileUpdateScreen.routeName);
+              })
+        ],
       ),
       body: FutureBuilder(
         future: initData(),
@@ -60,8 +70,9 @@ class _ProfileLocationDetailsScreenState
           return BodyPadding(
               child: Column(
             children: <Widget>[
-              ListItem(
-                title: currentLocation.name,
+              ProfileView(
+                name: currentLocation.name,
+                image: null,
               )
             ],
           ));
