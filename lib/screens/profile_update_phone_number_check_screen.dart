@@ -39,7 +39,7 @@ class _ProfileUpdatePhoneNumberCheckScreenState
   bool _isSubmitting = false;
   String _status;
 
-  Future<void> handleUpdatePhoneNumberCheck() async {
+  Future<void> handleSubmit() async {
     ProfileUpdatePhoneNumberCheckScreenArguments args =
         ModalRoute.of(context).settings.arguments;
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
@@ -111,7 +111,7 @@ class _ProfileUpdatePhoneNumberCheckScreenState
                   _code = code;
                 },
                 onFieldSubmitted: (code) {
-                  handleUpdatePhoneNumberCheck();
+                  handleSubmit();
                 },
               ),
             ),
@@ -125,7 +125,7 @@ class _ProfileUpdatePhoneNumberCheckScreenState
         )),
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
-              onPressed: handleUpdatePhoneNumberCheck,
+              onPressed: handleSubmit,
               title: l10n.commonNext,
               isSubmitting: _isSubmitting)
         ]));

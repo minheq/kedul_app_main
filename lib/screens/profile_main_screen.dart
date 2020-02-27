@@ -29,9 +29,10 @@ class ProfileMainScreen extends StatefulWidget {
 class _ProfileMainScreenData {
   final Business business;
   final Location currentLocation;
-  final User user;
+  final User currentUser;
 
-  _ProfileMainScreenData({this.business, this.currentLocation, this.user});
+  _ProfileMainScreenData(
+      {this.business, this.currentLocation, this.currentUser});
 }
 
 class _ProfileMainScreenState extends State<ProfileMainScreen> {
@@ -44,13 +45,15 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
     BusinessModel businessModel =
         Provider.of<BusinessModel>(context, listen: false);
 
-    User user = await authModel.getCurrentUser();
+    User currentUser = await authModel.getCurrentUser();
     Location currentLocation = await locationModel.getCurrentLocation();
     Business business =
         await businessModel.getBusinessByID(currentLocation.businessID);
 
     return _ProfileMainScreenData(
-        user: user, currentLocation: currentLocation, business: business);
+        currentUser: currentUser,
+        currentLocation: currentLocation,
+        business: business);
   }
 
   Future<void> handleLogOut() async {
@@ -85,7 +88,7 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
 
             Location currentLocation = snapshot.data.currentLocation;
             Business business = snapshot.data.business;
-            User user = snapshot.data.user;
+            User currentUser = snapshot.data.currentUser;
 
             return BodyPadding(
                 child: Column(
@@ -94,12 +97,14 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
                 ListItem(
                   image: ProfilePicture(
                     image: null,
-                    name: user.fullName,
+                    name: currentUser.fullName,
                     size: 48,
                   ),
-                  title: user.fullName == "" ? "Setup profile" : user.fullName,
+                  title: currentUser.fullName == ""
+                      ? "Setup profile"
+                      : currentUser.fullName,
                   onTap: () {
-                    if (user.fullName == "") {
+                    if (currentUser.fullName == "") {
                       Navigator.pushNamed(
                           context, ProfileUserProfileUpdateScreen.routeName);
 
@@ -141,7 +146,7 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
                         context, ProfileAccountSettingsScreen.routeName);
                   },
                 ),
-                if (business.userID == user.id)
+                if (business.userID == currentUser.id)
                   ListItem(
                     title: "Business settings",
                     onTap: () {

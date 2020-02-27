@@ -6,7 +6,9 @@ import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
+import 'package:kedul_app_main/widgets/error_placeholder.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
+import 'package:kedul_app_main/widgets/loading_placeholder.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,12 @@ class ProfileUserProfileUpdateScreen extends StatefulWidget {
   }
 }
 
+class _ProfileUserProfileUpdateScreenData {
+  final User currentUser;
+
+  _ProfileUserProfileUpdateScreenData({this.currentUser});
+}
+
 class _ProfileUserProfileUpdateScreenState
     extends State<ProfileUserProfileUpdateScreen> {
   _ProfileUserProfileUpdateScreenState();
@@ -28,6 +36,13 @@ class _ProfileUserProfileUpdateScreenState
   String _profileImageID;
   bool _isSubmitting = false;
   String _status;
+
+  Future<_ProfileUserProfileUpdateScreenData> _initData() async {
+    AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
+    User currentUser = await authModel.getCurrentUser();
+
+    return _ProfileUserProfileUpdateScreenData(currentUser: currentUser);
+  }
 
   Future<void> handleSubmit() async {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
@@ -65,43 +80,57 @@ class _ProfileUserProfileUpdateScreenState
   @override
   Widget build(BuildContext context) {
     MyAppLocalization l10n = MyAppLocalization.of(context);
-    AuthModel authModel = Provider.of<AuthModel>(context);
-    User currentUser = authModel.currentUser;
     ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
         appBar: AppBar(),
-        body: BodyPadding(
-            child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        body: FutureBuilder(
+          future: _initData(),
+          builder: (context,
+              AsyncSnapshot<_ProfileUserProfileUpdateScreenData> snapshot) {
+            if (snapshot.hasError) {
+              return ErrorPlaceholder(error: snapshot.error);
+            }
+
+            if (snapshot.hasData == false) {
+              return LoadingPlaceholder();
+            }
+
+            User currentUser = snapshot.data.currentUser;
+
+            return BodyPadding(
+                child: Column(
               children: <Widget>[
-                ProfilePicture(
-                  image: null,
-                  name: currentUser.fullName,
-                  size: 120,
-                )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ProfilePicture(
+                      image: null,
+                      name: currentUser.fullName,
+                      size: 120,
+                    )
+                  ],
+                ),
+                SizedBox(height: 16.0),
+                FormFieldContainer(
+                  labelText: l10n.commonFullName,
+                  child: TextFormField(
+                    initialValue: currentUser.fullName,
+                    onChanged: (name) {
+                      _fullName = name;
+                    },
+                  ),
+                ),
+                if (_status != null) SizedBox(height: 16),
+                if (_status != null)
+                  Text(
+                    _status,
+                    style: TextStyle(color: theme.colors.textError),
+                  ),
               ],
-            ),
-            SizedBox(height: 16.0),
-            FormFieldContainer(
-              labelText: l10n.commonFullName,
-              child: TextFormField(
-                initialValue: currentUser.fullName,
-                onChanged: (name) {
-                  _fullName = name;
-                },
-              ),
-            ),
-            if (_status != null) SizedBox(height: 16),
-            if (_status != null)
-              Text(
-                _status,
-                style: TextStyle(color: theme.colors.textError),
-              ),
-          ],
-        )),
+            ));
+          },
+        ),
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
               onPressed: handleSubmit,

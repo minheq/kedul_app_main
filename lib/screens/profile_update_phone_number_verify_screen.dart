@@ -7,7 +7,9 @@ import 'package:kedul_app_main/screens/profile_update_phone_number_check_screen.
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
+import 'package:kedul_app_main/widgets/error_placeholder.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
+import 'package:kedul_app_main/widgets/loading_placeholder.dart';
 import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +23,12 @@ class ProfileUpdatePhoneNumberVerifyScreen extends StatefulWidget {
   }
 }
 
+class _ProfileUpdatePhoneNumberVerifyScreenData {
+  final User currentUser;
+
+  _ProfileUpdatePhoneNumberVerifyScreenData({this.currentUser});
+}
+
 class _ProfileUpdatePhoneNumberVerifyScreenState
     extends State<ProfileUpdatePhoneNumberVerifyScreen> {
   _ProfileUpdatePhoneNumberVerifyScreenState();
@@ -30,7 +38,14 @@ class _ProfileUpdatePhoneNumberVerifyScreenState
   bool _isSubmitting = false;
   String _status;
 
-  Future<void> handleUpdatePhoneNumberVerify() async {
+  Future<_ProfileUpdatePhoneNumberVerifyScreenData> _initData() async {
+    AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
+    User currentUser = await authModel.getCurrentUser();
+
+    return _ProfileUpdatePhoneNumberVerifyScreenData(currentUser: currentUser);
+  }
+
+  Future<void> handleSubmit() async {
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
@@ -73,45 +88,60 @@ class _ProfileUpdatePhoneNumberVerifyScreenState
   Widget build(BuildContext context) {
     MyAppLocalization l10n = MyAppLocalization.of(context);
     ThemeModel theme = Provider.of<ThemeModel>(context);
-    AuthModel auth = Provider.of<AuthModel>(context);
-    User currentUser = auth.currentUser;
 
     return Scaffold(
         appBar: AppBar(
           title: Text(l10n.profileUpdatePhoneNumberVerifyTitle),
         ),
-        body: BodyPadding(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FormFieldContainer(
-              labelText: l10n.commonPhoneNumber,
-              child: PhoneNumberFormField(
-                initialValue: PhoneNumber(
-                    countryCode: currentUser.countryCode,
-                    phoneNumber: currentUser.phoneNumber),
-                onChanged: (phoneNumber) {
-                  setState(() {
-                    _phoneNumber = phoneNumber.phoneNumber;
-                    _countryCode = phoneNumber.countryCode;
-                  });
-                },
-                onFieldSubmitted: (phoneNumber) {
-                  handleUpdatePhoneNumberVerify();
-                },
-              ),
-            ),
-            if (_status != null) SizedBox(height: 16),
-            if (_status != null)
-              Text(
-                _status,
-                style: TextStyle(color: theme.colors.textError),
-              ),
-          ],
-        )),
+        body: FutureBuilder(
+          future: _initData(),
+          builder: (context,
+              AsyncSnapshot<_ProfileUpdatePhoneNumberVerifyScreenData>
+                  snapshot) {
+            if (snapshot.hasError) {
+              return ErrorPlaceholder(error: snapshot.error);
+            }
+
+            if (snapshot.hasData == false) {
+              return LoadingPlaceholder();
+            }
+
+            User currentUser = snapshot.data.currentUser;
+
+            return BodyPadding(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FormFieldContainer(
+                  labelText: l10n.commonPhoneNumber,
+                  child: PhoneNumberFormField(
+                    initialValue: PhoneNumber(
+                        countryCode: currentUser.countryCode,
+                        phoneNumber: currentUser.phoneNumber),
+                    onChanged: (phoneNumber) {
+                      setState(() {
+                        _phoneNumber = phoneNumber.phoneNumber;
+                        _countryCode = phoneNumber.countryCode;
+                      });
+                    },
+                    onFieldSubmitted: (phoneNumber) {
+                      handleSubmit();
+                    },
+                  ),
+                ),
+                if (_status != null) SizedBox(height: 16),
+                if (_status != null)
+                  Text(
+                    _status,
+                    style: TextStyle(color: theme.colors.textError),
+                  ),
+              ],
+            ));
+          },
+        ),
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
-              onPressed: handleUpdatePhoneNumberVerify,
+              onPressed: handleSubmit,
               title: l10n.commonNext,
               isSubmitting: _isSubmitting)
         ]));
