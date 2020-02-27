@@ -37,7 +37,7 @@ class _ProfileMainScreenData {
 class _ProfileMainScreenState extends State<ProfileMainScreen> {
   _ProfileMainScreenState();
 
-  Future<_ProfileMainScreenData> initData() async {
+  Future<_ProfileMainScreenData> _initData() async {
     AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
     LocationModel locationModel =
         Provider.of<LocationModel>(context, listen: false);
@@ -73,7 +73,7 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
-          future: initData(),
+          future: _initData(),
           builder: (context, AsyncSnapshot<_ProfileMainScreenData> snapshot) {
             if (snapshot.hasError) {
               return ErrorPlaceholder(error: snapshot.error);

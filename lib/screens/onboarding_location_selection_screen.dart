@@ -62,7 +62,7 @@ class OnboardingLocationSelectionScreenState
     }
   }
 
-  Future<_OnboardingLocationSelectionScreenData> initData() async {
+  Future<_OnboardingLocationSelectionScreenData> _initData() async {
     AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
     BusinessModel businessModel =
         Provider.of<BusinessModel>(context, listen: false);
@@ -121,7 +121,7 @@ class OnboardingLocationSelectionScreenState
       appBar: AppBar(),
       body: BodyPadding(
           child: FutureBuilder(
-              future: initData(),
+              future: _initData(),
               builder: (BuildContext context,
                   AsyncSnapshot<_OnboardingLocationSelectionScreenData>
                       snapshot) {

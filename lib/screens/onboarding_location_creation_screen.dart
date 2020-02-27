@@ -36,7 +36,7 @@ class _OnboardingLocationCreationScreenState
   bool _isSubmitting = false;
   String _status;
 
-  Future<void> handleSubmit() async {
+  Future<void> _handleSubmit() async {
     LocationModel locationModel =
         Provider.of<LocationModel>(context, listen: false);
     StorageModel storageModel =
@@ -113,7 +113,7 @@ class _OnboardingLocationCreationScreenState
                     });
                   },
                   onFieldSubmitted: (name) {
-                    handleSubmit();
+                    _handleSubmit();
                   },
                 ),
               ),
@@ -127,7 +127,7 @@ class _OnboardingLocationCreationScreenState
           )),
           bottomNavigationBar: BottomActionBar(children: [
             PrimaryButton(
-                onPressed: handleSubmit,
+                onPressed: _handleSubmit,
                 title: l10n.commonNext,
                 isSubmitting: _isSubmitting)
           ])),

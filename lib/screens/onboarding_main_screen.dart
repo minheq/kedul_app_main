@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/app/business_model.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/screens/calendar_main_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_business_creation_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_location_selection_screen.dart';
+import 'package:kedul_app_main/widgets/error_placeholder.dart';
+import 'package:kedul_app_main/widgets/loading_placeholder.dart';
 import 'package:provider/provider.dart';
 
 class OnboardingMainScreen extends StatefulWidget {
@@ -48,11 +49,11 @@ class _OnboardingMainScreenState extends State<OnboardingMainScreen> {
           builder: (BuildContext context,
               AsyncSnapshot<OnboardingMainScreenData> snapshot) {
             if (snapshot.hasError) {
-              return CalendarMainScreen();
+              return ErrorPlaceholder(error: snapshot.error);
             }
 
             if (snapshot.hasData == false) {
-              return CalendarMainScreen();
+              return LoadingPlaceholder();
             }
 
             if (snapshot.data.businesses.length == 0) {
