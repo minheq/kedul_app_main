@@ -37,7 +37,11 @@ class ListItem extends StatelessWidget {
                           style: theme.textStyles.bodyText1,
                         ),
                       if (description != null)
-                        Text(description, style: theme.textStyles.bodyText2),
+                        Text(
+                          description,
+                          style: theme.textStyles.bodyText2
+                              .copyWith(color: theme.colors.textMuted),
+                        ),
                     ],
                   )
                 ],

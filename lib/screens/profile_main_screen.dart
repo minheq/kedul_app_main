@@ -4,6 +4,7 @@ import 'package:kedul_app_main/app/location_model.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
 import 'package:kedul_app_main/screens/login_verify_screen.dart';
+import 'package:kedul_app_main/screens/onboarding_location_selection_screen.dart';
 import 'package:kedul_app_main/screens/profile_account_settings_screen.dart';
 import 'package:kedul_app_main/screens/profile_business_settings_screen.dart';
 import 'package:kedul_app_main/screens/profile_location_details_screen.dart';
@@ -12,6 +13,7 @@ import 'package:kedul_app_main/screens/profile_user_profile_update_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/error_placeholder.dart';
+import 'package:kedul_app_main/widgets/link_button.dart';
 import 'package:kedul_app_main/widgets/list_item.dart';
 import 'package:kedul_app_main/widgets/loading_placeholder.dart';
 import 'package:kedul_app_main/widgets/profile_picture.dart';
@@ -26,10 +28,10 @@ class ProfileMainScreen extends StatefulWidget {
 
 class _ProfileMainScreenData {
   final Business business;
-  final Location location;
+  final Location currentLocation;
   final User user;
 
-  _ProfileMainScreenData({this.business, this.location, this.user});
+  _ProfileMainScreenData({this.business, this.currentLocation, this.user});
 }
 
 class _ProfileMainScreenState extends State<ProfileMainScreen> {
@@ -43,12 +45,12 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
         Provider.of<BusinessModel>(context, listen: false);
 
     User user = await authModel.getCurrentUser();
-    Location location = await locationModel.getCurrentLocation();
+    Location currentLocation = await locationModel.getCurrentLocation();
     Business business =
-        await businessModel.getBusinessByID(location.businessID);
+        await businessModel.getBusinessByID(currentLocation.businessID);
 
     return _ProfileMainScreenData(
-        user: user, location: location, business: business);
+        user: user, currentLocation: currentLocation, business: business);
   }
 
   Future<void> handleLogOut() async {
@@ -81,7 +83,7 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
               return LoadingPlaceholder();
             }
 
-            Location location = snapshot.data.location;
+            Location currentLocation = snapshot.data.currentLocation;
             Business business = snapshot.data.business;
             User user = snapshot.data.user;
 
@@ -107,17 +109,30 @@ class _ProfileMainScreenState extends State<ProfileMainScreen> {
                         context, ProfileUserDetailsScreen.routeName);
                   },
                 ),
-                ListItem(
-                  image: ProfilePicture(
-                    image: null,
-                    name: location.name,
-                    size: 48,
-                  ),
-                  title: location.name,
-                  onTap: () {
-                    Navigator.pushNamed(
-                        context, ProfileLocationDetailsScreen.routeName);
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: ListItem(
+                        image: ProfilePicture(
+                          image: null,
+                          name: currentLocation.name,
+                          size: 48,
+                        ),
+                        title: currentLocation.name,
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, ProfileLocationDetailsScreen.routeName);
+                        },
+                      ),
+                    ),
+                    LinkButton(
+                        title: "Change",
+                        onPressed: () {
+                          Navigator.pushNamed(context,
+                              OnboardingLocationSelectionScreen.routeName);
+                        })
+                  ],
                 ),
                 ListItem(
                   title: l10n.profileAccountSettingsTitle,

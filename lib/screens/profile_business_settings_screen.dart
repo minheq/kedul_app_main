@@ -32,9 +32,9 @@ class _ProfileBusinessSettingsScreenState
     LocationModel locationModel =
         Provider.of<LocationModel>(context, listen: false);
 
-    Location location = await locationModel.getCurrentLocation();
+    Location currentLocation = await locationModel.getCurrentLocation();
     Business business =
-        await businessModel.getBusinessByID(location.businessID);
+        await businessModel.getBusinessByID(currentLocation.businessID);
 
     return _ProfileBusinessSettingsScreenData(business: business);
   }

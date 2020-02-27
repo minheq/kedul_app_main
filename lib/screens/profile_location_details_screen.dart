@@ -16,9 +16,9 @@ class ProfileLocationDetailsScreen extends StatefulWidget {
 }
 
 class _ProfileLocationDetailsScreenData {
-  final Location location;
+  final Location currentLocation;
 
-  _ProfileLocationDetailsScreenData({this.location});
+  _ProfileLocationDetailsScreenData({this.currentLocation});
 }
 
 class _ProfileLocationDetailsScreenState
@@ -29,9 +29,9 @@ class _ProfileLocationDetailsScreenState
     LocationModel locationModel =
         Provider.of<LocationModel>(context, listen: false);
 
-    Location location = await locationModel.getCurrentLocation();
+    Location currentLocation = await locationModel.getCurrentLocation();
 
-    return _ProfileLocationDetailsScreenData(location: location);
+    return _ProfileLocationDetailsScreenData(currentLocation: currentLocation);
   }
 
   @override
@@ -55,13 +55,13 @@ class _ProfileLocationDetailsScreenState
             return LoadingPlaceholder();
           }
 
-          Location location = snapshot.data.location;
+          Location currentLocation = snapshot.data.currentLocation;
 
           return BodyPadding(
               child: Column(
             children: <Widget>[
               ListItem(
-                title: location.name,
+                title: currentLocation.name,
               )
             ],
           ));

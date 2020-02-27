@@ -65,9 +65,9 @@ Future<void> main() async {
   if (user == null) {
     initialRoute = LoginVerifyScreen.routeName;
   } else {
-    Location location = await locationModel.getCurrentLocation();
+    Location currentLocation = await locationModel.getCurrentLocation();
 
-    if (location == null) {
+    if (currentLocation == null) {
       initialRoute = OnboardingMainScreen.routeName;
     } else {
       initialRoute = HomeScreen.routeName;

@@ -53,6 +53,8 @@ class LocationModel extends ChangeNotifier {
     _currentLocation = location;
 
     await _storageModel.write("location_id", location.id);
+
+    notifyListeners();
   }
 
   Future<Location> getLocationByID(String locationID,
@@ -129,9 +131,11 @@ class LocationModel extends ChangeNotifier {
       throw APIErrorException(message: data.message);
     }
 
-    Location data = Location.fromJson(json.decode(response.body));
+    Location location = Location.fromJson(json.decode(response.body));
 
-    return data;
+    _cache[location.id] = location;
+
+    return location;
   }
 
   Future<List<Location>> getLocationsByUserIDAndBusinessID(

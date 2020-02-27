@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:kedul_app_main/app/business_model.dart';
 import 'package:kedul_app_main/app/location_model.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
-import 'package:kedul_app_main/screens/calendar_main_screen.dart';
 import 'package:kedul_app_main/screens/home_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_business_creation_screen.dart';
 import 'package:kedul_app_main/screens/onboarding_location_creation_screen.dart';
@@ -28,8 +27,10 @@ class OnboardingLocationSelectionScreen extends StatefulWidget {
 class _OnboardingLocationSelectionScreenData {
   final List<Business> businesses;
   final List<Location> locations;
+  final Location currentLocation;
 
-  _OnboardingLocationSelectionScreenData({this.businesses, this.locations});
+  _OnboardingLocationSelectionScreenData(
+      {this.businesses, this.locations, this.currentLocation});
 }
 
 class OnboardingLocationSelectionScreenState
@@ -37,6 +38,29 @@ class OnboardingLocationSelectionScreenState
   OnboardingLocationSelectionScreenState();
 
   Business _selectedBusiness;
+
+  @override
+  void initState() {
+    super.initState();
+
+    initSelectedBusiness();
+  }
+
+  Future<void> initSelectedBusiness() async {
+    LocationModel locationModel =
+        Provider.of<LocationModel>(context, listen: false);
+    BusinessModel businessModel =
+        Provider.of<BusinessModel>(context, listen: false);
+    Location currentLocation = await locationModel.getCurrentLocation();
+    Business business =
+        await businessModel.getBusinessByID(currentLocation.businessID);
+
+    if (currentLocation != null) {
+      setState(() {
+        _selectedBusiness = business;
+      });
+    }
+  }
 
   Future<_OnboardingLocationSelectionScreenData> initData() async {
     AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
@@ -48,6 +72,7 @@ class OnboardingLocationSelectionScreenState
     User user = await authModel.getCurrentUser();
     List<Business> businesses =
         await businessModel.getBusinessesByUserID(user.id);
+    Location currentLocation = await locationModel.getCurrentLocation();
 
     List<Location> locations = [];
 
@@ -57,7 +82,9 @@ class OnboardingLocationSelectionScreenState
     }
 
     return _OnboardingLocationSelectionScreenData(
-        businesses: businesses, locations: locations);
+        businesses: businesses,
+        locations: locations,
+        currentLocation: currentLocation);
   }
 
   void handleSelectBusiness(Business business) {
@@ -66,7 +93,7 @@ class OnboardingLocationSelectionScreenState
     });
   }
 
-  void handleChangeBusiness() {
+  void handlePressChangeBusiness() {
     setState(() {
       _selectedBusiness = null;
     });
@@ -75,8 +102,11 @@ class OnboardingLocationSelectionScreenState
   void handleSelectLocation(Location location) {
     LocationModel locationModel =
         Provider.of<LocationModel>(context, listen: false);
+
     locationModel.setCurrentLocation(location);
-    Navigator.pushNamed(context, HomeScreen.routeName);
+
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        HomeScreen.routeName, (Route<dynamic> route) => false);
   }
 
   @override
@@ -103,13 +133,17 @@ class OnboardingLocationSelectionScreenState
                   return LoadingPlaceholder();
                 }
 
-                if (snapshot.data.businesses.length == 0) {
+                List<Business> businesses = snapshot.data.businesses;
+                List<Location> locations = snapshot.data.locations;
+                Location currentLocation = snapshot.data.currentLocation;
+
+                if (businesses.length == 0) {
                   return OnboardingBusinessCreationScreen();
                 }
 
                 List<Widget> businessWidgetList = [];
 
-                for (Business business in snapshot.data.businesses) {
+                for (Business business in businesses) {
                   businessWidgetList.add(ListItem(
                     image: ProfilePicture(
                       image: null,
@@ -126,7 +160,7 @@ class OnboardingLocationSelectionScreenState
                 List<Widget> locationWidgetList = [];
 
                 if (_selectedBusiness != null) {
-                  for (Location location in snapshot.data.locations) {
+                  for (Location location in locations) {
                     locationWidgetList.add(ListItem(
                       image: ProfilePicture(
                         image: null,
@@ -134,6 +168,7 @@ class OnboardingLocationSelectionScreenState
                         size: 48,
                       ),
                       title: location.name,
+                      description: currentLocation != null ? "Current" : "",
                       onTap: () {
                         handleSelectLocation(location);
                       },
@@ -182,7 +217,7 @@ class OnboardingLocationSelectionScreenState
                               LinkButton(
                                   title: "Change",
                                   onPressed: () {
-                                    handleChangeBusiness();
+                                    handlePressChangeBusiness();
                                   })
                             ],
                           ),
