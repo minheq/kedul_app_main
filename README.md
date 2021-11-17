@@ -1,4 +1,4 @@
-****# Kedul (Project discontinued)
+# Kedul (Project discontinued)
 
 Booking/Scheduling app project that has since been discontinued. Project archived and shared for educational/referential purposes
 
