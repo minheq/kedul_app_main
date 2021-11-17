@@ -2,6 +2,8 @@
 
 Booking/Scheduling app project that has since been discontinued. Project archived and shared for educational/referential purposes
 
+Bulk of work found in the following PR https://github.com/minheq/kedul_app_main/pull/12
+
 ## Localization
 
 ```zshrc
