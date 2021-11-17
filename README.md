@@ -1,6 +1,6 @@
-****# Kedul
+****# Kedul (Project discontinued)
 
-A new Flutter project.
+Booking/Scheduling app project that has since been discontinued. Project archived and shared for educational/referential purposes
 
 ## Localization
 
