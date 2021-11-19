@@ -1,49 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
-import 'package:kedul_app_main/auth/auth_model.dart';
+import 'package:kedul_app_main/app/business_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
+import 'package:kedul_app_main/screens/onboarding_location_creation_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
-import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
+import 'package:kedul_app_main/widgets/body_padding.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
-import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
-class ProfileUserEditScreen extends StatefulWidget {
-  static const String routeName = '/profile_user_edit_screen';
+class OnboardingBusinessCreationScreen extends StatefulWidget {
+  static const String routeName = '/onboarding_business_creation';
 
   @override
-  _ProfileUserEditScreenState createState() {
-    return _ProfileUserEditScreenState();
+  _OnboardingBusinessCreationScreenState createState() {
+    return _OnboardingBusinessCreationScreenState();
   }
 }
 
-class _ProfileUserEditScreenState extends State<ProfileUserEditScreen> {
-  _ProfileUserEditScreenState();
+class _OnboardingBusinessCreationScreenState
+    extends State<OnboardingBusinessCreationScreen> {
+  _OnboardingBusinessCreationScreenState();
 
-  String _fullName;
-  String _profileImageID;
+  CreateBusinessInput _input = CreateBusinessInput();
   bool _isSubmitting = false;
   String _status;
 
-  Future<void> handleUpdateUserProfile() async {
-    AuthModel auth = Provider.of<AuthModel>(context, listen: false);
+  Future<void> handleSubmit() async {
     MyAppLocalization l10n = MyAppLocalization.of(context);
     AnalyticsModel analytics =
         Provider.of<AnalyticsModel>(context, listen: false);
+    BusinessModel businessModel =
+        Provider.of<BusinessModel>(context, listen: false);
 
     try {
-      analytics.log('update_user_profile');
+      analytics.log('create_business');
 
       setState(() {
         _isSubmitting = true;
       });
 
-      await auth.updateUserProfile(_fullName, _profileImageID);
+      Business business = await businessModel.createBusiness(_input);
 
-      Navigator.pop(context);
+      Navigator.pushNamed(
+        context,
+        OnboardingLocationCreationScreen.routeName,
+        arguments: OnboardingLocationCreationScreenArguments(business.id),
+      );
     } on APIErrorException catch (e) {
       setState(() {
         _status = e.message;
@@ -64,32 +69,30 @@ class _ProfileUserEditScreenState extends State<ProfileUserEditScreen> {
   @override
   Widget build(BuildContext context) {
     MyAppLocalization l10n = MyAppLocalization.of(context);
-    AuthModel authModel = Provider.of<AuthModel>(context);
-    User currentUser = authModel.currentUser;
     ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
         appBar: AppBar(),
         body: BodyPadding(
             child: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ProfilePicture(
-                  image: null,
-                  name: currentUser.fullName,
-                  size: 120,
-                )
-              ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Give your business a name",
+              style: theme.textStyles.headline1,
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 56),
             FormFieldContainer(
-              labelText: l10n.commonFullName,
+              labelText: "Name",
               child: TextFormField(
-                initialValue: currentUser.fullName,
+                initialValue: "",
                 onChanged: (name) {
-                  _fullName = name;
+                  setState(() {
+                    _input.name = name;
+                  });
+                },
+                onFieldSubmitted: (name) {
+                  handleSubmit();
                 },
               ),
             ),
@@ -103,8 +106,8 @@ class _ProfileUserEditScreenState extends State<ProfileUserEditScreen> {
         )),
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
-              onPressed: handleUpdateUserProfile,
-              title: l10n.commonSave,
+              onPressed: handleSubmit,
+              title: l10n.commonNext,
               isSubmitting: _isSubmitting)
         ]));
   }

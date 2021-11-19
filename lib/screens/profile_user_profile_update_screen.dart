@@ -3,46 +3,45 @@ import 'package:kedul_app_main/analytics/analytics_model.dart';
 import 'package:kedul_app_main/api/api_error_exception.dart';
 import 'package:kedul_app_main/auth/auth_model.dart';
 import 'package:kedul_app_main/l10n/localization.dart';
-import 'package:kedul_app_main/screens/profile_update_phone_number_check_screen.dart';
 import 'package:kedul_app_main/theme/theme_model.dart';
-import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/body_padding.dart';
+import 'package:kedul_app_main/widgets/bottom_action_bar.dart';
 import 'package:kedul_app_main/widgets/error_placeholder.dart';
 import 'package:kedul_app_main/widgets/form_field_container.dart';
 import 'package:kedul_app_main/widgets/loading_placeholder.dart';
-import 'package:kedul_app_main/widgets/phone_number_form_field.dart';
 import 'package:kedul_app_main/widgets/primary_button.dart';
+import 'package:kedul_app_main/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
-class ProfileUpdatePhoneNumberVerifyScreen extends StatefulWidget {
-  static const String routeName = '/profile_update_phone_number_verify';
+class ProfileUserProfileUpdateScreen extends StatefulWidget {
+  static const String routeName = '/profile_user_profile_update_screen';
 
   @override
-  _ProfileUpdatePhoneNumberVerifyScreenState createState() {
-    return _ProfileUpdatePhoneNumberVerifyScreenState();
+  _ProfileUserProfileUpdateScreenState createState() {
+    return _ProfileUserProfileUpdateScreenState();
   }
 }
 
-class _ProfileUpdatePhoneNumberVerifyScreenData {
+class _ProfileUserProfileUpdateScreenData {
   final User currentUser;
 
-  _ProfileUpdatePhoneNumberVerifyScreenData({this.currentUser});
+  _ProfileUserProfileUpdateScreenData({this.currentUser});
 }
 
-class _ProfileUpdatePhoneNumberVerifyScreenState
-    extends State<ProfileUpdatePhoneNumberVerifyScreen> {
-  _ProfileUpdatePhoneNumberVerifyScreenState();
+class _ProfileUserProfileUpdateScreenState
+    extends State<ProfileUserProfileUpdateScreen> {
+  _ProfileUserProfileUpdateScreenState();
 
-  String _phoneNumber = '';
-  String _countryCode = 'VN';
+  String _fullName;
+  String _profileImageID;
   bool _isSubmitting = false;
   String _status;
 
-  Future<_ProfileUpdatePhoneNumberVerifyScreenData> _initData() async {
+  Future<_ProfileUserProfileUpdateScreenData> _initData() async {
     AuthModel authModel = Provider.of<AuthModel>(context, listen: false);
     User currentUser = await authModel.getCurrentUser();
 
-    return _ProfileUpdatePhoneNumberVerifyScreenData(currentUser: currentUser);
+    return _ProfileUserProfileUpdateScreenData(currentUser: currentUser);
   }
 
   Future<void> handleSubmit() async {
@@ -52,21 +51,15 @@ class _ProfileUpdatePhoneNumberVerifyScreenState
         Provider.of<AnalyticsModel>(context, listen: false);
 
     try {
-      analytics.log('update_phone_number_verify');
+      analytics.log('update_user_profile');
 
       setState(() {
         _isSubmitting = true;
       });
 
-      String verificationID =
-          await auth.updatePhoneNumberVerify(_phoneNumber, _countryCode);
+      await auth.updateUserProfile(_fullName, _profileImageID);
 
-      Navigator.pushNamed(
-        context,
-        ProfileUpdatePhoneNumberCheckScreen.routeName,
-        arguments: ProfileUpdatePhoneNumberCheckScreenArguments(
-            verificationID, _phoneNumber, _countryCode),
-      );
+      Navigator.pop(context);
     } on APIErrorException catch (e) {
       setState(() {
         _status = e.message;
@@ -90,14 +83,11 @@ class _ProfileUpdatePhoneNumberVerifyScreenState
     ThemeModel theme = Provider.of<ThemeModel>(context);
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.profileUpdatePhoneNumberVerifyTitle),
-        ),
+        appBar: AppBar(),
         body: FutureBuilder(
           future: _initData(),
           builder: (context,
-              AsyncSnapshot<_ProfileUpdatePhoneNumberVerifyScreenData>
-                  snapshot) {
+              AsyncSnapshot<_ProfileUserProfileUpdateScreenData> snapshot) {
             if (snapshot.hasError) {
               return ErrorPlaceholder(error: snapshot.error);
             }
@@ -110,22 +100,24 @@ class _ProfileUpdatePhoneNumberVerifyScreenState
 
             return BodyPadding(
                 child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ProfilePicture(
+                      image: null,
+                      name: currentUser.fullName,
+                      size: 120,
+                    )
+                  ],
+                ),
+                SizedBox(height: 16.0),
                 FormFieldContainer(
-                  labelText: l10n.commonPhoneNumber,
-                  child: PhoneNumberFormField(
-                    initialValue: PhoneNumber(
-                        countryCode: currentUser.countryCode,
-                        phoneNumber: currentUser.phoneNumber),
-                    onChanged: (phoneNumber) {
-                      setState(() {
-                        _phoneNumber = phoneNumber.phoneNumber;
-                        _countryCode = phoneNumber.countryCode;
-                      });
-                    },
-                    onFieldSubmitted: (phoneNumber) {
-                      handleSubmit();
+                  labelText: l10n.commonFullName,
+                  child: TextFormField(
+                    initialValue: currentUser.fullName,
+                    onChanged: (name) {
+                      _fullName = name;
                     },
                   ),
                 ),
@@ -142,7 +134,7 @@ class _ProfileUpdatePhoneNumberVerifyScreenState
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
               onPressed: handleSubmit,
-              title: l10n.commonNext,
+              title: l10n.commonSave,
               isSubmitting: _isSubmitting)
         ]));
   }

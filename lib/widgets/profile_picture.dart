@@ -77,10 +77,12 @@ class _ProfilePictureState extends State<ProfilePicture> {
 }
 
 String _getInitials(String name) {
-  if (name.isEmpty) return " ";
+  if (name.isEmpty) return "";
 
   List<String> nameArray =
-      name.replaceAll(new RegExp(r"\s+\b|\b\s"), " ").split(" ");
+      name.replaceAll(RegExp(r"\s+\b|\b\s"), " ").split(" ");
+
+  nameArray.removeWhere((name) => name == "");
 
   String initials = ((nameArray[0])[0] != null ? (nameArray[0])[0] : " ") +
       (nameArray.length == 1 ? " " : (nameArray[nameArray.length - 1])[0]);

@@ -38,7 +38,7 @@ class _LoginCheckScreenState extends State<LoginCheckScreen> {
   bool _isSubmitting = false;
   String _status;
 
-  Future<void> handleLoginCheck() async {
+  Future<void> handleSubmit() async {
     LoginCheckScreenArguments args = ModalRoute.of(context).settings.arguments;
     AuthModel auth = Provider.of<AuthModel>(context, listen: false);
     MyAppLocalization l10n = MyAppLocalization.of(context);
@@ -110,7 +110,7 @@ class _LoginCheckScreenState extends State<LoginCheckScreen> {
                   _code = code;
                 },
                 onFieldSubmitted: (code) {
-                  handleLoginCheck();
+                  handleSubmit();
                 },
               ),
             ),
@@ -124,7 +124,7 @@ class _LoginCheckScreenState extends State<LoginCheckScreen> {
         )),
         bottomNavigationBar: BottomActionBar(children: [
           PrimaryButton(
-              onPressed: handleLoginCheck,
+              onPressed: handleSubmit,
               title: l10n.commonNext,
               isSubmitting: _isSubmitting)
         ]));
